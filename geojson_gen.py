@@ -33,11 +33,13 @@ def BASE_POLY():
     }
 
 
-def generate_demo(demo_zoom=4):
+def generate_demo(demo_name='demo.npy', demo_zoom=4):
     nx, ny = n_cells_xy(demo_zoom)
-    data = np.random.randint(0, 1000, (ny, nx))
-    contents = np.array({'max_zoom': demo_zoom, 'data': data}, dtype=object)
-    np.save('stats/demo.npy', contents)
+    res_counts = np.random.randint(0, 1000, (ny, nx))
+    rnd_ratios = np.random.uniform(0, 1, (ny, nx))
+    res_sums = np.round(rnd_ratios * res_counts)
+    contents = np.array({'properties': {'max_zoom': demo_zoom}, 'res_counts': res_counts, 'res_sums': res_sums}, dtype=object)
+    np.save('stats/%s' % demo_name, contents)
 
 
 def get_step_size_deg(zoom):
@@ -68,10 +70,6 @@ def get_bbox_for_cell(zoom, x, y, step_size=None):
     return get_bbox_from_anchor((lon, lat), step_size)
 
 
-def aggregate(cells):
-    return block_reduce(cells, block_size=(2, 2), func=np.sum)
-
-
 def bin_stats_to_zooms(stats_dir):
     for stat_filename in next(os.walk(stats_dir))[2]:
         print("File:", stat_filename, end=', ')
@@ -81,8 +79,14 @@ def bin_stats_to_zooms(stats_dir):
 
         # For each channel, we have a high res array
         base_data = np.load(os.path.join(stats_dir, stat_filename), allow_pickle=True).tolist()
-        max_zoom = base_data['max_zoom']
-        data = base_data['data']
+        properties = base_data['properties']
+        max_zoom = properties['max_zoom']
+        agg_mode = 'absolute'  # absolute: per-cell ratios, relative: per-cell ratios AND min/max scaled
+        sums = base_data['res_sums']
+        counts = base_data['res_counts']
+
+        threshold_count = 500  # only include results for counts > threshold_count
+        sentinel_val = -1
 
         print("max zoom:", max_zoom)
         for zoom in range(max_zoom, -1, -1):
@@ -90,9 +94,19 @@ def bin_stats_to_zooms(stats_dir):
             if not os.path.exists(pathname):
                 os.makedirs(pathname)
             if zoom < max_zoom:
-                data = aggregate(data)
+                sums = block_reduce(sums, block_size=(2, 2), func=np.sum)
+                counts = block_reduce(counts, block_size=(2, 2), func=np.sum)
+
+            averaged_data = sums / np.clip(counts, 1, None)  # prevent divide by 0
+            if agg_mode == 'relative':
+                # Useful in the case where values are low globally (like smaller religious groups)
+                # Possibly more useful to use a detailed/mult-layered colour scale
+                amin = averaged_data.amin()
+                amax = averaged_data.amax()
+                averaged_data = (averaged_data - amin) / (amax - amin)
+            filtered_data = np.where(counts > threshold_count, averaged_data, sentinel_val)  # hide low-volume data for privacy
             outname = os.path.join(pathname, stat_filename)
-            np.save(outname, data)
+            np.save(outname, filtered_data)
 
 
 def write_cells(stats_dir):
@@ -119,7 +133,7 @@ def write_cells(stats_dir):
                 cell_poly = BASE_POLY()
                 cell_poly['geometry']['coordinates'] = [bbox + [bbox[0]]]
                 for slabel, sarr in stat_list:
-                    cell_poly['properties'][slabel] = int(sarr[row][col])
+                    cell_poly['properties'][slabel] = float(sarr[row][col])
 
                 features.append(cell_poly)
         output['features'] = features
@@ -129,8 +143,6 @@ def write_cells(stats_dir):
             outfile.write(json.dumps(output))
 
 
-
-
 def main():
     bin_stats_to_zooms(stats_dir='stats')
     write_cells(stats_dir='stats')
@@ -138,4 +150,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    #generate_demo()
+    #('demo1.npy')
