@@ -86,6 +86,7 @@ def bin_stats_to_zooms(stats_dir):
         counts = base_data['res_counts']
 
         threshold_count = 500  # only include results for counts > threshold_count
+        assert threshold_count > 0, "Divide by zero can occur"
         sentinel_val = -1
 
         print("max zoom:", max_zoom)
@@ -97,14 +98,19 @@ def bin_stats_to_zooms(stats_dir):
                 sums = block_reduce(sums, block_size=(2, 2), func=np.sum)
                 counts = block_reduce(counts, block_size=(2, 2), func=np.sum)
 
-            averaged_data = sums / np.clip(counts, 1, None)  # prevent divide by 0
+            kept_indices = counts > threshold_count
+            # Sums
+            filtered_data = np.where(kept_indices, sums, sentinel_val)  # hide low-volume data for privacy
+            # Means
+            filtered_data[kept_indices] /= counts[kept_indices]  # Guaranteed to avoid divide by 0
+
             if agg_mode == 'relative':
                 # Useful in the case where values are low globally (like smaller religious groups)
                 # Possibly more useful to use a detailed/mult-layered colour scale
-                amin = averaged_data.amin()
-                amax = averaged_data.amax()
-                averaged_data = (averaged_data - amin) / (amax - amin)
-            filtered_data = np.where(counts > threshold_count, averaged_data, sentinel_val)  # hide low-volume data for privacy
+                amin = sums.amin()
+                amax = sums.amax()
+                filtered_data[kept_indices] = (filtered_data[kept_indices] - amin) / (amax - amin)
+
             outname = os.path.join(pathname, stat_filename)
             np.save(outname, filtered_data)
 

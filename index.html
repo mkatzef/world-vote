@@ -8,11 +8,17 @@
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
 <style>
 body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#map { position: absolute; top: 0; bottom: 0; left: 20%; width: 80%; }
 </style>
 </head>
 
 <body>
+<div style="width:20%">
+Hi
+<button onclick="toggle(0)">Demo 0</button>
+<button onclick="toggle(1)">Demo 1</button>
+</div>
+
 <div id="map"></div>
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
@@ -20,8 +26,9 @@ body { margin: 0; padding: 0; }
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/streets-v11', // style URL
     center: [-74.5, 40], // starting position [lng, lat]
-    zoom: 9, // starting zoom
-    projection: 'globe' // display the map as a 3D globe
+    zoom: 1, // starting zoom
+    projection: 'globe', // Alternative: 'mercator'
+		maxZoom: 6
   });
 
   map.on('style.load', () => {
@@ -35,25 +42,37 @@ body { margin: 0; padding: 0; }
   map.on('moveend', update_map_from_move);
 
 	map.on('load', () => {
-		map.addSource('mapbox-terrain', {
+		map.addSource('vote-data', {
 				'type': 'vector',
-				'url': 'http://localhost:8080'
+				'url': 'mapbox://mkatzeff.0j7sw7t7'
 			});
-		map.addLayer({
-			'id': 'terrain-data',
-			'type': 'line',
-			'source': 'mapbox-terrain',
-			'source-layer': 'contour',
-			'layout': {
-				'line-join': 'round',
-				'line-cap': 'round'
-			},
-			'paint': {
-				'line-color': '#ff69b4',
-				'line-width': 1
-			}
-		});
 	});
+
+	var actives = [false, false];
+	function toggle(num) {
+		let data_name = 'demo' + num;
+		let layer_id = 'vote-data-layer' + num;
+
+		if (!actives[num]) {
+			map.addLayer({
+				'id': layer_id,
+				'type': 'fill',
+				'source': 'vote-data',
+				'source-layer': 'cells',
+				'paint': {
+					'fill-color': [
+													"case",
+													["==", ["get", data_name], -1], 'rgba(0,0,0,0)', // transparent if demo0 == -1
+													["rgba", 255, 0, 0, ["get", data_name]]  // else red with demo0 as opacity
+												],
+					'fill-outline-color': 'rgba(0,0,0,0)'
+				}
+			});
+		} else {
+			map.removeLayer(layer_id);
+		}
+		actives[num] = !actives[num];
+	}
 </script>
 
 </body>
