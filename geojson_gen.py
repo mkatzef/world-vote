@@ -9,7 +9,7 @@ import numpy as np
 from skimage.measure import block_reduce
 import os
 
-BASE_STEP_DEG = 30
+BASE_STEP_DEG = 15
 DISPLAY_SIZE_DEGS = (360, 180)
 assert all([d % BASE_STEP_DEG == 0 for d in DISPLAY_SIZE_DEGS]), "BASE_STEP_DEG must divide both display dimensions"
 ORIGIN_COORD = (-180, 90)
@@ -156,4 +156,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    #('demo1.npy')
+    #generate_demo('demo0.npy')
