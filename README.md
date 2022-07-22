@@ -20,6 +20,28 @@ The overall data flow in this project is as follows:
 
 
 ## Next steps
+* User location select  
+* Draft UI  
+* Add user ID code generation  
+* Create database  
+* Create tool that parses database into `base` data  
+* Convert website into laravel web app  
+* Add user setup to web app  
+* Add voting boxes to web app  
+* Add captcha to web app  
+* Add google ads to web app  
+* Move database processing to amazon  
+* Add filters based on tags (show only the cells with tag ratio in [min, max])  
+* Add init data  
+* Add submit new vote option  
+* Add vote categories  
+* Add vote search  
+
+Example tags:
+* Gender: male/female/non-binary  
+* Age: <18/18-25/25-35/35+  
+* Religion: atheist/agnostic/christian/jewish/muslim/buddhist  
+* Ethnicity: black/white/asian
 
 
 ## Useful tools
