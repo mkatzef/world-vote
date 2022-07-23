@@ -69,7 +69,6 @@
 				});
 			}
 
-
 			map.addSource('clicked_loc', {
 					'type': 'geojson',
 					'data': {
@@ -88,8 +87,34 @@
 				'source': 'clicked_loc',
 				'layout': {},
 				'paint': {
-					'fill-color': '#0080ff',
-					'fill-opacity': 0.5
+					'fill-color': '#ff0000',
+					'fill-opacity': 0.8
+				},
+				'layout': {
+					'visibility': 'none'
+				}
+			});
+
+			map.addSource('hover_loc', {
+					'type': 'geojson',
+					'data': {
+						'type': 'Feature',
+						'geometry': {
+							'type': 'Polygon',
+							'coordinates': [[]]
+						}
+					}
+				}
+			);
+
+			map.addLayer({
+				'id': 'hover_loc_layer',
+				'type': 'line',
+				'source': 'hover_loc',
+				'layout': {},
+				'paint': {
+					'line-color': '#000000',
+					'line-opacity': 0.5
 				},
 				'layout': {
 					'visibility': 'none'
@@ -125,24 +150,55 @@
 			)
 		}
 
-		const zmaxstep = 15 / Math.pow(2, 4);
+		const maxZoom = 4;
+		const maxStepDeg = 15;
+		const zSteps = [0, 1, 2, 3, 4].map((i) => { return maxStepDeg / Math.pow(2, i) });
 		const o_lat = 90;
 		const o_lng = -180;
-		function display_vote_cell(lngLat) {
-			let anc_lat = zmaxstep * (Math.floor((lngLat.lat) / zmaxstep));
-			let anc_lng = zmaxstep * Math.floor((lngLat.lng) / zmaxstep);
+		// Returns array of coords for the cell containing the given latLng at the
+		// given zoom level
+		// Note: only valid for zooms in [0, maxZoom]
+		function get_cell_coords(lngLat, zoom) {
+			const zStep = zSteps[zoom];
+			let anc_lat = zStep * (Math.floor((lngLat.lat) / zStep));
+			let anc_lng = zStep * Math.floor((lngLat.lng) / zStep);
+			return [
+				[anc_lng, anc_lat],
+				[anc_lng + zStep, anc_lat],
+				[anc_lng + zStep, anc_lat + zStep],
+				[anc_lng, anc_lat + zStep],
+				[anc_lng, anc_lat],
+			];
+		}
+
+		function display_clicked_cell(lngLat) {
 			map.getSource('clicked_loc').setData({
 				'type': 'Feature',
 				'geometry': {
 					'type': 'Polygon',
-					'coordinates': [[
-						[anc_lng, anc_lat],
-						[anc_lng + zmaxstep, anc_lat],
-						[anc_lng + zmaxstep, anc_lat + zmaxstep],
-						[anc_lng, anc_lat + zmaxstep],
-						[anc_lng, anc_lat],
-					]]
+					'coordinates': [get_cell_coords(lngLat, maxZoom)]
 				}
+			});
+
+			// In case touch was used, still display outlines
+			display_hover_cell(lngLat);
+		}
+
+		function display_hover_cell(lngLat) {
+			var features = Array(maxZoom);
+			for (let i = 0; i < maxZoom + 1; i++) {
+				features[i] = {
+					'type': 'Feature',
+					'geometry': {
+						'type': 'Polygon',
+						'coordinates': [get_cell_coords(lngLat, i)]
+					}
+				}
+			}
+
+			map.getSource('hover_loc').setData({
+				"type": "FeatureCollection",
+		    "features": features
 			});
 		}
 
@@ -153,20 +209,30 @@
 				let t = Date.now();
 				if (t - last_move_time > min_time_delta_ms) {
 					last_move_time = t;
-					last_cell = display_vote_cell(e.lngLat);
+					last_cell = display_hover_cell(e.lngLat);
 				}
 			}
 		});
 
+		map.on('click', (e) => {
+			if (busy_selecting_loc) {
+				selected_loc = e.lngLat;
+				last_cell = display_clicked_cell(e.lngLat);
+			}
+		});
+
 		var busy_selecting_loc = false;
+		var selected_loc = null;
 		function start_select_location() {
 			if (busy_selecting_loc) {
 				console.log('Ending select');
 				map.setLayoutProperty('clicked_loc_layer', 'visibility', 'none');
+				map.setLayoutProperty('hover_loc_layer', 'visibility', 'none');
 				busy_selecting_loc = false;
 			} else {
 				console.log('Starting select');
 				map.setLayoutProperty('clicked_loc_layer', 'visibility', 'visible');
+				map.setLayoutProperty('hover_loc_layer', 'visibility', 'visible');
 				busy_selecting_loc = true;
 
 				// onclick, zoom in and display
