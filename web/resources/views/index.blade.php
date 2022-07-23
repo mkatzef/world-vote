@@ -17,6 +17,11 @@
   		style="position:fixed; width:20%; height:100%; background-color:#000000;
   		opacity:0.5; z-index:1">
   	</div>
+
+    @foreach ($tags as $tag)
+      <p>{{ $tag->slug }}</p>
+    @endforeach
+
   	<div style="width:20%">
   		Hi
   		<button onclick="toggle(0)">Demo 0</button>

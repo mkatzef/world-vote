@@ -19,13 +19,22 @@ The overall data flow in this project is as follows:
 2. Convert collections of `zoom array`s into `cells`
 
 
+## Web
+Early versions had a simple `index.html` that could be loaded in a web browser directly.
+
+We're not in Kansas anymore; navigate to `./web` and run:  
+`php artisan serve`  
+OR  
+`art serve`  
+If you have the recommended `laravel` shell config.
+
+The locally-hosted URL will appear in your terminal when running. Navigate to that link in a web browser and continue debugging.
+
+
 ## Next steps
 * Get double-handle range slider
 * Add user ID code generation "A unique user ID can be created in PHP using the `uniqid ()` function" or https://stackoverflow.com/a/31107425  
-* Draft UI  
-* Create database  
 * Create tool that parses database into `base` data  
-* Convert website into laravel web app  
 * Add user setup to web app  
 * Add voting boxes to web app  
 * Add captcha to web app  
