@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^0.27.2",
-    "fs": "^0.0.1-security",
-    "http": "^0.0.1-security",
-    "mbtiles-serve": "^1.0.4"
-  }
-}

@@ -20,9 +20,9 @@ The overall data flow in this project is as follows:
 
 
 ## Next steps
-* User location select  
+* Get double-handle range slider
+* Add user ID code generation "A unique user ID can be created in PHP using the `uniqid ()` function" or https://stackoverflow.com/a/31107425  
 * Draft UI  
-* Add user ID code generation  
 * Create database  
 * Create tool that parses database into `base` data  
 * Convert website into laravel web app  
