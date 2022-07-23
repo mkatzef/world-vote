@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class Propmt extends Controller
+class Prompt extends Controller
 {
     //
 }

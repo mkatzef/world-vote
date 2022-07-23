@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Tag;
+use App\Models\Prompt;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +16,5 @@ use App\Models\Tag;
 */
 
 Route::get('/', function () {
-    return view('index', ['tags' => Tag::all()]);
+    return view('index', ['tags' => Tag::all(), 'prompts' => Prompt::all()]);
 });

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+@php($pane_width = 35)
 <html>
   <head>
   	<meta charset="utf-8">
@@ -8,36 +9,104 @@
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
   	<style>
   		body { margin: 0; padding: 0; }
-  		#map { position: absolute; top: 0; bottom: 0; left: 20%; width: 80%; }
+  		#map { position: absolute; top: 0; bottom: 0; left: {{ $pane_width }}%; width: {{ 100 - $pane_width }}%; }
   	</style>
   </head>
 
   <body>
-  	<div id="control_overlay"
-  		style="position:fixed; width:20%; height:100%; background-color:#000000;
-  		opacity:0.5; z-index:1">
-  	</div>
+  	<div id="pane_overlay" style="position:fixed; width:{{ $pane_width }}%; height:100%; background-color:#000000; opacity:0.5">
+    </div>
 
-    @foreach ($tags as $tag)
-      <p>{{ $tag->slug }}</p>
-    @endforeach
+    <div id="new_vote_pane" style="position:fixed; width:{{ $pane_width }}%; height:100%; background-color:#ffffff; visibility:hidden">
+      <h1>New Vote</h1>
+      <button onclick="start_select_location()">Select Loc</button>
+      <button onclick="attach_loc_to_form('new_vote_form')">Confirm Loc</button>
 
-  	<div style="width:20%">
-  		Hi
+      <form id="new_vote_form">
+        <label for="utoken">Unique token:</label><br>
+        <input type="text" id="utoken" name="utoken"><br>
+        <label>Select any tags for your vote:</label><br>
+        @foreach ($tags as $tag)
+          <input type="radio" id="{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
+        @endforeach
+        <button>Submit</button>
+      </form>
+
+      <button onclick="set_pane_mode('map_view_pane')">Controls</button>
+    </div>
+
+    <div id="update_vote_pane" style="position:fixed; width:{{ $pane_width }}%; height:100%; background-color:#ffffff; visibility:hidden">
+      <h1>Update Vote</h1>
+      <button onclick="start_select_location()">Select Loc</button>
+      <button onclick="attach_loc_to_form('update_vote_form')">Confirm Loc</button>
+
+      <form id="update_vote_form">
+        <label for="utoken">Unique token:</label><br>
+        <input type="text" id="utoken" name="utoken"><br>
+        <label>Select any tags for your vote:</label><br>
+        @foreach ($tags as $tag)
+          <input type="radio" id="{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
+        @endforeach
+        <button>Submit</button>
+      </form>
+
+      <button onclick="set_pane_mode('map_view_pane')">Controls</button>
+    </div>
+
+  	<div id="map_view_pane" style="width:{{ $pane_width }}%; visibility:hidden">
+      <h1>Controls</h1>
+      <button onclick="button_new_vote()">New Vote</button>
+      <button onclick="button_update_vote()">Update Vote</button>
+
+      <div style="display:flex; flex-direction:column">
+        @foreach ($prompts as $prompt)
+          <div style="display:flex; flex-direction:column; padding-top:5px; padding-bottom:5px">
+            <div>
+              ID: {{ $prompt->id }}<br>
+              {{ $prompt->caption }}
+            </div>
+            <div>
+              <button>Map</button>
+              <button>Vote</button>
+            </div>
+          </div>
+        @endforeach
+      </div>
+
+      <p>Demo data:</p>
   		<button onclick="toggle(0)">Demo 0</button>
   		<button onclick="toggle(1)">Demo 1</button>
-  		<div class="slidecontainer">
+
+      <p>Demo filter:</p>
+      <div class="slidecontainer">
   		  <input type="range" min="0" max="10" value="0" class="slider"
   			id="ranger" oninput="slide_func0()">
   		</div>
-  		<button onclick="start_select_location()">Select Loc</button>
   	</div>
 
   	<div id="map"></div>
 
   	<script>
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
-  	  const map = new mapboxgl.Map({
+
+      const pane_divs = [
+        'pane_overlay',
+        'map_view_pane',
+        'new_vote_pane',
+        'update_vote_pane',
+      ];
+      function set_pane_mode(pane_mode) {
+        // disable all divs that aren't pane_mode
+        pane_divs.forEach((pane_id) => {
+          if (pane_mode == pane_id) {
+            document.getElementById(pane_id).style.visibility = 'visible';
+          } else {
+            document.getElementById(pane_id).style.visibility = 'hidden';
+          }
+        });
+      }
+
+      const map = new mapboxgl.Map({
   	    container: 'map', // container ID
   	    style: 'mapbox://styles/mapbox/streets-v11', // style URL
   	    center: [-74.5, 40], // starting position [lng, lat]
@@ -130,7 +199,7 @@
   				}
   			});
 
-  			control_overlay.remove();
+        set_pane_mode('map_view_pane');
   		});
 
 
@@ -225,6 +294,7 @@
   			});
   		}
 
+      var selected_xy = null;
   		function handler_clicked_cell(e) {
   			selected_xy = get_xy(e.lngLat, maxZoom);
   			display_clicked_cell(e.lngLat);
@@ -248,20 +318,46 @@
   			map.setLayoutProperty('hover_loc_layer', 'visibility', 'none');
   		}
 
-  		var busy_selecting_loc = false;
-  		var selected_xy = null;
-  		function start_select_location() {
-  			if (busy_selecting_loc) {
-  				console.log('Ending select');
-  				tear_down_select_ui();
-  				busy_selecting_loc = false;
-  				console.log("Final xy: " + selected_xy);
-  			} else {
+      function start_select_location() {
   				console.log('Starting select');
   				set_up_select_ui();
-  				busy_selecting_loc = true;
-  			}
   		}
+
+      function attach_loc_to_form(form_id) {
+        if (selected_xy == null) {
+          alert("Please select a location on the map");
+        } else {
+          var form = document.getElementById(form_id);
+          form.setAttribute('data-col', selected_xy[0]);
+          form.setAttribute('data-row', selected_xy[1]);
+          tear_down_select_ui();
+        }
+      }
+
+      function end_select_location() {
+        console.log('Ending select');
+        tear_down_select_ui();
+        console.log("Final xy: " + selected_xy);
+      }
+
+      function button_new_vote() {
+        set_pane_mode('new_vote_pane');
+      }
+
+      function button_update_vote() {
+        set_pane_mode('update_vote_pane');
+      }
+
+      new_vote_form.addEventListener('submit',
+        function (e) {
+          if (new_vote_form.getAttribute('data-row') == null ||
+              new_vote_form.getAttribute('data-col') == null) {
+            e.preventDefault();
+            alert("Please confirm the location for your vote");
+          }
+        }
+      );
+
   	</script>
   </body>
 </html>
