@@ -34,7 +34,6 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 ## Next steps
 * Get double-handle range slider
 * Add user ID code generation "A unique user ID can be created in PHP using the `uniqid ()` function" or https://stackoverflow.com/a/31107425  
-* Create tool that parses database into `base` data  
 * Add captcha to web app  
 * Add google ads to web app  
 * Move database processing to amazon  
@@ -42,12 +41,6 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 * Add init data  
 * Add vote categories  
 * Add vote search  
-
-Example tags:
-* Gender: male/female/non-binary  
-* Age: <18/18-25/25-35/35+  
-* Religion: atheist/agnostic/christian/jewish/muslim/buddhist  
-* Ethnicity: black/white/asian
 
 
 ## Useful tools
