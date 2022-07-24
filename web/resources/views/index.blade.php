@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-@php($pane_width = 35)
+@php
+  $title_height_px = 40;
+  $pane_width_perc = 30;
+  $pane_options = "position:fixed; top:" . strval($title_height_px) . "px; width:" . strval($pane_width_perc) . "%; height:100%";
+@endphp
+
 <html>
   <head>
   	<meta charset="utf-8">
@@ -9,15 +14,22 @@
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
   	<style>
   		body { margin: 0; padding: 0; }
-  		#map { position: absolute; top: 0; bottom: 0; left: {{ $pane_width }}%; width: {{ 100 - $pane_width }}%; }
+  		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
   	</style>
   </head>
 
   <body>
-  	<div id="pane_overlay" style="position:fixed; width:{{ $pane_width }}%; height:100%; background-color:#000000; opacity:0.5">
+    <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%">
+      Title
+      <button onclick="set_pane_mode('data_control_pane')">Controls</button>
+      <button onclick="button_new_vote()">New Vote</button>
+      <button onclick="button_update_vote()">Update Vote</button>
     </div>
 
-    <div id="new_vote_pane" style="position:fixed; width:{{ $pane_width }}%; height:100%; background-color:#ffffff; visibility:hidden">
+  	<div id="pane_overlay" style="{{ $pane_options }}; background-color:#000000; opacity:0.5">
+    </div>
+
+    <div id="new_vote_pane" style="{{ $pane_options }}; background-color:#ffffff; visibility:hidden">
       <h1>New Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('new_vote_form')">Confirm Loc</button>
@@ -31,11 +43,9 @@
         @endforeach
         <button>Submit</button>
       </form>
-
-      <button onclick="set_pane_mode('map_view_pane')">Controls</button>
     </div>
 
-    <div id="update_vote_pane" style="position:fixed; width:{{ $pane_width }}%; height:100%; background-color:#ffffff; visibility:hidden">
+    <div id="update_vote_pane" style="{{ $pane_options }}; background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('update_vote_form')">Confirm Loc</button>
@@ -49,15 +59,10 @@
         @endforeach
         <button>Submit</button>
       </form>
-
-      <button onclick="set_pane_mode('map_view_pane')">Controls</button>
     </div>
 
-  	<div id="map_view_pane" style="width:{{ $pane_width }}%; visibility:hidden">
+  	<div id="data_control_pane" style="{{ $pane_options }}; visibility:hidden">
       <h1>Controls</h1>
-      <button onclick="button_new_vote()">New Vote</button>
-      <button onclick="button_update_vote()">Update Vote</button>
-
       <div style="display:flex; flex-direction:column">
         @foreach ($prompts as $prompt)
           <div style="display:flex; flex-direction:column; padding-top:5px; padding-bottom:5px">
@@ -66,8 +71,11 @@
               {{ $prompt->caption }}
             </div>
             <div>
-              <button>Map</button>
+              @if($prompt->is_mapped)
+                <button>Map</button>
+              @endif
               <button>Vote</button>
+              <button>Stats</button>
             </div>
           </div>
         @endforeach
@@ -91,7 +99,7 @@
 
       const pane_divs = [
         'pane_overlay',
-        'map_view_pane',
+        'data_control_pane',
         'new_vote_pane',
         'update_vote_pane',
       ];
@@ -199,7 +207,7 @@
   				}
   			});
 
-        set_pane_mode('map_view_pane');
+        set_pane_mode('data_control_pane');
   		});
 
 
