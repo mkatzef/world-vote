@@ -49,13 +49,7 @@
     -->
   	<div id="data_control_pane" class="pane" style="visibility:hidden">
       <h1>Data</h1>
-      <div id="stats-chart" style="display:flex; width:100%; height:200px">
-        @php
-        foreach (range(0, 9) as $item) {
-          echo '<div style="display:flex; width:10%; height:100%; background-color:#FFFFFF; margin:2px">';
-          echo '<div id="stat-bar-' . $item . '" style="background-color:#AAAAAA; width:100%; height:50%; align-self:flex-end"></div></div>';
-        }
-        @endphp
+      <div id="stats-chart" style="display:flex; width:80%; height:80px">
       </div>
 
       <button>Wait for vote?</button>
@@ -447,9 +441,24 @@
       );
 
       function displayStats(data) {
-        for (let i = 0; i < 10; i++) {
-          document.getElementById("stat-bar-" + i).style.height = data[i] + "%";
+        const n_elems = data.length;
+        var canvas = document.getElementById('stats-chart');
+        const width = 100 / n_elems;
+
+        canvas.innerHtml = '';  // Clear existing
+        
+        var new_bars = []
+        for (let i = 0; i < n_elems; i++) {
+          var bar_container = document.createElement("div");
+          bar_container.style = "display:flex; width:" + width + "%; height:100%; background-color:#FFFFFF";
+
+          var bar = document.createElement("div");
+          bar.style = "background-color:#AAAAAA; width:100%; height:" + data[i] + "%; align-self:flex-end";
+
+          bar_container.appendChild(bar);
+          canvas.appendChild(bar_container);
         }
+
       }
       displayStats([10, 20, 10, 0, 20]);
 
