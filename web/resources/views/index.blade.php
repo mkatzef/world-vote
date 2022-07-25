@@ -2,7 +2,6 @@
 @php
   $title_height_px = 40;
   $pane_width_perc = 25;
-  $pane_options = "position:fixed; top:" . strval($title_height_px) . "px; width:" . strval($pane_width_perc) . "%; height:100%";
 @endphp
 
 <html>
@@ -15,12 +14,19 @@
   	<style>
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
+      .pane { position: fixed; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100% } //
   	</style>
+
+    <link href="nouislider.css" rel="stylesheet">
+    <script src="nouislider.js"></script>
   </head>
 
   <body>
     <iframe style="display:none" name="form_sink"></iframe>
 
+    <!--
+      TITLE
+    -->
     <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%">
       <div style="float: left;">
         Title
@@ -34,10 +40,69 @@
       </div>
     </div>
 
-  	<div id="pane_overlay" style="{{ $pane_options }}; background-color:#000000; opacity:0.5">
+  	<div id="pane_overlay" class="pane" style="background-color:#000000; opacity:0.2">
     </div>
 
-    <div id="new_vote_pane" style="{{ $pane_options }}; background-color:#ffffff; visibility:hidden">
+
+    <!--
+      DATA
+    -->
+  	<div id="data_control_pane" class="pane" style="visibility:hidden">
+      <h1>Data</h1>
+      <div id="stats-chart" style="display:flex; width:100%; height:200px">
+        @php
+        foreach (range(0, 9) as $item) {
+          echo '<div style="display:flex; width:10%; height:100%; background-color:#FFFFFF; margin:2px">';
+          echo '<div id="stat-bar-' . $item . '" style="background-color:#AAAAAA; width:100%; height:50%; align-self:flex-end"></div></div>';
+        }
+        @endphp
+      </div>
+
+      <button>Wait for vote?</button>
+      <button onclick="set_pane_mode('filter_pane')">Filters</button>
+
+      <div style="display:flex; flex-direction:column">
+        @foreach ($prompts as $prompt)
+          <button onclick="stage_prompt({{ $prompt->id }})" style="border-radius:10px; margin:5px; padding-top:5px; padding-bottom:5px">
+            {{ $prompt->caption }}
+            @if($prompt->is_mapped)
+              Mappable!
+            @endif
+          </button>
+        @endforeach
+      </div>
+
+      <p>Demo data:</p>
+  		<button onclick="toggle(0)">Demo 0</button>
+  		<button onclick="toggle(1)">Demo 1</button>
+    </div>
+
+
+    <!--
+      FILTERS
+    -->
+    <div id="filter_pane" class="pane" style="visibility:hidden">
+      <h1>Filters</h1>
+      <button onclick="set_pane_mode('data_control_pane')">Back</button><br>
+
+      <p>Demo filter:</p>
+      <div class="slidecontainer">
+        <input type="range" min="0" max="10" value="0" class="slider"
+        id="ranger" oninput="slide_func0()">
+      </div>
+
+      @foreach ($tags as $tag)
+        {{ $tag->name }}<br>
+        <div id="doubleslider-{{ $tag->slug }}" style="width:80%"></div>
+        <br>
+      @endforeach
+    </div>
+
+
+    <!--
+      NEW
+    -->
+    <div id="new_vote_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>New Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('new')">Confirm Loc</button>
@@ -54,7 +119,11 @@
       <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
-    <div id="update_vote_pane" style="{{ $pane_options }}; background-color:#ffffff; visibility:hidden">
+
+    <!--
+      UPDATE
+    -->
+    <div id="update_vote_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('update')">Confirm Loc</button>
@@ -73,45 +142,41 @@
       <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
-  	<div id="data_control_pane" style="{{ $pane_options }}; visibility:hidden">
-      <h1>Controls</h1>
-      <div style="display:flex; flex-direction:column">
-        @foreach ($prompts as $prompt)
-          <div style="display:flex; flex-direction:column; padding-top:5px; padding-bottom:5px">
-            <div>
-              ID: {{ $prompt->id }}<br>
-              {{ $prompt->caption }}
-            </div>
-            <div>
-              @if($prompt->is_mapped)
-                <button>Map</button>
-              @endif
-              <button>Vote</button>
-              <button>Stats</button>
-            </div>
-          </div>
-        @endforeach
-      </div>
 
-      <p>Demo data:</p>
-  		<button onclick="toggle(0)">Demo 0</button>
-  		<button onclick="toggle(1)">Demo 1</button>
-
-      <p>Demo filter:</p>
-      <div class="slidecontainer">
-  		  <input type="range" min="0" max="10" value="0" class="slider"
-  			id="ranger" oninput="slide_func0()">
-  		</div>
-  	</div>
-
+    <!--
+      MAP
+    -->
   	<div id="map"></div>
 
+
+    <!--
+      SCRIPT
+    -->
   	<script>
+      function stylizeDoubleSlider(sliderId) {
+        var slider = document.getElementById("doubleslider-" + sliderId);
+        noUiSlider.create(slider, {
+            start: [0, 1],
+            connect: true,
+            step: 0.1,
+            range: {
+                'min': 0,
+                'max': 1
+            }
+        });
+
+        slider.noUiSlider.on('update', (e) => { console.log('FILTER TODO'); });
+      }
+      @foreach ($tags as $tag)
+        stylizeDoubleSlider("{{ $tag->slug }}");
+      @endforeach
+
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
       const pane_divs = [
         'pane_overlay',
         'data_control_pane',
+        'filter_pane',
         'new_vote_pane',
         'update_vote_pane',
       ];
@@ -222,8 +287,7 @@
         set_pane_mode('data_control_pane');
   		});
 
-
-  		// Interactive parts
+  		// Interactive map components
   		var actives = [false, false];
   		function toggle(num) {
   			let layer_id = 'vote-data-layer' + num;
@@ -339,7 +403,6 @@
   		}
 
       function start_select_location() {
-  				console.log('Starting select');
   				set_up_select_ui();
   		}
 
@@ -354,9 +417,7 @@
       }
 
       function end_select_location() {
-        console.log('Ending select');
         tear_down_select_ui();
-        console.log("Final xy: " + selected_xy);
       }
 
       function button_new_vote() {
@@ -384,6 +445,13 @@
           set_pane_mode('data_control_pane');
         }
       );
+
+      function displayStats(data) {
+        for (let i = 0; i < 10; i++) {
+          document.getElementById("stat-bar-" + i).style.height = data[i] + "%";
+        }
+      }
+      displayStats([10, 20, 10, 0, 20]);
 
   	</script>
   </body>
