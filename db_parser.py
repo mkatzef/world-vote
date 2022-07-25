@@ -22,7 +22,7 @@ prompt_ids = [p_id for p_id in cursor]
 print(prompt_ids)
 
 cursor = cnx.cursor()
-query = ("SELECT grid_row, grid_col, tags, responses FROM records")
+query = ("SELECT grid_row, grid_col, tags, responses FROM users")
 cursor.execute(query)
 for grid_row, grid_col, tags, responses in cursor:
     # Parse into arrays

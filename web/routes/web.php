@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Tag;
 use App\Models\Prompt;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,6 @@ use App\Models\Prompt;
 Route::get('/', function () {
     return view('index', ['tags' => Tag::all(), 'prompts' => Prompt::all()]);
 });
+
+Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');
+Route::post('update_vote', [RecordController::class, 'update']);

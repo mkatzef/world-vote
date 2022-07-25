@@ -33,12 +33,13 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 ## Next steps
 * Get double-handle range slider
-* Add user ID code generation "A unique user ID can be created in PHP using the `uniqid ()` function" or https://stackoverflow.com/a/31107425  
-* Add captcha to web app  
+* Connect votes to db
+* Add recall for modification
+* Display user token when "logged in"
 * Add google ads to web app  
 * Move database processing to amazon  
 * Add filters based on tags (show only the cells with tag ratio in [min, max])  
-* Add init data  
+Optional:
 * Add vote categories  
 * Add vote search  
 

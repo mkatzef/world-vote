@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 @php
   $title_height_px = 40;
-  $pane_width_perc = 30;
+  $pane_width_perc = 25;
   $pane_options = "position:fixed; top:" . strval($title_height_px) . "px; width:" . strval($pane_width_perc) . "%; height:100%";
 @endphp
 
@@ -19,11 +19,19 @@
   </head>
 
   <body>
+    <iframe style="display:none" name="form_sink"></iframe>
+
     <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%">
-      Title
-      <button onclick="set_pane_mode('data_control_pane')">Controls</button>
-      <button onclick="button_new_vote()">New Vote</button>
-      <button onclick="button_update_vote()">Update Vote</button>
+      <div style="float: left;">
+        Title
+      </div>
+      <div style="float: right;">
+        <a href="/">About</a>
+        <a href="/">Help</a>
+        <a href="/">FAQ</a>
+        <button onclick="button_new_vote()">New Vote</button>
+        <button onclick="button_update_vote()">Update Vote</button>
+      </div>
     </div>
 
   	<div id="pane_overlay" style="{{ $pane_options }}; background-color:#000000; opacity:0.5">
@@ -32,33 +40,37 @@
     <div id="new_vote_pane" style="{{ $pane_options }}; background-color:#ffffff; visibility:hidden">
       <h1>New Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
-      <button onclick="attach_loc_to_form('new_vote_form')">Confirm Loc</button>
-
-      <form id="new_vote_form">
-        <label for="utoken">Unique token:</label><br>
-        <input type="text" id="utoken" name="utoken"><br>
+      <button onclick="attach_loc_to_form('new')">Confirm Loc</button>
+      <form id="new_vote_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
+        @csrf
+        <input type="number" id="new-row" name="grid_row" style="display:none">
+        <input type="number" id="new-col" name="grid_col" style="display:none">
         <label>Select any tags for your vote:</label><br>
         @foreach ($tags as $tag)
           <input type="radio" id="{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
         @endforeach
         <button>Submit</button>
       </form>
+      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
     <div id="update_vote_pane" style="{{ $pane_options }}; background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
-      <button onclick="attach_loc_to_form('update_vote_form')">Confirm Loc</button>
-
-      <form id="update_vote_form">
+      <button onclick="attach_loc_to_form('update')">Confirm Loc</button>
+      <form id="update_vote_form" action="/update_vote" method="POST"> <!--target="form_sink">-->
+        @csrf
         <label for="utoken">Unique token:</label><br>
         <input type="text" id="utoken" name="utoken"><br>
+        <input type="number" id="update-row" name="grid_row" style="display:none">
+        <input type="number" id="update-col" name="grid_col" style="display:none">
         <label>Select any tags for your vote:</label><br>
         @foreach ($tags as $tag)
           <input type="radio" id="{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
         @endforeach
         <button>Submit</button>
       </form>
+      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
   	<div id="data_control_pane" style="{{ $pane_options }}; visibility:hidden">
@@ -331,13 +343,12 @@
   				set_up_select_ui();
   		}
 
-      function attach_loc_to_form(form_id) {
+      function attach_loc_to_form(form_prefix) {
         if (selected_xy == null) {
           alert("Please select a location on the map");
         } else {
-          var form = document.getElementById(form_id);
-          form.setAttribute('data-col', selected_xy[0]);
-          form.setAttribute('data-row', selected_xy[1]);
+          document.getElementById(form_prefix + '-col').value = selected_xy[0];
+          document.getElementById(form_prefix + '-row').value = selected_xy[1];
           tear_down_select_ui();
         }
       }
@@ -358,11 +369,19 @@
 
       new_vote_form.addEventListener('submit',
         function (e) {
-          if (new_vote_form.getAttribute('data-row') == null ||
-              new_vote_form.getAttribute('data-col') == null) {
+          if (document.getElementById('new-row').value == null ||
+              document.getElementById('new-col').value == null) {
             e.preventDefault();
             alert("Please confirm the location for your vote");
+          } else {
+            set_pane_mode('data_control_pane');
           }
+        }
+      );
+
+      update_vote_form.addEventListener('submit',
+        function (e) {
+          set_pane_mode('data_control_pane');
         }
       );
 
