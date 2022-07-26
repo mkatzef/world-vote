@@ -52,6 +52,6 @@
 @endonce
 
 <div class="slidecontainer" style="position:relative">
-    <div style="position:absolute;height:25px;width:100%;background-image:linear-gradient(to right, #FF0000, #FFFFFF, #00FF00)"></div>
-    <input type="range" class="slider" style:"position:absolute;top:-25px" id="vote-slider-{{ $promptId }}" min="0" max="10" value="{{ $voteValue }}"/>
+    <div id="vote-slider-bg" style="position:absolute;height:25px;width:100%"></div>
+    <input type="range" class="slider" style:"position:absolute;top:-25px" id="vote-slider" min="0" max="10" value="{{ $voteValue }}"/>
 </div>
