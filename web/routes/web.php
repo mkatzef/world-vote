@@ -22,4 +22,4 @@ Route::get('/', function () {
 
 Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');
 Route::post('update_responses', [RegisterController::class, 'update_responses'])->middleware('auth');
-Route::post('update_vote', [RegisterController::class, 'update']);
+Route::post('update_vote', [RegisterController::class, 'update_vote']);

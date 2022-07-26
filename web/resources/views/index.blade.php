@@ -54,6 +54,9 @@
       DATA
     -->
   	<div id="data_control_pane" class="pane">
+      @auth
+      <p>Your unique code is: <b>{{ auth()->user()->access_token }}</b></p>
+      @endauth
       <div style="width:100%">
         <p id="staged-prompt-caption">Select a poll</p>
         <p id="staged-prompt-option0" style="float:left"></p>
@@ -138,7 +141,7 @@
       <form id="update_vote_form" action="/update_vote" method="POST"> <!--target="form_sink">-->
         @csrf
         <label for="utoken">Unique token:</label><br>
-        <input type="text" id="utoken" name="utoken"><br>
+        <input type="text" id="access_token" name="access_token"><br>
         <input type="number" id="update-row" name="grid_row" style="display:none">
         <input type="number" id="update-col" name="grid_col" style="display:none">
         <label>Select any tags for your vote:</label><br>

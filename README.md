@@ -32,13 +32,11 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 
 ## Next steps
-* Get double-handle range slider
-* Connect votes to db
-* Add recall for modification
-* Display user token when "logged in"
+* Add dummy data with IDs of existing prompts (Add dummy users to test this part of data flow)
+* Add filters based on tags (show only the cells with tag ratio in [min, max])  
+* Add location compatibility filter (cosine similarity)
 * Add google ads to web app  
 * Move database processing to amazon  
-* Add filters based on tags (show only the cells with tag ratio in [min, max])  
 Optional:
 * Add vote categories  
 * Add vote search  

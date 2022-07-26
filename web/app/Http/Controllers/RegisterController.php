@@ -16,6 +16,7 @@ class RegisterController extends Controller
       'grid_col' => 'required',
     ]);
 
+    // TODO: ensure unique
     $attributes['access_token'] = uniqid();
     $attributes['share_token'] = 's_' . uniqid();
 
@@ -45,5 +46,23 @@ class RegisterController extends Controller
     }
     request()->user()->update(['responses' => json_encode($responses)]);
     return "";
+  }
+
+  public function update_vote()
+  {
+    $user = User::where('access_token', '=', request()->get('access_token'))->first();
+    auth()->login($user);
+
+    $tags = [];
+    foreach (Tag::all() as $t) {
+       if (request()->has($t->slug)) {
+         array_push($tags, $t->slug);
+       }
+    }
+    $user->update(['tags' => json_encode($tags)]);
+
+    // TODO: If location is set, use new
+    // TODO: add delete option?
+    return redirect("/");
   }
 }
