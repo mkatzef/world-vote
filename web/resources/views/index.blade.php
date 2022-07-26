@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 @php
-  $title_height_px = 40;
+  $title_height_px = 50;
   $pane_width_perc = 25;
 @endphp
 
@@ -14,7 +14,7 @@
   	<style>
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
-      .pane { position: fixed; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100% } //
+      .pane { position: fixed; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100%; visibility:hidden; text-align:center } //
   	</style>
 
     <link href="nouislider.css" rel="stylesheet">
@@ -27,48 +27,57 @@
     <!--
       TITLE
     -->
-    <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%">
-      <div style="float: left;">
-        Title
+    <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#000000">
+      <div style="float: left; width:{{ $pane_width_perc }}%; text-align:center">
+        <a href="/">
+          <img src="/logo.png" style="max-width:100%; max-height:{{ $title_height_px }}px"></img>
+        </a>
       </div>
       <div style="float: right;">
-        <a href="/">About</a>
-        <a href="/">Help</a>
-        <a href="/">FAQ</a>
+        <button onclick="location.href='/'">About</button>
+        <button onclick="location.href='/'">Help</button>
+        <button onclick="location.href='/'">FAQ</button>
         <button onclick="button_new_vote()">New Vote</button>
         <button onclick="button_update_vote()">Update Vote</button>
       </div>
     </div>
 
-  	<div id="pane_overlay" class="pane" style="background-color:#000000; opacity:0.2">
+
+    <!--
+      OVERLAY
+    -->
+  	<div id="pane_overlay" class="pane" style="background-color:#000000; visibility:visible">
     </div>
 
 
     <!--
       DATA
     -->
-  	<div id="data_control_pane" class="pane" style="visibility:hidden">
-      <h1>Data</h1>
-      <div id="stats-chart" style="display:flex; width:80%; height:80px">
+  	<div id="data_control_pane" class="pane">
+      <div style="width:100%">
+        <p id="staged-prompt-caption">Select a poll</p>
+        <p id="staged-prompt-option0" style="float:left"></p>
+        <p id="staged-prompt-option1" style="float:right"></p>
       </div>
 
-      <button>Wait for vote?</button>
-      <button onclick="set_pane_mode('filter_pane')">Filters</button>
+      <div style="width:80%; margin-left:10%">
+        <div id="stats-chart" style="display:flex; width:100%; height:40px; margin-bottom:5px"></div>
+        <x-vote-slider :promptId="1" />
+        <button>Wait for vote?</button>
+        <button onclick="set_pane_mode('filter_pane')">Filters</button>
+      </div>
 
+      <p>Polls:</p>
       <div style="display:flex; flex-direction:column">
         @foreach ($prompts as $prompt)
-          <button onclick="stage_prompt({{ $prompt->id }})" style="border-radius:10px; margin:5px; padding-top:5px; padding-bottom:5px">
-            {{ $prompt->caption }}
+          <button onclick="stage_prompt({{ $prompt }})" style="font-size:18pt; border-radius:10px; margin:5px; padding-top:5px; padding-bottom:5px">
             @if($prompt->is_mapped)
-              Mappable!
+              &#127757;
             @endif
+            {{ $prompt->caption }}
           </button>
         @endforeach
       </div>
-
-      <p>Demo data:</p>
-  		<button onclick="toggle(0)">Demo 0</button>
-  		<button onclick="toggle(1)">Demo 1</button>
     </div>
 
 
@@ -204,28 +213,6 @@
   					'url': 'mapbox://mkatzeff.0cccfbxm'
   				});
 
-  			for (let layer_num = 0; layer_num < 2; layer_num++) {
-  				let data_name = 'demo' + layer_num;
-  				let layer_id = 'vote-data-layer' + layer_num;
-  				map.addLayer({
-  					'id': layer_id,
-  					'type': 'fill',
-  					'source': 'vote-data',
-  					'source-layer': 'cells',
-  					'paint': {
-  						'fill-color': [
-  														"case",
-  														["==", ["get", data_name], -1], 'rgba(0,0,0,0)', // transparent if demo0 == -1
-  														["rgba", 255, 0, 0, ["get", data_name]]  // else red with demo0 as opacity
-  													],
-  						'fill-outline-color': 'rgba(0,0,0,0)'
-  					},
-  					'layout': {
-  						'visibility': 'none'
-  					}
-  				});
-  			}
-
   			map.addSource('clicked_loc', {
   					'type': 'geojson',
   					'data': {
@@ -281,17 +268,41 @@
         set_pane_mode('data_control_pane');
   		});
 
-  		// Interactive map components
-  		var actives = [false, false];
-  		function toggle(num) {
-  			let layer_id = 'vote-data-layer' + num;
+      function SC(val) {
+        // Safe color
+        return Math.max(0.1, Math.min(254.9, val));
+      }
 
-  			if (actives[num]) {
-  				map.setLayoutProperty(layer_id, 'visibility', 'none');
-  			} else {
-  				map.setLayoutProperty(layer_id, 'visibility', 'visible');
-  			}
-  			actives[num] = !actives[num];
+  		// Interactive map components
+  		var activeLayerId = null;
+  		function display_map_layer(dataId, colorSteps) {
+        if (activeLayerId != null) {
+          map.removeLayer(activeLayerId);
+        }
+        const C = colorSteps;
+        activeLayerId =  'vote-layer-' + dataId;
+        map.addLayer({
+          'id': activeLayerId,
+          'type': 'fill',
+          'source': 'vote-data',
+          'source-layer': 'cells',
+          'paint': {
+            'fill-color': [
+                            "case",
+                            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if demo0 == -1
+                            ["rgba",
+                              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+                              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+                              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+                              0.7
+                            ]
+                          ],
+            'fill-outline-color': 'rgba(0,0,0,0)'
+          },
+          'layout': {
+            'visibility': 'visible'
+          }
+        });
   		}
 
   		function slide_func0() {
@@ -440,27 +451,62 @@
         }
       );
 
-      function displayStats(data) {
+      // Note: barColors can be a different length than data - uses linear interpolation
+      var currentBars = [];
+      function displayStats(data, barColors) {
         const n_elems = data.length;
+        const n_intervals = n_elems - 1;
         var canvas = document.getElementById('stats-chart');
         const width = 100 / n_elems;
 
-        canvas.innerHtml = '';  // Clear existing
-        
+        for (let i = 0; i < currentBars.length; i++) {
+          canvas.removeChild(currentBars[i]);
+        }
+        currentBars = []
         var new_bars = []
         for (let i = 0; i < n_elems; i++) {
           var bar_container = document.createElement("div");
           bar_container.style = "display:flex; width:" + width + "%; height:100%; background-color:#FFFFFF";
 
+          var color = colorLerp(i / n_intervals, barColors);
           var bar = document.createElement("div");
-          bar.style = "background-color:#AAAAAA; width:100%; height:" + data[i] + "%; align-self:flex-end";
+          bar.style = "background-color: rgb("+ color.join(',') +");" +
+            "border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:" + 100*data[i] + "%; align-self:flex-end";
 
           bar_container.appendChild(bar);
           canvas.appendChild(bar_container);
+          currentBars.push(bar_container);
         }
-
       }
-      displayStats([10, 20, 10, 0, 20]);
+
+      function colorLerp(weight, colorArr) {
+        var n_colors = colorArr.length;
+        var n_intervals = n_colors - 1;
+        var n_passed = Math.floor(weight * n_intervals);
+        var rgb1 = colorArr[n_passed];
+        var rgb2 = colorArr[Math.ceil(weight * n_intervals)];
+        var w2 = (weight * n_intervals) - n_passed;
+        var w1 = 1 - w2;
+        return [
+          Math.round(rgb1[0] * w1 + rgb2[0] * w2),
+          Math.round(rgb1[1] * w1 + rgb2[1] * w2),
+          Math.round(rgb1[2] * w1 + rgb2[2] * w2),
+        ];
+      }
+
+      function stage_prompt(prompt) {
+        document.getElementById("staged-prompt-caption").innerText = prompt['caption'];
+        document.getElementById("staged-prompt-option0").innerText = prompt['option0'];
+        document.getElementById("staged-prompt-option1").innerText = prompt['option1'];
+        var colorSteps = JSON.parse(prompt['colors']);
+        if (colorSteps.length == 0)  {
+          colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
+        }
+        displayStats(JSON.parse(prompt['count_ratios']), colorSteps);
+        display_map_layer("demo" + (prompt['id'] - 1), colorSteps);
+
+        // TODO: display current vote of user if applicable, set slider to autosubmit response in background
+      }
 
   	</script>
   </body>
