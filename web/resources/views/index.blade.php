@@ -63,7 +63,10 @@
       <div style="width:80%; margin-left:10%">
         <div id="stats-chart" style="display:flex; width:100%; height:40px; margin-bottom:5px"></div>
         @auth
+        <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
+          @csrf
           <x-vote-slider :promptId="1" />
+        </form>
         @endauth
         <button>Wait for vote?</button>
         <button onclick="set_pane_mode('filter_pane')">Filters</button>
@@ -504,17 +507,27 @@
         if (colorSteps.length == 0)  {
           colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
         }
+
+        // Slider colors
         document.getElementById("vote-slider-bg").style["background-image"] =
           "linear-gradient(to right, "+
           "rgb(" + colorSteps[0].join(',') + ")," +
           "rgb(" + colorSteps[1].join(',') + ")," +
           "rgb(" + colorSteps[2].join(',') + "))";
-
+        // Visibility (note: hidden initially)
         document.getElementById("vote-slider-bg").style.display = 'block';
-        document.getElementById("vote-slider").style.display = 'block';
+        slider = document.getElementById("vote-slider");
+        slider.style.display = 'block';
+        slider.name = prompt.id;
+        slider.value = responses[prompt.id] ? responses[prompt.id] : prompt.n_steps / 2;
+        slider.onmouseup = function () {
+          responses[prompt.id] = slider.value;  // Record locally since last page load
+          document.getElementById("vote-form").submit();
+        }
+
 
         displayStats(JSON.parse(prompt['count_ratios']), colorSteps);
-        display_map_layer("demo" + (prompt['id'] - 1), colorSteps);
+        display_map_layer("demo" + (prompt.id - 1), colorSteps);
 
         console.log("USING DEMO-");
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Tag;
+use App\Models\Prompt;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
@@ -31,5 +32,18 @@ class RegisterController extends Controller
     auth()->login(User::create($attributes));
 
     return redirect('/');
+  }
+
+  public function update_responses()
+  {
+    $responses = json_decode(request()->user()->responses, true);
+    foreach (request()->all() as $key => $value) {
+      $p = Prompt::where('id', '=', $key)->first();
+      if ($p) {
+        $responses[$key] = intval($value);
+      }
+    }
+    request()->user()->update(['responses' => json_encode($responses)]);
+    return "";
   }
 }
