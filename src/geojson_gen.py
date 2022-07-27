@@ -8,12 +8,9 @@ import random
 import numpy as np
 from skimage.measure import block_reduce
 import os
+import sys
 
-BASE_STEP_DEG = 15
-DISPLAY_SIZE_DEGS = (360, 180)
-assert all([d % BASE_STEP_DEG == 0 for d in DISPLAY_SIZE_DEGS]), "BASE_STEP_DEG must divide both display dimensions"
-ORIGIN_COORD = (-180, 90)
-COORD_ORDER = ((0, 0), (0, -1), (1, -1), (1, 0))
+from common import *
 
 
 def BASE_GEOJSON():
@@ -33,26 +30,12 @@ def BASE_POLY():
     }
 
 
-def generate_demo(demo_name='demo.npy', demo_zoom=4):
+def generate_demo(demo_name='demo.npy', demo_zoom=MAX_ZOOM):
     nx, ny = n_cells_xy(demo_zoom)
     res_counts = np.random.randint(0, 1000, (ny, nx))
     rnd_ratios = np.random.uniform(0, 1, (ny, nx))
     res_sums = np.round(rnd_ratios * res_counts)
-    contents = np.array({'properties': {'max_zoom': demo_zoom}, 'res_counts': res_counts, 'res_sums': res_sums}, dtype=object)
-    np.save('stats/%s' % demo_name, contents)
-
-
-def get_step_size_deg(zoom):
-    return BASE_STEP_DEG / (2 ** zoom)
-
-
-def n_cells_xy(zoom):
-    """
-    Returns the number of cells in (x, y) for the given zoom level
-    Intended use: to simplify iterating over the world's pixels
-    """
-    step_size = get_step_size_deg(zoom)
-    return tuple(map(lambda x: int(round(x / step_size)), DISPLAY_SIZE_DEGS))
+    save_base_data('stats/%s' % demo_name, demo_zoom, res_sums, res_counts)
 
 
 def get_bbox_from_anchor(lonlat, step_size):
@@ -150,8 +133,19 @@ def write_cells(stats_dir):
 
 
 def main():
-    bin_stats_to_zooms(stats_dir='stats')
-    write_cells(stats_dir='stats')
+    if len(sys.argv) < 2:
+        print("Insufficient arguments, needs out_dir")
+        sys.exit(1)
+
+    out_dir = sys.argv[-1]
+    if not os.path.exists(out_dir):
+        try:
+            os.makedirs(out_dir)
+        except:
+            print("Could not open or create given directory:", out_dir)
+
+    bin_stats_to_zooms(stats_dir=out_dir)
+    write_cells(stats_dir=out_dir)
 
 
 if __name__ == "__main__":

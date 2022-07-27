@@ -32,11 +32,15 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 
 ## Next steps
+* Add delete option and logout option
 * Add dummy data with IDs of existing prompts (Add dummy users to test this part of data flow)
 * Add filters based on tags (show only the cells with tag ratio in [min, max])  
 * Add location compatibility filter (cosine similarity)
+* Add captcha or cloudflare
 * Add google ads to web app  
 * Move database processing to amazon  
+* Add mobile layout
+* Improve unique keys
 Optional:
 * Add vote categories  
 * Add vote search  

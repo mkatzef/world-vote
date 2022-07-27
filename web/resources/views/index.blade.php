@@ -101,6 +101,7 @@
       <h1>Filters</h1>
       <button onclick="set_pane_mode('data_control_pane')">Back</button><br>
 
+      <!--
       <p>Demo filter:</p>
       <div class="slidecontainer">
         <input type="range" min="0" max="10" value="0" class="slider"
@@ -112,8 +113,8 @@
         <div id="doubleslider-{{ $tag->slug }}" style="width:80%"></div>
         <br>
       @endforeach
+      -->
     </div>
-
 
     <!--
       NEW
@@ -199,11 +200,14 @@
             }
         });
 
-        slider.noUiSlider.on('update', (e) => { console.log('FILTER TODO'); });
+        // TODO
+        //slider.noUiSlider.on('update', (e) => { console.log('FILTER TODO'); });
       }
+      /*
       @foreach ($tags as $tag)
         stylizeDoubleSlider("{{ $tag->slug }}");
       @endforeach
+      */
 
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
@@ -480,8 +484,6 @@
               document.getElementById('new-col').value == "") {
             e.preventDefault();
             alert("Please confirm the location for your vote");
-          } else {
-            set_pane_mode('data_control_pane');
           }
         }
       );
@@ -544,32 +546,30 @@
           colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
         }
 
-        // Slider colors
-        document.getElementById("vote-slider-bg").style["background-image"] =
-          "linear-gradient(to right, "+
-          "rgb(" + colorSteps[0].join(',') + ")," +
-          "rgb(" + colorSteps[1].join(',') + ")," +
-          "rgb(" + colorSteps[2].join(',') + "))";
-        // Visibility (note: hidden initially)
-        document.getElementById("vote-slider-bg").style.display = 'block';
-        slider = document.getElementById("vote-slider");
-        slider.style.display = 'block';
-        slider.name = prompt.id;
-        slider.value = myResponses[prompt.id] ? myResponses[prompt.id] : prompt.n_steps / 2;
-        slider.onmouseup = function () {
-          myResponses[prompt.id] = slider.value;  // Record locally since last page load
-          document.getElementById("vote-form").submit();
-        }
+        @auth
+          // Slider colors
+          document.getElementById("vote-slider-bg").style["background-image"] =
+            "linear-gradient(to right, "+
+            "rgb(" + colorSteps[0].join(',') + ")," +
+            "rgb(" + colorSteps[1].join(',') + ")," +
+            "rgb(" + colorSteps[2].join(',') + "))";
+
+          slider = document.getElementById("vote-slider");
+          // Visibility (note: hidden initially)
+          document.getElementById("vote-slider-bg").style.display = 'block';
+          slider.style.display = 'block';
+          slider.name = prompt.id;
+          slider.value = myResponses[prompt.id] ? myResponses[prompt.id] : prompt.n_steps / 2;
+          slider.onmouseup = function () {
+            myResponses[prompt.id] = slider.value;  // Record locally since last page load
+            document.getElementById("vote-form").submit();
+          }
+        @endauth
 
 
         displayStats(JSON.parse(prompt['count_ratios']), colorSteps);
-        display_map_layer("demo" + (prompt.id - 1), colorSteps);
-
         console.log("USING DEMO-");
-
-        @auth
-        // TODO: display current vote of user if applicable, set slider to autosubmit response in background
-        @endauth
+        display_map_layer("demo" + (prompt.id - 1), colorSteps);
       }
 
       @auth
