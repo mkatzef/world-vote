@@ -246,7 +246,7 @@
   		map.on('load', () => {
   			map.addSource('vote-data', {
   					'type': 'vector',
-  					'url': 'mapbox://mkatzeff.0cccfbxm'
+  					'url': 'mapbox://mkatzeff.bwytfncw'
   				});
 
   			map.addSource('clicked_loc', {
@@ -315,8 +315,12 @@
         if (activeLayerId != null) {
           map.removeLayer(activeLayerId);
         }
+        if (dataId == null) {
+          return;
+        }
         const C = colorSteps;
         activeLayerId =  'vote-layer-' + dataId;
+        dataId = activeLayerId;
         map.addLayer({
           'id': activeLayerId,
           'type': 'fill',
@@ -566,10 +570,12 @@
           }
         @endauth
 
-
         displayStats(JSON.parse(prompt['count_ratios']), colorSteps);
-        console.log("USING DEMO-");
-        display_map_layer("demo" + (prompt.id - 1), colorSteps);
+        if (prompt.is_mapped) {
+          display_map_layer("" + prompt.id, colorSteps);
+        } else {
+          display_map_layer(null);
+        }
       }
 
       @auth

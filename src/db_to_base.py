@@ -33,9 +33,13 @@ cursor.execute("SELECT slug FROM tags")
 all_tags = list([e[0] for e in cursor])
 N_TAGS = len(all_tags)
 
-cursor.execute("SELECT id FROM prompts WHERE is_mapped = 1")
-mapped_prompts = list([e[0] for e in cursor])
-N_PROMPTS = len(mapped_prompts)
+cursor.execute("SELECT id, is_mapped FROM prompts")
+all_prompts = []
+mapped_prompts = []
+for p_id, is_mapped in cursor:
+    all_prompts.append(p_id)
+    if is_mapped:
+        mapped_prompts.append(p_id)
 
 class BaseData:
     def __init__(self, p_id, n_rows=MAX_ROWS, n_cols=MAX_COLS):
@@ -43,14 +47,12 @@ class BaseData:
         self.sums = np.empty((n_rows, n_cols), dtype=float)
         self.counts = np.empty((n_rows, n_cols), dtype=float)
 
-    def as_np(self):
-        return get_base_data(MAX_ZOOM, self.sums, self.counts)
-
     def save_as(self, out_path):
-        save_base_data(out_path, MAX_ZOOM, self.sums, self.counts)
+        save_base_data(out_path, MAX_ZOOM, self.sums/VOTE_MAX_STEP, self.counts)
 
 
-base_data_dict = dict([(p_id, BaseData(p_id)) for p_id in mapped_prompts])
+map_data_dict = dict([(p_id, BaseData(p_id)) for p_id in mapped_prompts])
+counts_dict = dict([(p_id, np.zeros((VOTE_MAX_STEP+1,))) for p_id in all_prompts])
 # TODO: tags
 
 query = ("SELECT grid_row, grid_col, tags, responses FROM users")
@@ -62,12 +64,18 @@ for grid_row, grid_col, tags, responses in cursor:
     responses = json.loads(responses)  # TODO: replace with regex for performance
     for p_id, val in responses.items():
         p_id = int(p_id)
-        if p_id in base_data_dict:  # Mappable
-            base_data_dict[p_id].sums[grid_row, grid_col] += val
-            base_data_dict[p_id].counts[grid_row, grid_col] += 1
 
-for p_id, base_data in base_data_dict.items():
+        # Map data
+        if p_id in map_data_dict:
+            map_data_dict[p_id].sums[grid_row, grid_col] += val
+            map_data_dict[p_id].counts[grid_row, grid_col] += 1
+
+        counts_dict[p_id][val] += 1
+
+for p_id, base_data in map_data_dict.items():
     base_data.save_as(os.path.join(out_dir, "vote-layer-%d.npy" % p_id))
+
+np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_dict, dtype=object))
 
 cursor.close()
 cnx.close()

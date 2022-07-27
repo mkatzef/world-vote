@@ -19,9 +19,9 @@ cursor.execute("SELECT slug FROM tags")
 all_tags = list([e[0] for e in cursor])
 N_TAGS = len(all_tags)
 
-cursor.execute("SELECT id FROM prompts WHERE is_mapped = 1")
-mapped_prompts = list([e[0] for e in cursor])
-N_PROMPTS = len(mapped_prompts)
+cursor.execute("SELECT id FROM prompts")
+all_prompts = list([e[0] for e in cursor])
+N_PROMPTS = len(all_prompts)
 
 def get_sql_str(sql_parts):
     return "INSERT INTO users (%s) VALUES (%s)" % tuple([",".join([e[k] for e in sql_parts]) for k in ['db_key', 'format_spec']])
@@ -35,7 +35,7 @@ def get_rnd_tags():
 
 prompt_prob = 3 / N_PROMPTS  # Assume 1 mapped tag on average
 def get_rnd_responses():
-    return json.dumps(dict([(p, random.randint(0, 10)) for p in mapped_prompts if random.uniform(0, 1) < prompt_prob]))
+    return json.dumps(dict([(p, random.randint(0, 10)) for p in all_prompts if random.uniform(0, 1) < prompt_prob]))
 
 COUNT = 0
 sql_parts = [
@@ -57,7 +57,7 @@ def add_n_users(n, cursor, cnx, start_token=0):
         cursor.execute(sql, val)
     cnx.commit()
 
-add_n_users(0, cursor, cnx, start_token=50010)
+add_n_users(1000000, cursor, cnx, start_token=100010)
 
 cursor.close()
 cnx.close()

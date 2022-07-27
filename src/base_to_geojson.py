@@ -56,8 +56,8 @@ def get_bbox_for_cell(zoom, x, y, step_size=None):
 def bin_stats_to_zooms(stats_dir):
     for stat_filename in next(os.walk(stats_dir))[2]:
         print("File:", stat_filename, end=', ')
-        if not stat_filename.endswith('.npy'):
-            print("Skipping non .npy file:", stat_filename)
+        if not stat_filename.endswith('.npy') or stat_filename.startswith('_'):
+            print("Skipping '_' or non .npy file:", stat_filename)
             continue
 
         # For each channel, we have a high res array
@@ -68,8 +68,7 @@ def bin_stats_to_zooms(stats_dir):
         sums = base_data['res_sums']
         counts = base_data['res_counts']
 
-        threshold_count = 500  # only include results for counts > threshold_count
-        assert threshold_count > 0, "Divide by zero can occur"
+        assert THRESHOLD_COUNT > 0, "Divide by zero can occur"
         sentinel_val = -1
 
         print("max zoom:", max_zoom)
@@ -81,7 +80,7 @@ def bin_stats_to_zooms(stats_dir):
                 sums = block_reduce(sums, block_size=(2, 2), func=np.sum)
                 counts = block_reduce(counts, block_size=(2, 2), func=np.sum)
 
-            kept_indices = counts > threshold_count
+            kept_indices = counts > THRESHOLD_COUNT
             # Sums
             filtered_data = np.where(kept_indices, sums, sentinel_val)  # hide low-volume data for privacy
             # Means
