@@ -74,8 +74,10 @@
           <x-vote-slider :promptId="1" />
         </form>
         @endauth
-        <button>Wait for vote?</button>
-        <button onclick="set_pane_mode('filter_pane')">Filters</button>
+        <!--
+          <button>Wait for vote?</button>
+          <button onclick="set_pane_mode('filter_pane')">Filters</button>
+        -->
       </div>
 
       <p>Polls:</p>
@@ -129,21 +131,7 @@
           <input type="checkbox" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
         @endforeach
         <button>Submit</button>
-      </form>
-      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
-    </div>
-
-
-    <!--
-      LOGIN
-    -->
-    <div id="login_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
-      <h1>Login</h1>
-      <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
-        @csrf
-        <label for="utoken">Unique token:</label><br>
-        <input type="text" id="access_token" name="access_token">
-        <button>Submit</button>
+        <input type="checkbox" name="remember_me">Remember me on this device</input>
       </form>
       <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
@@ -165,10 +153,29 @@
           <input type="checkbox" id="checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
         @endforeach
         <button>Submit</button>
+        <input type="checkbox" name="remember_me"
+        @auth
+          {{ request()->cookie('access_token') ? 'checked' : '' }}
+        @endauth
+        >Remember me on this device</input>
       </form>
       <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
+
+    <!--
+      LOGIN
+    -->
+    <div id="login_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
+      <h1>Login</h1>
+      <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
+        @csrf
+        <label for="utoken">Unique token:</label><br>
+        <input type="text" id="access_token" name="access_token">
+        <button>Submit</button>
+      </form>
+      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
+    </div>
 
     <!--
       MAP
@@ -319,7 +326,7 @@
                               ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
                               ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
                               ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
-                              0.7
+                              0.5  // opacity
                             ]
                           ],
             'fill-outline-color': 'rgba(0,0,0,0)'

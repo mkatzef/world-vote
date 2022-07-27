@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Tag;
 use App\Models\Prompt;
 use Illuminate\Http\Request;
+use Cookie;
 
 class RegisterController extends Controller
 {
@@ -32,7 +33,12 @@ class RegisterController extends Controller
 
     auth()->login(User::create($attributes));
 
-    return redirect('/');
+    if (request()->has('remember_me')) {
+      $cookie = cookie('access_token', $attributes['access_token'], time() + (5 * 365 * 24 * 60 * 60));  // Expires in 5 years
+      return redirect('/')->withCookie($cookie);
+    } else {
+      return redirect('/');
+    }
   }
 
   public function update_responses()
@@ -45,7 +51,12 @@ class RegisterController extends Controller
       }
     }
     request()->user()->update(['responses' => json_encode($responses)]);
-    return "";
+    if (request()->has('remember_me')) {
+      $cookie = cookie('access_token', request()->user()['access_token'], time() + (5 * 365 * 24 * 60 * 60));  // Expires in 5 years
+      return response("Success")->withCookie($cookie);
+    } else {
+      return response("Success")->withoutCookie('access_token');
+    }
   }
 
   public function update_details()
@@ -67,7 +78,12 @@ class RegisterController extends Controller
     $updates['tags'] = json_encode($tags);
     auth()->user()->update($updates);
 
-    return redirect("/");
+    if (request()->has('remember_me')) {
+      $cookie = cookie('access_token', request()->user()['access_token'], time() + (5 * 365 * 24 * 60 * 60));  // Expires in 5 years
+      return redirect("/")->withCookie($cookie);
+    } else {
+      return redirect("/")->withoutCookie('access_token');
+    }
   }
 
   public function login()

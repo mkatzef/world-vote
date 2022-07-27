@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Tag;
 use App\Models\Prompt;
+use App\Models\User;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -17,6 +18,10 @@ use App\Http\Controllers\RegisterController;
 */
 
 Route::get('/', function () {
+    $value = request()->cookie('access_token');
+    if ($value) {
+      auth()->login(User::where('access_token', '=', $value)->first());
+    }
     return view('index', ['tags' => Tag::all(), 'prompts' => Prompt::all()]);
 });
 
