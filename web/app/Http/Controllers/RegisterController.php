@@ -48,10 +48,15 @@ class RegisterController extends Controller
     return "";
   }
 
-  public function update_vote()
+  public function update_details()
   {
-    $user = User::where('access_token', '=', request()->get('access_token'))->first();
-    auth()->login($user);
+    $updates = [];
+
+    // TODO
+    /*if (request()->has('grid_row') && request()->has('grid_col')) {
+      $updates['grid_row'] = request()->get('grid_row');
+      $updates['grid_col'] = request()->get('grid_col');
+    }*/
 
     $tags = [];
     foreach (Tag::all() as $t) {
@@ -59,10 +64,16 @@ class RegisterController extends Controller
          array_push($tags, $t->slug);
        }
     }
-    $user->update(['tags' => json_encode($tags)]);
+    $updates['tags'] = json_encode($tags);
+    auth()->user()->update($updates);
 
-    // TODO: If location is set, use new
-    // TODO: add delete option?
+    return redirect("/");
+  }
+
+  public function login()
+  {
+    $user = User::where('access_token', '=', request()->get('access_token'))->first();
+    auth()->login($user);
     return redirect("/");
   }
 }

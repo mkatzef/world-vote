@@ -35,10 +35,13 @@
       </div>
       <div style="float: right;">
         <button onclick="location.href='/'">About</button>
-        <button onclick="location.href='/'">Help</button>
         <button onclick="location.href='/'">FAQ</button>
-        <button onclick="button_new_vote()">New Vote</button>
-        <button onclick="button_update_vote()">Update Vote</button>
+        @auth
+          <button onclick="button_update_details()">My Details</button>
+        @else
+          <button onclick="button_login()">Returning voter</button>
+          <button onclick="button_register()">New voter</button>
+        @endauth
       </div>
     </div>
 
@@ -123,8 +126,23 @@
         <input type="number" id="new-col" name="grid_col" style="display:none">
         <label>Select any tags for your vote:</label><br>
         @foreach ($tags as $tag)
-          <input type="radio" id="{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
+          <input type="checkbox" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
         @endforeach
+        <button>Submit</button>
+      </form>
+      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
+    </div>
+
+
+    <!--
+      LOGIN
+    -->
+    <div id="login_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
+      <h1>Login</h1>
+      <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
+        @csrf
+        <label for="utoken">Unique token:</label><br>
+        <input type="text" id="access_token" name="access_token">
         <button>Submit</button>
       </form>
       <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
@@ -134,19 +152,17 @@
     <!--
       UPDATE
     -->
-    <div id="update_vote_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="update_details_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('update')">Confirm Loc</button>
-      <form id="update_vote_form" action="/update_vote" method="POST"> <!--target="form_sink">-->
+      <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
         @csrf
-        <label for="utoken">Unique token:</label><br>
-        <input type="text" id="access_token" name="access_token"><br>
         <input type="number" id="update-row" name="grid_row" style="display:none">
         <input type="number" id="update-col" name="grid_col" style="display:none">
         <label>Select any tags for your vote:</label><br>
         @foreach ($tags as $tag)
-          <input type="radio" id="{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
+          <input type="checkbox" id="checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
         @endforeach
         <button>Submit</button>
       </form>
@@ -189,7 +205,8 @@
         'data_control_pane',
         'filter_pane',
         'new_vote_pane',
-        'update_vote_pane',
+        'login_pane',
+        'update_details_pane',
       ];
       function set_pane_mode(pane_mode) {
         // disable all divs that aren't pane_mode
@@ -433,18 +450,27 @@
         tear_down_select_ui();
       }
 
-      function button_new_vote() {
+      function button_register() {
         set_pane_mode('new_vote_pane');
       }
 
-      function button_update_vote() {
-        set_pane_mode('update_vote_pane');
+      function button_login() {
+        set_pane_mode('login_pane');
+      }
+
+      function button_update_details() {
+        set_pane_mode('update_details_pane');
+
+        // Set current user tags
+        for (let i = 0; i < myTags.length; i++) {
+          document.getElementById("checkbox-" + myTags[i]).checked = true;
+        }
       }
 
       new_vote_form.addEventListener('submit',
         function (e) {
-          if (document.getElementById('new-row').value == null ||
-              document.getElementById('new-col').value == null) {
+          if (document.getElementById('new-row').value == "" ||
+              document.getElementById('new-col').value == "") {
             e.preventDefault();
             alert("Please confirm the location for your vote");
           } else {
@@ -453,7 +479,7 @@
         }
       );
 
-      update_vote_form.addEventListener('submit',
+      update_details_form.addEventListener('submit',
         function (e) {
           set_pane_mode('data_control_pane');
         }
@@ -522,9 +548,9 @@
         slider = document.getElementById("vote-slider");
         slider.style.display = 'block';
         slider.name = prompt.id;
-        slider.value = responses[prompt.id] ? responses[prompt.id] : prompt.n_steps / 2;
+        slider.value = myResponses[prompt.id] ? myResponses[prompt.id] : prompt.n_steps / 2;
         slider.onmouseup = function () {
-          responses[prompt.id] = slider.value;  // Record locally since last page load
+          myResponses[prompt.id] = slider.value;  // Record locally since last page load
           document.getElementById("vote-form").submit();
         }
 
@@ -540,9 +566,10 @@
       }
 
       @auth
-      const responses = JSON.parse({{ Js::from(auth()->user()->responses) }});
-      document.getElementById("vote-slider-bg").style.display = 'none';
-      document.getElementById("vote-slider").style.display = 'none';
+        const myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
+        const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
+        document.getElementById("vote-slider-bg").style.display = 'none';
+        document.getElementById("vote-slider").style.display = 'none';
       @endauth
   	</script>
   </body>
