@@ -22,3 +22,11 @@ tile-join -o $out_dir/$out_file $out_dir/z0*/tiles.mbtiles --force
 
 echo "Writing stats to database"
 python3 src/write_stats_to_db.py $out_dir
+
+if [ -f "access_token.txt" ]; then
+  export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
+  echo "Uploading tileset to mapbox"
+  mapbox upload mkatzeff.0cccfbxm $out_dir/$out_file
+else
+  echo "No access token found for mapbox upload"
+fi

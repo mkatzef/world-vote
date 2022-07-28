@@ -73,7 +73,7 @@ for grid_row, grid_col, tags, responses in cursor:
         counts_dict[p_id][val] += 1
 
 for p_id, base_data in map_data_dict.items():
-    base_data.save_as(os.path.join(out_dir, "vote-layer-%d.npy" % p_id))
+    base_data.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))
 
 np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_dict, dtype=object))
 

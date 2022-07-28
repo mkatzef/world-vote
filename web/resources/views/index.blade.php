@@ -34,8 +34,8 @@
         </a>
       </div>
       <div style="float: right;">
-        <button onclick="location.href='/'">About</button>
-        <button onclick="location.href='/'">FAQ</button>
+        <button onclick="set_pane_mode('pane_about')">About</button>
+        <button onclick="set_pane_mode('pane_faq')">FAQ</button>
         @auth
           <button onclick="button_update_details()">My Details</button>
         @else
@@ -52,6 +52,13 @@
   	<div id="pane_overlay" class="pane" style="background-color:#000000; visibility:visible">
     </div>
 
+    <div id="pane_about" class="pane">
+      <h1>About</h1>
+    </div>
+
+    <div id="pane_faq" class="pane">
+      <h1>FAQ</h1>
+    </div>
 
     <!--
       DATA
@@ -183,36 +190,13 @@
     -->
   	<div id="map"></div>
 
-
-    <!--
-      SCRIPT
-    -->
   	<script>
-      function stylizeDoubleSlider(sliderId) {
-        var slider = document.getElementById("doubleslider-" + sliderId);
-        noUiSlider.create(slider, {
-            start: [0, 1],
-            connect: true,
-            step: 0.1,
-            range: {
-                'min': 0,
-                'max': 1
-            }
-        });
-
-        // TODO
-        //slider.noUiSlider.on('update', (e) => { console.log('FILTER TODO'); });
-      }
-      /*
-      @foreach ($tags as $tag)
-        stylizeDoubleSlider("{{ $tag->slug }}");
-      @endforeach
-      */
-
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
       const pane_divs = [
         'pane_overlay',
+        'pane_about',
+        'pane_faq',
         'data_control_pane',
         'filter_pane',
         'new_vote_pane',
@@ -243,23 +227,23 @@
   	    map.setFog({}); // Set the default atmosphere style
   	  });
 
+      /* MAP ON LOAD */
   		map.on('load', () => {
   			map.addSource('vote-data', {
-  					'type': 'vector',
-  					'url': 'mapbox://mkatzeff.bwytfncw'
-  				});
+					'type': 'vector',
+					'url': 'mapbox://mkatzeff.2qq7dip2'
+				});
 
   			map.addSource('clicked_loc', {
-  					'type': 'geojson',
-  					'data': {
-  						'type': 'Feature',
-  						'geometry': {
-  							'type': 'Polygon',
-  							'coordinates': [[]]
-  						}
-  					}
-  				}
-  			);
+					'type': 'geojson',
+					'data': {
+						'type': 'Feature',
+						'geometry': {
+							'type': 'Polygon',
+							'coordinates': [[]]
+						}
+					}
+				});
 
   			map.addLayer({
   				'id': 'clicked_loc_layer',
@@ -276,16 +260,15 @@
   			});
 
   			map.addSource('hover_loc', {
-  					'type': 'geojson',
-  					'data': {
-  						'type': 'Feature',
-  						'geometry': {
-  							'type': 'Polygon',
-  							'coordinates': [[]]
-  						}
-  					}
-  				}
-  			);
+					'type': 'geojson',
+					'data': {
+						'type': 'Feature',
+						'geometry': {
+							'type': 'Polygon',
+							'coordinates': [[]]
+						}
+					}
+				});
 
   			map.addLayer({
   				'id': 'hover_loc_layer',
@@ -303,40 +286,45 @@
 
         set_pane_mode('data_control_pane');
   		});
+      /* END OF MAP ON LOAD */
 
+      /*
+        Mapbox's interpolation has numerical issues resulting in colors
+        [min-eps, max+eps] which causes errors in colors [0, 255]
+      */
       function SC(val) {
-        // Safe color
         return Math.max(0.1, Math.min(254.9, val));
       }
 
-  		// Interactive map components
   		var activeLayerId = null;
-  		function display_map_layer(dataId, colorSteps) {
+  		function display_mapped_prompt(promptId, colorSteps) {
         if (activeLayerId != null) {
           map.removeLayer(activeLayerId);
         }
-        if (dataId == null) {
+        if (promptId == null) {
           return;
         }
+
         const C = colorSteps;
-        activeLayerId =  'vote-layer-' + dataId;
-        dataId = activeLayerId;
+        activeLayerId = 'layer-' + promptId;
+        const dataId = 'prompt-' + promptId;
         map.addLayer({
           'id': activeLayerId,
           'type': 'fill',
           'source': 'vote-data',
           'source-layer': 'cells',
           'paint': {
-            'fill-color': [
-                            "case",
-                            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if demo0 == -1
-                            ["rgba",
-                              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
-                              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
-                              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
-                              0.5  // opacity
-                            ]
-                          ],
+            'fill-color':
+              [
+                "case",
+                ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+                ["rgba",
+                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+                  0.5  // opacity
+                ]
+              ],
             'fill-outline-color': 'rgba(0,0,0,0)'
           },
           'layout': {
@@ -345,12 +333,13 @@
         });
   		}
 
-  		function slide_func0() {
+      // FILTER COMPONENTS
+  		function demo_filter_func() {
+        // TODO: remove/replace
   			let threshold = ranger.value / 10;
   			map.setPaintProperty(
   				'vote-data-layer0',
-  				'fill-color',
-  				[
+  				'fill-color', [
   					"case",
   					[">", ["get", 'demo1'], threshold], 'rgba(0,0,0,0)',
   					["==", ["get", 'demo0'], -1], 'rgba(0,0,0,0)',
@@ -358,6 +347,25 @@
   				]
   			)
   		}
+      function stylizeDoubleSlider(sliderId) {
+        var slider = document.getElementById("doubleslider-" + sliderId);
+        noUiSlider.create(slider, {
+          start: [0, 1],
+          connect: true,
+          step: 0.1,
+          range: {
+              'min': 0,
+              'max': 1
+          }
+        });
+
+        //slider.noUiSlider.on('update', (e) => { console.log('FILTER TODO'); });
+      }
+      /*
+      foreach ($tags as $tag)
+        stylizeDoubleSlider("{{ $tag->slug }}");
+      endforeach
+      */
 
   		const maxZoom = 4;
   		const maxStepDeg = 15;
@@ -572,9 +580,9 @@
 
         displayStats(JSON.parse(prompt['count_ratios']), colorSteps);
         if (prompt.is_mapped) {
-          display_map_layer("" + prompt.id, colorSteps);
+          display_mapped_prompt(prompt.id, colorSteps);
         } else {
-          display_map_layer(null);
+          display_mapped_prompt(null);
         }
       }
 
