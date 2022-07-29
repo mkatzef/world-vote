@@ -21,6 +21,7 @@
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
       .pane { position: fixed; background-color:#AAAAAA; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100%; visibility:hidden; text-align:center } //
+      .pane-element { position: fixed; top:0px; background-color:#AAAAAA; width: 100%; height:100%; display:none; text-align:center } //
   	</style>
 
     <link href="nouislider.css" rel="stylesheet">
@@ -61,13 +62,17 @@
       </div>
     </div>
 
+
+
+    <div id="pane_container" class="pane">
+
     <!--
       OVERLAY
     -->
-  	<div id="pane_overlay" class="pane" style="background-color:#000000; visibility:visible">
+  	<div id="pane_overlay" class="pane-element" style="background-color:#000000; visibility:visible">
     </div>
 
-    <div id="pane_about" class="pane">
+    <div id="pane_about" class="pane-element">
       <div
         class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
@@ -109,7 +114,7 @@
     <!--
       DATA
     -->
-  	<div id="pane_polls" class="pane">
+  	<div id="pane_polls" class="pane-element">
       <div
         class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
@@ -169,7 +174,7 @@
     <!--
       FILTERS
     -->
-    <div id="pane_filters" class="pane" style="visibility:hidden">
+    <div id="pane_filters" class="pane-element" style="visibility:hidden">
       <h1>Filters</h1>
       <button onclick="set_pane_mode('pane_polls')">Back</button><br>
 
@@ -191,7 +196,7 @@
     <!--
       NEW
     -->
-    <div id="pane_new_user" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_new_user" class="pane-element" style="background-color:#ffffff; visibility:hidden">
       <h1>New Vote</h1>
       <button onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
         Select location
@@ -222,7 +227,7 @@
     <!--
       UPDATE
     -->
-    <div id="pane_my_details" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_my_details" class="pane-element" style="background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
       <button onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
         Select location
@@ -256,7 +261,7 @@
     <!--
       LOGIN
     -->
-    <div id="pane_login" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_login" class="pane-element" style="background-color:#ffffff; visibility:hidden">
       <h1>Login</h1>
       <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
         @csrf
@@ -274,10 +279,12 @@
       </form>
     </div>
 
+    </div>
+
     <!--
       MAP
     -->
-  	<div id="map"></div>
+    <div id="map"></div>
 
 
   	<script>
@@ -309,8 +316,10 @@
         // disable all divs that aren't pane_mode
         pane_divs.forEach((pane_id) => {
           if (pane_mode == pane_id) {
+            document.getElementById(pane_id).style.display = 'block';
             document.getElementById(pane_id).style.visibility = 'visible';
           } else {
+            document.getElementById(pane_id).style.display = 'none';
             document.getElementById(pane_id).style.visibility = 'hidden';
           }
         });
@@ -692,6 +701,29 @@
         }
       }
 
+      addEventListener('resize', optimizeLayout);
+      optimizeLayout();
+
+
+      function optimizeLayout() {
+        if (window.innerWidth < 800) {
+          document.getElementById('pane_container').style.top = "60%";
+          document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
+          document.getElementById('pane_container').style.width = "100%";
+          document.getElementById('map').style.height = "60%";
+          document.getElementById('map').style.width = "100%";
+          document.getElementById('map').style.left = "0px";
+        } else {
+          document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
+          document.getElementById('pane_container').style['margin-top'] = "0px";
+          document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
+          document.getElementById('map').style.height = "100%";
+          document.getElementById('map').style.width = "{{ 100 - $pane_width_perc }}%";
+          document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
+        }
+        map.resize();
+      }
+
       @auth
         const myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
@@ -714,4 +746,5 @@
       }
     </style>
   @endguest
+
 </html>
