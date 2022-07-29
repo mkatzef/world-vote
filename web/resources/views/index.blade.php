@@ -8,6 +8,9 @@
   <head>
   	<meta charset="utf-8">
   	<title>Display a map on a webpage</title>
+    @guest
+      <script src="https://www.google.com/recaptcha/enterprise.js?onload=onloadCallback&render=explicit"></script>
+    @endguest
   	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   	<link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
@@ -15,6 +18,17 @@
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
       .pane { position: fixed; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100%; visibility:hidden; text-align:center } //
+
+      .grecaptcha-badge {
+        width: 70px !important;
+        overflow: hidden !important;
+        transition: all 0.3s ease !important;
+        left: 4px !important;
+      }
+
+      .grecaptcha-badge:hover {
+        width: 256px !important;
+      }
   	</style>
 
     <link href="nouislider.css" rel="stylesheet">
@@ -28,12 +42,13 @@
       TITLE
     -->
     <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#000000">
-      <div style="float: left; width:{{ $pane_width_perc }}%; text-align:center">
+      <div style="float:left; width:{{ $pane_width_perc }}%; text-align:center">
         <a href="/">
           <img src="/logo.png" style="max-width:100%; max-height:{{ $title_height_px }}px"></img>
         </a>
       </div>
-      <div style="float: right;">
+
+      <div style="float:right; height:{{ $title_height_px }}px">
         <button onclick="set_pane_mode('pane_about')">About</button>
         <button onclick="set_pane_mode('pane_faq')">FAQ</button>
         @auth
@@ -45,7 +60,6 @@
       </div>
     </div>
 
-
     <!--
       OVERLAY
     -->
@@ -54,10 +68,12 @@
 
     <div id="pane_about" class="pane">
       <h1>About</h1>
+      <button onclick="set_pane_mode('data_control_pane')">Back</button>
     </div>
 
     <div id="pane_faq" class="pane">
       <h1>FAQ</h1>
+      <button onclick="set_pane_mode('data_control_pane')">Back</button>
     </div>
 
     <!--
@@ -98,6 +114,8 @@
           </button>
         @endforeach
       </div>
+
+      <div id="captcha-container"></div>
     </div>
 
 
@@ -190,7 +208,21 @@
     -->
   	<div id="map"></div>
 
+
   	<script>
+      @guest
+        var onSubmit = function(token) {
+          console.log('success!');
+        };
+
+        var onloadCallback = function() {
+          grecaptcha.enterprise.render("captcha-container", {
+            'sitekey' : '6Ld7YywhAAAAANWmsPmvbpWzGx8CKVDSNTdaMIUo',
+            'callback' : onSubmit,
+            'badge': 'inline'
+          });
+        };
+      @endguest
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
       const pane_divs = [

@@ -5,3 +5,9 @@ package-lock.json
 stats/*
 out/*
 access_token.txt
+web_uploads/*
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
