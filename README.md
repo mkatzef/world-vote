@@ -35,6 +35,7 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 * Add google ads to web app  
 
 * Add delete option and logout option
+* Automate mapbox tileId passing to aws (database or environment)
 * Add filters based on tags (show only the cells with tag ratio in [min, max])  
 * Add location compatibility filter (cosine similarity)
 * Add mobile layout

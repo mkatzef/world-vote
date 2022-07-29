@@ -328,7 +328,7 @@
   		map.on('load', () => {
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': 'mapbox://mkatzeff.2qq7dip2'
+					'url': 'mapbox://mkatzeff.d3a6sm0q'
 				});
 
   			map.addSource('clicked_loc', {
