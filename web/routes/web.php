@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Tag;
 use App\Models\Prompt;
+use App\Models\Tag;
+use App\Models\Tileset;
 use App\Models\User;
 use App\Http\Controllers\RegisterController;
 
@@ -22,7 +23,11 @@ Route::get('/', function () {
     if ($value) {
       auth()->login(User::where('access_token', '=', $value)->first());
     }
-    return view('index', ['tags' => Tag::all(), 'prompts' => Prompt::all()]);
+    return view('index', [
+      'tags' => Tag::all(),
+      'prompts' => Prompt::all(),
+      'tileset' => Tileset::where('is_active', '=', '1')->first()
+    ]);
 });
 
 Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');

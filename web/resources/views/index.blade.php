@@ -333,7 +333,7 @@
   		map.on('load', () => {
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': "mapbox://{{ config('app.mapbox_tileset_id') }}"
+					'url': "mapbox://{{ $tileset->mb_tile_id }}"
 				});
 
   			map.addSource('clicked_loc', {

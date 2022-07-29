@@ -57,8 +57,6 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
-    
-    'mapbox_tileset_id' => env('MAPBOX_TILESET_ID'),
 
     /*
     |--------------------------------------------------------------------------

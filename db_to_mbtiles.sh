@@ -28,7 +28,4 @@ if [ -f "web/.env" ]; then
   sed -i .bak 's/vote$last_upload/vote$upload_id/' web/.env
 fi
 
-echo "Setting EB env tileset to mkatzeff.vote$upload_id"
-eb setenv MAPBOX_TILESET_ID="mkatzeff.vote$upload_id"
-
-echo "Ready for package and upload!"
+echo "TODO: set as active in database"
