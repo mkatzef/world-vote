@@ -2,33 +2,25 @@
 @php
   $title_height_px = 50;
   $pane_width_perc = 25;
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
 @endphp
 
 <html>
   <head>
   	<meta charset="utf-8">
-  	<title>Display a map on a webpage</title>
+  	<title>My World Vote</title>
     @guest
-      <script src="https://www.google.com/recaptcha/enterprise.js?onload=onloadCallback&render=explicit"></script>
+      <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT"></script>
     @endguest
+    <!-- TODO: use alternative tailwind method -->
+    <script src="https://cdn.tailwindcss.com"></script>
   	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   	<link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
   	<style>
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
-      .pane { position: fixed; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100%; visibility:hidden; text-align:center } //
-
-      .grecaptcha-badge {
-        width: 70px !important;
-        overflow: hidden !important;
-        transition: all 0.3s ease !important;
-        left: 4px !important;
-      }
-
-      .grecaptcha-badge:hover {
-        width: 256px !important;
-      }
+      .pane { position: fixed; background-color:#AAAAAA; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100%; visibility:hidden; text-align:center } //
   	</style>
 
     <link href="nouislider.css" rel="stylesheet">
@@ -49,13 +41,22 @@
       </div>
 
       <div style="float:right; height:{{ $title_height_px }}px">
-        <button onclick="set_pane_mode('pane_about')">About</button>
-        <button onclick="set_pane_mode('pane_faq')">FAQ</button>
+        <button onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
+          Polls
+        </button>
+        <button onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
+          About
+        </button>
         @auth
-          <button onclick="button_update_details()">My Details</button>
+          <button onclick="button_update_details()" class="{{ $header_button_class }}">
+            My Details
+          </button>
         @else
-          <button onclick="button_login()">Returning voter</button>
-          <button onclick="button_register()">New voter</button>
+          <button onclick="button_login()" class="{{ $header_button_class }}">Returning voter</button>
+          <button onclick="button_register()"
+            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+            New voter
+          </button>
         @endauth
       </div>
     </div>
@@ -67,64 +68,105 @@
     </div>
 
     <div id="pane_about" class="pane">
-      <h1>About</h1>
-      <button onclick="set_pane_mode('data_control_pane')">Back</button>
-    </div>
-
-    <div id="pane_faq" class="pane">
-      <h1>FAQ</h1>
-      <button onclick="set_pane_mode('data_control_pane')">Back</button>
+      <div
+        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
+        <h1>About</h1>
+      </div>
+      <div
+        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
+        Social media has a tendency to focus on the extremes.
+        Here, everything is up to you &#128512;
+      </div>
+      <div
+        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
+          myworld.vote lets you express yourself along with your world
+        <ul>
+          <li>Honestly</li>
+          <li>Anonymously</li>
+          <li>Securely</li>
+        </ul>
+      </div>
+      <div
+        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
+      We created myworld.vote to:
+        <ul>
+          <li>Give everyone a voice</li>
+          <li>See how the world thinks</li>
+          <li>Make this information visible to everyone</li>
+        </ul>
+      </div>
     </div>
 
     <!--
       DATA
     -->
-  	<div id="data_control_pane" class="pane">
-      @auth
-      <p>Your unique code is: <b>{{ auth()->user()->access_token }}</b></p>
-      @endauth
-      <div style="width:100%">
-        <p id="staged-prompt-caption">Select a poll</p>
-        <p id="staged-prompt-option0" style="float:left"></p>
-        <p id="staged-prompt-option1" style="float:right"></p>
-      </div>
-
-      <div style="width:80%; margin-left:10%">
-        <div id="stats-chart" style="display:flex; width:100%; height:40px; margin-bottom:5px"></div>
+  	<div id="pane_polls" class="pane">
+      <div
+        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
         @auth
-        <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
-          @csrf
-          <x-vote-slider :promptId="1" />
-        </form>
+          <p>Your unique code is: <b>{{ auth()->user()->access_token }}</b></p>
         @endauth
-        <!--
-          <button>Wait for vote?</button>
-          <button onclick="set_pane_mode('filter_pane')">Filters</button>
-        -->
+        <div style="width:100%">
+          <p id="staged-prompt-caption">Select a poll</p>
+          <div>
+            <span id="staged-prompt-option0" style="float:left; width:50%"></span>
+            <span id="staged-prompt-option1" style="float:right; width:50%"></span>
+          </div>
+        </div>
+
+        <div style="width:80%; margin-left:10%">
+          <div id="stats-chart" style="display:flex; width:100%; height:40px; margin-bottom:5px"></div>
+          @auth
+          <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
+            @csrf
+            <x-vote-slider :promptId="1" />
+          </form>
+          @endauth
+        </div>
       </div>
 
-      <p>Polls:</p>
+      <div
+        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500 dark:text-white">
+          Polls:
+        </h5>
+      </div>
       <div style="display:flex; flex-direction:column">
         @foreach ($prompts as $prompt)
-          <button onclick="stage_prompt({{ $prompt }})" style="font-size:18pt; border-radius:10px; margin:5px; padding-top:5px; padding-bottom:5px">
-            @if($prompt->is_mapped)
-              &#127757;
-            @endif
-            {{ $prompt->caption }}
+          <button
+            onclick="stage_prompt({{ $prompt }})"
+            class="block m-1 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          >
+
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {!! $prompt->is_mapped ? "&#127757; " : "" !!}{{ $prompt->caption }}
+            </h5>
+            <p class="font-normal text-gray-700 dark:text-gray-400">
+              {{ $prompt->option0 }} OR {{ $prompt->option1 }}
+            </p>
           </button>
         @endforeach
       </div>
 
       <div id="captcha-container"></div>
+      <div id="ad-container" style="height:100%; width:100%; background:white">
+        <p>Big fat ad banner</p>
+      </div>
     </div>
 
 
     <!--
       FILTERS
     -->
-    <div id="filter_pane" class="pane" style="visibility:hidden">
+    <div id="pane_filters" class="pane" style="visibility:hidden">
       <h1>Filters</h1>
-      <button onclick="set_pane_mode('data_control_pane')">Back</button><br>
+      <button onclick="set_pane_mode('pane_polls')">Back</button><br>
 
       <!--
       <p>Demo filter:</p>
@@ -144,7 +186,7 @@
     <!--
       NEW
     -->
-    <div id="new_vote_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_new_user" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>New Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('new')">Confirm Loc</button>
@@ -152,21 +194,24 @@
         @csrf
         <input type="number" id="new-row" name="grid_row" style="display:none">
         <input type="number" id="new-col" name="grid_col" style="display:none">
-        <label>Select any tags for your vote:</label><br>
-        @foreach ($tags as $tag)
-          <input type="checkbox" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
-        @endforeach
-        <button>Submit</button>
+
+        <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Select any tags for your vote:</h3>
+        <ul class="grid gap-6 w-full md:grid-cols-2">
+          @foreach ($tags as $tag)
+            <x-tag-checkbox :tag="$tag" />
+          @endforeach
+        </ul>
+
+        <button>Submit</button><br>
         <input type="checkbox" name="remember_me">Remember me on this device</input>
       </form>
-      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
 
     <!--
       UPDATE
     -->
-    <div id="update_details_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_my_details" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
       <button onclick="start_select_location()">Select Loc</button>
       <button onclick="attach_loc_to_form('update')">Confirm Loc</button>
@@ -174,33 +219,39 @@
         @csrf
         <input type="number" id="update-row" name="grid_row" style="display:none">
         <input type="number" id="update-col" name="grid_col" style="display:none">
-        <label>Select any tags for your vote:</label><br>
-        @foreach ($tags as $tag)
-          <input type="checkbox" id="checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}">{{ $tag->name }}</input><br>
-        @endforeach
-        <button>Submit</button>
+
+        <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Select any tags for your vote:</h3>
+        <ul class="grid gap-6 w-full md:grid-cols-2">
+          @foreach ($tags as $tag)
+            <x-tag-checkbox :tag="$tag" />
+          @endforeach
+        </ul>
+
+        <button>Submit</button><br>
         <input type="checkbox" name="remember_me"
         @auth
           {{ request()->cookie('access_token') ? 'checked' : '' }}
         @endauth
         >Remember me on this device</input>
       </form>
-      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
 
     <!--
       LOGIN
     -->
-    <div id="login_pane" class="pane" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_login" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>Login</h1>
       <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
         @csrf
         <label for="utoken">Unique token:</label><br>
-        <input type="text" id="access_token" name="access_token">
+        <input
+          id="access_token"
+          name="access_token"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
         <button>Submit</button>
       </form>
-      <button onclick="set_pane_mode('data_control_pane')">Cancel</button>
     </div>
 
     <!--
@@ -211,29 +262,24 @@
 
   	<script>
       @guest
-        var onSubmit = function(token) {
-          console.log('success!');
-        };
-
-        var onloadCallback = function() {
-          grecaptcha.enterprise.render("captcha-container", {
-            'sitekey' : '6Ld7YywhAAAAANWmsPmvbpWzGx8CKVDSNTdaMIUo',
-            'callback' : onSubmit,
-            'badge': 'inline'
-          });
-        };
+      grecaptcha.enterprise.ready(function() {
+        grecaptcha.enterprise.execute('6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT', {action: 'login'}).then(function(token) {
+          // TODO: clean up through the use of CSS or captcha events (tried but explicit always gave me invalid key type)
+          // Move to captcha container
+          //captchaTimer = setInterval(moveCaptcha, 50);
+        });
+      });
       @endguest
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
       const pane_divs = [
         'pane_overlay',
         'pane_about',
-        'pane_faq',
-        'data_control_pane',
-        'filter_pane',
-        'new_vote_pane',
-        'login_pane',
-        'update_details_pane',
+        'pane_polls',
+        'pane_filters',
+        'pane_new_user',
+        'pane_login',
+        'pane_my_details',
       ];
       function set_pane_mode(pane_mode) {
         // disable all divs that aren't pane_mode
@@ -316,7 +362,7 @@
   				}
   			});
 
-        set_pane_mode('data_control_pane');
+        set_pane_mode('pane_polls');
   		});
       /* END OF MAP ON LOAD */
 
@@ -506,15 +552,15 @@
       }
 
       function button_register() {
-        set_pane_mode('new_vote_pane');
+        set_pane_mode('pane_new_user');
       }
 
       function button_login() {
-        set_pane_mode('login_pane');
+        set_pane_mode('pane_login');
       }
 
       function button_update_details() {
-        set_pane_mode('update_details_pane');
+        set_pane_mode('pane_my_details');
 
         // Set current user tags
         for (let i = 0; i < myTags.length; i++) {
@@ -534,7 +580,7 @@
 
       update_details_form.addEventListener('submit',
         function (e) {
-          set_pane_mode('data_control_pane');
+          set_pane_mode('pane_polls');
         }
       );
 
@@ -626,4 +672,18 @@
       @endauth
   	</script>
   </body>
+
+  @guest
+    <style>
+      .grecaptcha-badge {
+       width: 70px !important;
+       overflow: hidden !important;
+       transition: all 0.3s ease !important;
+       left: 4px !important;
+      }
+      .grecaptcha-badge:hover {
+       width: 256px !important;
+      }
+    </style>
+  @endguest
 </html>

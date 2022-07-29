@@ -31,9 +31,7 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 
 ## Next steps
-* Move app online
 * Move database processing to amazon  
-* Add captcha or cloudflare
 * Add google ads to web app  
 
 * Add delete option and logout option
