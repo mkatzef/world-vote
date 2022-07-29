@@ -6,6 +6,8 @@ stats/*
 out/*
 access_token.txt
 web_uploads/*
+*.env
+*.env-*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
