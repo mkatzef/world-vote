@@ -69,18 +69,18 @@
 
     <div id="pane_about" class="pane">
       <div
-        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
         <h1>About</h1>
       </div>
       <div
-        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
         Social media has a tendency to focus on the extremes.
         Here, everything is up to you &#128512;
       </div>
       <div
-        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
           myworld.vote lets you express yourself along with your world
         <ul>
@@ -90,7 +90,7 @@
         </ul>
       </div>
       <div
-        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
       We created myworld.vote to:
         <ul>
@@ -106,7 +106,7 @@
     -->
   	<div id="pane_polls" class="pane">
       <div
-        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
         @auth
           <p>Your unique code is: <b>{{ auth()->user()->access_token }}</b></p>
@@ -131,7 +131,7 @@
       </div>
 
       <div
-        class="block m-1 mt-5 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500 dark:text-white">
           Polls:
@@ -141,7 +141,7 @@
         @foreach ($prompts as $prompt)
           <button
             onclick="stage_prompt({{ $prompt }})"
-            class="block m-1 p-2 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+            class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
           >
 
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -188,8 +188,10 @@
     -->
     <div id="pane_new_user" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>New Vote</h1>
-      <button onclick="start_select_location()">Select Loc</button>
-      <button onclick="attach_loc_to_form('new')">Confirm Loc</button>
+      <button onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
+        Select location
+      </button>
+
       <form id="new_vote_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
         @csrf
         <input type="number" id="new-row" name="grid_row" style="display:none">
@@ -198,11 +200,15 @@
         <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Select any tags for your vote:</h3>
         <ul class="grid gap-6 w-full md:grid-cols-2">
           @foreach ($tags as $tag)
-            <x-tag-checkbox :tag="$tag" />
+            <x-tag-checkbox :tag="$tag" prefix="new"/>
           @endforeach
         </ul>
 
-        <button>Submit</button><br>
+        <button
+          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+        >
+          Submit
+        </button><br>
         <input type="checkbox" name="remember_me">Remember me on this device</input>
       </form>
     </div>
@@ -213,8 +219,9 @@
     -->
     <div id="pane_my_details" class="pane" style="background-color:#ffffff; visibility:hidden">
       <h1>Update Vote</h1>
-      <button onclick="start_select_location()">Select Loc</button>
-      <button onclick="attach_loc_to_form('update')">Confirm Loc</button>
+      <button onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
+        Select location
+      </button><br>
       <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
         @csrf
         <input type="number" id="update-row" name="grid_row" style="display:none">
@@ -223,11 +230,15 @@
         <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Select any tags for your vote:</h3>
         <ul class="grid gap-6 w-full md:grid-cols-2">
           @foreach ($tags as $tag)
-            <x-tag-checkbox :tag="$tag" />
+            <x-tag-checkbox :tag="$tag" prefix="update"/>
           @endforeach
         </ul>
 
-        <button>Submit</button><br>
+        <button
+          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+        >
+          Submit
+        </button><br>
         <input type="checkbox" name="remember_me"
         @auth
           {{ request()->cookie('access_token') ? 'checked' : '' }}
@@ -250,7 +261,11 @@
           name="access_token"
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
-        <button>Submit</button>
+        <button
+          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+        >
+          Submit
+        </button>
       </form>
     </div>
 
@@ -282,6 +297,10 @@
         'pane_my_details',
       ];
       function set_pane_mode(pane_mode) {
+        // Remove all map elements
+        tear_down_select_ui();
+        display_mapped_prompt(null);
+
         // disable all divs that aren't pane_mode
         pane_divs.forEach((pane_id) => {
           if (pane_mode == pane_id) {
@@ -509,47 +528,51 @@
   			});
   		}
 
-      var selected_xy = null;
-  		function handler_clicked_cell(e) {
+      function handler_clicked_cell_wrapper(form_prefix) {
+        return (e) => { handler_clicked_cell(form_prefix, e) };
+      }
+
+  		function handler_clicked_cell(form_prefix, e) {
+        console.log("Handled");
+        console.log(form_prefix);
+        console.log(e);
   			selected_xy = get_xy(e.lngLat, maxZoom);
   			display_clicked_cell(e.lngLat);
+
+        console.log(selected_xy[0]);
+        console.log(selected_xy[1]);
+        document.getElementById(form_prefix + '-col').value = selected_xy[0];
+        document.getElementById(form_prefix + '-row').value = selected_xy[1];
   		}
 
   		function handler_hover_cell(e) {
   			display_hover_cell(e.lngLat);
   		}
 
-  		function set_up_select_ui() {
+      var currentHoverHandler = null;
+      var currentClickHandler = null;
+  		function set_up_select_ui(form_prefix) {
+        tear_down_select_ui();  // remove any existing elements
   			map.setLayoutProperty('clicked_loc_layer', 'visibility', 'visible');
   			map.setLayoutProperty('hover_loc_layer', 'visibility', 'visible');
-  			map.on('mousemove', handler_hover_cell);
-  			map.on('click', handler_clicked_cell);
+  			currentHoverHandler = handler_hover_cell;
+        map.on('mousemove', handler_hover_cell);
+        currentClickHandler = handler_clicked_cell_wrapper(form_prefix);
+  			map.on('click', currentClickHandler);
   		}
 
   		function tear_down_select_ui() {
-  			map.off('mousemove', handler_hover_cell);
-  			map.off('click', handler_clicked_cell);
-  			map.setLayoutProperty('clicked_loc_layer', 'visibility', 'none');
-  			map.setLayoutProperty('hover_loc_layer', 'visibility', 'none');
-  		}
-
-      function start_select_location() {
-  				set_up_select_ui();
-  		}
-
-      function attach_loc_to_form(form_prefix) {
-        if (selected_xy == null) {
-          alert("Please select a location on the map");
-        } else {
-          document.getElementById(form_prefix + '-col').value = selected_xy[0];
-          document.getElementById(form_prefix + '-row').value = selected_xy[1];
-          tear_down_select_ui();
+        if (currentHoverHandler != null) {
+          map.off('mousemove', currentHoverHandler);
+          map.setLayoutProperty('hover_loc_layer', 'visibility', 'none');
+          currentHoverHandler = null;
         }
-      }
-
-      function end_select_location() {
-        tear_down_select_ui();
-      }
+        if (currentClickHandler != null) {
+          map.off('click', currentClickHandler);
+          map.setLayoutProperty('clicked_loc_layer', 'visibility', 'none');
+          currentClickHandler = null;
+        }
+  		}
 
       function button_register() {
         set_pane_mode('pane_new_user');
@@ -564,7 +587,7 @@
 
         // Set current user tags
         for (let i = 0; i < myTags.length; i++) {
-          document.getElementById("checkbox-" + myTags[i]).checked = true;
+          document.getElementById("update-checkbox-" + myTags[i]).checked = true;
         }
       }
 

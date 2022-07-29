@@ -63,11 +63,12 @@ class RegisterController extends Controller
   {
     $updates = [];
 
-    // TODO
-    /*if (request()->has('grid_row') && request()->has('grid_col')) {
-      $updates['grid_row'] = request()->get('grid_row');
-      $updates['grid_col'] = request()->get('grid_col');
-    }*/
+    $gr = request()->get('grid_row');
+    $gc = request()->get('grid_col');
+    if ($gr && $gc) {
+      $updates['grid_row'] = $gr;
+      $updates['grid_col'] = $gc;
+    }
 
     $tags = [];
     foreach (Tag::all() as $t) {
