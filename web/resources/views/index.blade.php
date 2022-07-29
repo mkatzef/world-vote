@@ -99,6 +99,11 @@
           <li>Make this information visible to everyone</li>
         </ul>
       </div>
+      <div
+        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+      >
+        Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u>
+      </div>
     </div>
 
     <!--
@@ -156,7 +161,7 @@
 
       <div id="captcha-container"></div>
       <div id="ad-container" style="height:100%; width:100%; background:white">
-        <p>Big fat ad banner</p>
+        <p>Big fat advertisement</p>
       </div>
     </div>
 
@@ -328,7 +333,7 @@
   		map.on('load', () => {
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': 'mapbox://mkatzeff.d3a6sm0q'
+					'url': "mapbox://{{ config('app.mapbox_tileset_id') }}"
 				});
 
   			map.addSource('clicked_loc', {

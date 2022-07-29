@@ -33,6 +33,7 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 ## Next steps
 * Move database processing to amazon  
 * Add google ads to web app  
+* Setup https
 
 * Add delete option and logout option
 * Automate mapbox tileId passing to aws (database or environment)
