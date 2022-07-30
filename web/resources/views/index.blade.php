@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 @php
-  $title_height_px = 35;
+  $title_height_px = 45;
   $pane_width_perc = 25;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-0 px-2 border border-orange-500 hover:border-transparent rounded"
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
 @endphp
 
 <html>
@@ -53,10 +53,9 @@
             My Details
           </button>
         @else
-          <button onclick="button_login()" class="{{ $header_button_class }}">Returning voter</button>
           <button onclick="button_register()"
-            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-0 px-2 border border-orange-700 rounded">
-            New voter
+            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+            Vote!
           </button>
         @endauth
       </div>
@@ -198,8 +197,15 @@
       NEW
     -->
     <div id="pane_new_user" class="paneElement">
-      <h1>New Vote</h1>
-      <button onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
+      <h1>Returning user</h1>
+      <button onclick="set_pane_mode('pane_login')" class="{{ $header_button_class }}">
+        Login
+      </button>
+
+      <h1>OR</h1>
+
+      <h2>New user</h2>
+      <button id="new_location_button" onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
         Select location
       </button>
 
@@ -230,7 +236,7 @@
     -->
     <div id="pane_my_details" class="paneElement">
       <h1>Update Vote</h1>
-      <button onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
+      <button id="update_location_button" onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
         Select location
       </button><br>
       <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
@@ -278,6 +284,9 @@
           Submit
         </button>
       </form>
+      <button onclick="set_pane_mode('pane_new_user')" class="{{ $header_button_class }}">
+        Back
+      </button>
     </div>
 
     </div>
@@ -418,7 +427,31 @@
   				}
   			});
 
+        @auth
+        map.addSource('my_loc', {
+					'type': 'geojson',
+					'data': {
+						'type': 'Feature',
+						'geometry': {
+							'type': 'Polygon',
+							'coordinates': [[]]
+						}
+					}
+				});
+        map.addLayer({
+          'id': 'my_loc_layer',
+          'type': 'line',
+          'source': 'my_loc',
+          'layout': {},
+          'paint': {
+            'line-color': '#000000',
+            'line-opacity': 0.5
+          }
+        });
+        @endauth
+
         set_pane_mode('pane_polls');
+        displayLoc();
   		});
       /* END OF MAP ON LOAD */
 
@@ -513,33 +546,63 @@
   			return [col, row];
   		}
 
-  		/*
+      /*
   		Returns array of coords for the cell containing the given lngLat at the
   		given zoom level.
   		Note: only valid for zooms in [0, maxZoom]
   		*/
-  		function get_cell_coords(lngLat, zoom) {
-  			const zStep = zSteps[zoom];
+      function get_cell_coords_xy(xy, zoom) {
+        const zStep = zSteps[zoom];
+        const col = xy[0];
+        const row = xy[1];
+        const anc_lat = oLat + zStep * row;
+        const anc_lng = oLng + zStep * col;
+        return [
+          [anc_lng, anc_lat],
+          [anc_lng + zStep, anc_lat],
+          [anc_lng + zStep, anc_lat + zStep],
+          [anc_lng, anc_lat + zStep],
+          [anc_lng, anc_lat],
+        ];
+      }
+
+  		function get_cell_coords_lnglat(lngLat, zoom) {
   			const xy = get_xy(lngLat, zoom);
-  			const col = xy[0];
-  			const row = xy[1];
-  			const anc_lat = oLat + zStep * row;
-  			const anc_lng = oLng + zStep * col;
-  			return [
-  				[anc_lng, anc_lat],
-  				[anc_lng + zStep, anc_lat],
-  				[anc_lng + zStep, anc_lat + zStep],
-  				[anc_lng, anc_lat + zStep],
-  				[anc_lng, anc_lat],
-  			];
+        return get_cell_coords_xy(xy, zoom);
   		}
+
+      @auth
+        var lastZoomChange = null;
+        function displayLoc() {
+          var zoom = Math.min(Math.floor(map.getZoom()), maxZoom);
+          if (lastZoomChange != null && zoom == lastZoomChange) {
+            return;
+          }
+          lastZoomChange = zoom;
+          map.getSource('my_loc').setData({
+    				'type': 'Feature',
+    				'geometry': {
+    					'type': 'Polygon',
+    					'coordinates': [
+                get_cell_coords_xy([
+                  Math.floor(myCol / Math.pow(2, maxZoom - zoom)),
+                  Math.floor(myRow / Math.pow(2, maxZoom - zoom))
+                ], zoom)
+              ]
+    				}
+    			});
+        }
+
+        map.on('zoom', (e) => { displayLoc() });
+      @endauth
+
 
   		function display_clicked_cell(lngLat) {
   			map.getSource('clicked_loc').setData({
   				'type': 'Feature',
   				'geometry': {
   					'type': 'Polygon',
-  					'coordinates': [get_cell_coords(lngLat, maxZoom)]
+  					'coordinates': [get_cell_coords_lnglat(lngLat, maxZoom)]
   				}
   			});
 
@@ -554,7 +617,7 @@
   					'type': 'Feature',
   					'geometry': {
   						'type': 'Polygon',
-  						'coordinates': [get_cell_coords(lngLat, i)]
+  						'coordinates': [get_cell_coords_lnglat(lngLat, i)]
   					}
   				}
   			}
@@ -569,15 +632,12 @@
         return (e) => { handler_clicked_cell(form_prefix, e) };
       }
 
+      const locDoneText = "✅ Done!";
   		function handler_clicked_cell(form_prefix, e) {
-        console.log("Handled");
-        console.log(form_prefix);
-        console.log(e);
   			selected_xy = get_xy(e.lngLat, maxZoom);
   			display_clicked_cell(e.lngLat);
 
-        console.log(selected_xy[0]);
-        console.log(selected_xy[1]);
+        document.getElementById(form_prefix + "_location_button").innerText = locDoneText;
         document.getElementById(form_prefix + '-col').value = selected_xy[0];
         document.getElementById(form_prefix + '-row').value = selected_xy[1];
   		}
@@ -590,6 +650,10 @@
       var currentClickHandler = null;
   		function set_up_select_ui(form_prefix) {
         tear_down_select_ui();  // remove any existing elements
+        button = document.getElementById(form_prefix + "_location_button");
+        if (button.innerText != locDoneText) {
+          document.getElementById(form_prefix + "_location_button").innerText = "🌎 Selecting";
+        }
   			map.setLayoutProperty('clicked_loc_layer', 'visibility', 'visible');
   			map.setLayoutProperty('hover_loc_layer', 'visibility', 'visible');
   			currentHoverHandler = handler_hover_cell;
@@ -613,10 +677,6 @@
 
       function button_register() {
         set_pane_mode('pane_new_user');
-      }
-
-      function button_login() {
-        set_pane_mode('pane_login');
       }
 
       function button_update_details() {
@@ -727,6 +787,8 @@
       @auth
         const myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
+        const myRow = {{ auth()->user()->grid_row }};
+        const myCol = {{ auth()->user()->grid_col }};
         document.getElementById("vote-slider-bg").style.display = 'none';
         document.getElementById("vote-slider").style.display = 'none';
       @endauth
