@@ -156,11 +156,9 @@
     -->
   	<div id="pane_polls" class="paneElement">
       <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        style="height:25%; min-height:150px"
       >
-        @auth
-          <p>Your unique code is: <b>{{ auth()->user()->access_token }}</b></p>
-        @endauth
         <div style="width:100%">
           <p id="staged-prompt-caption">Select a poll</p>
           <div>
@@ -176,38 +174,48 @@
             @csrf
             <x-vote-slider :promptId="1" />
           </form>
-          <p id="vote_status_msg"></p>
+          <!--<p id="vote_status_msg"></p>-->
           @endauth
         </div>
       </div>
 
-      <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-      >
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500 dark:text-white">
-          Polls:
-        </h5>
-      </div>
-      <div style="display:flex; flex-direction:column">
-        @foreach ($prompts as $prompt)
-          <button
-            onclick="stage_prompt({{ $prompt }})"
-            class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
-          >
+      <div style="height:calc(75% - 120px); overflow-y:scroll">
+        <div
+          class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+        >
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500 dark:text-white">
+            Polls:
+          </h5>
+        </div>
+        <div style="display:flex; flex-direction:column; overflow-y:scroll">
+          @foreach ($prompts as $prompt)
+            <button
+              onclick="stage_prompt({{ $prompt }})"
+              class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+            >
 
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {!! $prompt->is_mapped ? "&#127757; " : "" !!}{{ $prompt->caption }}
-            </h5>
-            <p class="font-normal text-gray-700 dark:text-gray-400">
-              {{ $prompt->option0 }} OR {{ $prompt->option1 }}
-            </p>
-          </button>
-        @endforeach
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                {!! $prompt->is_mapped ? "&#127757; " : "" !!}{{ $prompt->caption }}
+              </h5>
+              <p class="font-normal text-gray-700 dark:text-gray-400">
+                {{ $prompt->option0 }} OR {{ $prompt->option1 }}
+              </p>
+            </button>
+          @endforeach
+        </div>
+
       </div>
 
-      <div id="captcha-container"></div>
-      <div id="ad-container" style="top:0px; min-height:50px; bottom:0px; width:100%; background:white">
-        <p>Big fat advertisement</p>
+      <div style="height:100px">
+        <div id="captcha-container"></div>
+        @auth
+          <div style="position:absolute; bottom:50px">
+            <p>Your login token is: <b>{{ auth()->user()->access_token }}</b></p>
+          </div>
+        @endauth
+        <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
+          <p>Big fat advertisement</p>
+        </div>
       </div>
     </div>
 
@@ -313,7 +321,7 @@
       <h1>Login</h1>
       <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
         @csrf
-        <label for="utoken">Unique token:</label><br>
+        <label for="utoken">Login token:</label><br>
         <input
           id="access_token"
           name="access_token"
@@ -810,10 +818,10 @@
         var voteSliderStyle = document.querySelector('[data="test"]');
         if (wasSubmitted) {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');} .slider::-moz-range-thumb {background:url('/tick.png');}";
-          vote_status_msg.innerHTML = "Saved";
+          //vote_status_msg.innerHTML = "Saved";
         } else {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');} .slider::-moz-range-thumb {background:url('/arrows.png');}";
-          vote_status_msg.innerHTML = "Not saved";
+          //vote_status_msg.innerHTML = "Not saved";
         }
       }
 
@@ -857,7 +865,6 @@
           var startVoteSelect = function () {
             setVoteStatus(false);
           }
-
 
           if (!isTouchDevice) {
             slider.onmousedown = startVoteSelect;
