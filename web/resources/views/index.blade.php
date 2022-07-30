@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 @php
-  $title_height_px = 50;
+  $title_height_px = 35;
   $pane_width_perc = 25;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-0 px-2 border border-orange-500 hover:border-transparent rounded"
 @endphp
 
 <html>
@@ -20,8 +20,8 @@
   	<style>
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
-      .pane { position: fixed; background-color:#AAAAAA; top: {{ $title_height_px }}px; width: {{ $pane_width_perc }}%; height:100%; visibility:hidden; text-align:center } //
-      .pane-element { position: fixed; top:0px; background-color:#AAAAAA; width: 100%; height:100%; display:none; text-align:center } //
+      .pane { position:fixed; overflow-y:scroll; background-color:#AAAAAA; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
+      .paneElement { position:fixed; top:0px; overflow-y:auto; width: 100%; height:100%; text-align:center } //
   	</style>
 
     <link href="nouislider.css" rel="stylesheet">
@@ -55,7 +55,7 @@
         @else
           <button onclick="button_login()" class="{{ $header_button_class }}">Returning voter</button>
           <button onclick="button_register()"
-            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-0 px-2 border border-orange-700 rounded">
             New voter
           </button>
         @endauth
@@ -69,10 +69,11 @@
     <!--
       OVERLAY
     -->
-  	<div id="pane_overlay" class="pane-element" style="background-color:#000000; visibility:visible">
+  	<div id="pane_overlay" style="position:absolute;width:100%;height:100%;background-color:#000000">
+      <p style="color:#FFFFFF">Loading, please wait!</p>
     </div>
 
-    <div id="pane_about" class="pane-element">
+    <div id="pane_about" class="paneElement">
       <div
         class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
@@ -114,7 +115,7 @@
     <!--
       DATA
     -->
-  	<div id="pane_polls" class="pane-element">
+  	<div id="pane_polls" class="paneElement">
       <div
         class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
       >
@@ -165,7 +166,7 @@
       </div>
 
       <div id="captcha-container"></div>
-      <div id="ad-container" style="height:100%; width:100%; background:white">
+      <div id="ad-container" style="top:0px; min-height:50px; bottom:0px; width:100%; background:white">
         <p>Big fat advertisement</p>
       </div>
     </div>
@@ -174,7 +175,7 @@
     <!--
       FILTERS
     -->
-    <div id="pane_filters" class="pane-element" style="visibility:hidden">
+    <div id="pane_filters" class="paneElement" style="visibility:hidden">
       <h1>Filters</h1>
       <button onclick="set_pane_mode('pane_polls')">Back</button><br>
 
@@ -196,7 +197,7 @@
     <!--
       NEW
     -->
-    <div id="pane_new_user" class="pane-element" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_new_user" class="paneElement">
       <h1>New Vote</h1>
       <button onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
         Select location
@@ -227,7 +228,7 @@
     <!--
       UPDATE
     -->
-    <div id="pane_my_details" class="pane-element" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_my_details" class="paneElement">
       <h1>Update Vote</h1>
       <button onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
         Select location
@@ -261,7 +262,7 @@
     <!--
       LOGIN
     -->
-    <div id="pane_login" class="pane-element" style="background-color:#ffffff; visibility:hidden">
+    <div id="pane_login" class="paneElement">
       <h1>Login</h1>
       <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
         @csrf
@@ -291,39 +292,11 @@
       @guest
       grecaptcha.enterprise.ready(function() {
         grecaptcha.enterprise.execute('6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT', {action: 'login'}).then(function(token) {
-          // TODO: clean up through the use of CSS or captcha events (tried but explicit always gave me invalid key type)
-          // Move to captcha container
-          //captchaTimer = setInterval(moveCaptcha, 50);
+          // TODO: connect with user actions!
         });
       });
       @endguest
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
-
-      const pane_divs = [
-        'pane_overlay',
-        'pane_about',
-        'pane_polls',
-        'pane_filters',
-        'pane_new_user',
-        'pane_login',
-        'pane_my_details',
-      ];
-      function set_pane_mode(pane_mode) {
-        // Remove all map elements
-        tear_down_select_ui();
-        display_mapped_prompt(null);
-
-        // disable all divs that aren't pane_mode
-        pane_divs.forEach((pane_id) => {
-          if (pane_mode == pane_id) {
-            document.getElementById(pane_id).style.display = 'block';
-            document.getElementById(pane_id).style.visibility = 'visible';
-          } else {
-            document.getElementById(pane_id).style.display = 'none';
-            document.getElementById(pane_id).style.visibility = 'hidden';
-          }
-        });
-      }
 
       const map = new mapboxgl.Map({
   	    container: 'map', // container ID
@@ -333,6 +306,56 @@
   	    projection: 'globe', // Alternative: 'mercator'
   			maxZoom: 6
   	  });
+
+      /* Page layout */
+      const pane_divs = [
+        'pane_overlay',
+        'pane_about',
+        'pane_polls',
+        'pane_filters',
+        'pane_new_user',
+        'pane_login',
+        'pane_my_details',
+      ];
+
+      function set_pane_mode(pane_mode) {
+        // Remove all map elements
+        tear_down_select_ui();
+        display_mapped_prompt(null);
+
+        // disable all divs that aren't pane_mode
+        pane_divs.forEach((pane_id) => {
+          if (pane_mode == pane_id) {
+            document.getElementById(pane_id).style.display = 'inline';
+          } else {
+            document.getElementById(pane_id).style.display = 'none';
+          }
+        });
+      }
+
+      function optimizeLayout() {
+        if (window.innerWidth < 800) {
+          document.getElementById('pane_container').style.top = "40%";
+          document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
+          document.getElementById('pane_container').style.width = "100%";
+          document.getElementById('map').style.height = "40%";
+          document.getElementById('map').style.width = "100%";
+          document.getElementById('map').style.left = "0px";
+        } else {
+          document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
+          document.getElementById('pane_container').style['margin-top'] = "0px";
+          document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
+          document.getElementById('map').style.height = "";
+          document.getElementById('map').style.width = "{{ 100 - $pane_width_perc }}%";
+          document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
+        }
+        map.resize();
+      }
+
+      addEventListener('resize', optimizeLayout);
+      optimizeLayout();
+      /* End of page layout */
+
 
   	  map.on('style.load', () => {
   	    map.setFog({}); // Set the default atmosphere style
@@ -699,29 +722,6 @@
         } else {
           display_mapped_prompt(null);
         }
-      }
-
-      addEventListener('resize', optimizeLayout);
-      optimizeLayout();
-
-
-      function optimizeLayout() {
-        if (window.innerWidth < 800) {
-          document.getElementById('pane_container').style.top = "60%";
-          document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
-          document.getElementById('pane_container').style.width = "100%";
-          document.getElementById('map').style.height = "60%";
-          document.getElementById('map').style.width = "100%";
-          document.getElementById('map').style.left = "0px";
-        } else {
-          document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
-          document.getElementById('pane_container').style['margin-top'] = "0px";
-          document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
-          document.getElementById('map').style.height = "100%";
-          document.getElementById('map').style.width = "{{ 100 - $pane_width_perc }}%";
-          document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
-        }
-        map.resize();
       }
 
       @auth
