@@ -32,7 +32,7 @@
       appearance: none;
       width: 25px; /* Set a specific slider handle width */
       height: 25px; /* Slider handle height */
-      background: #000000; /* Green background */
+      background: url('/arrows.png');
       cursor: pointer; /* Cursor on hover */
     }
 

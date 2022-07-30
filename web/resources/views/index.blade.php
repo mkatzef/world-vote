@@ -524,6 +524,7 @@
           map.removeLayer(activeLayerId);
         }
         if (promptId == null) {
+          activeLayerId = null;
           return;
         }
 
@@ -779,7 +780,7 @@
           var color = colorLerp(i / n_intervals, barColors);
           var bar = document.createElement("div");
           bar.style = "background-color: rgb("+ color.join(',') +");" +
-            "border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:" + 100*data[i] + "%; align-self:flex-end";
+            "border-top: 1px solid #aaaaaa; border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:" + 100*data[i] + "%; align-self:flex-end";
 
           bar_container.appendChild(bar);
           canvas.appendChild(bar_container);
@@ -800,6 +801,15 @@
           Math.round(rgb1[1] * w1 + rgb2[1] * w2),
           Math.round(rgb1[2] * w1 + rgb2[2] * w2),
         ];
+      }
+
+      function setVoteStatus(wasSubmitted=false) {
+        var voteSliderStyle = document.querySelector('[data="test"]');
+        if (wasSubmitted) {
+          voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');}";
+        } else {
+          voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');}";
+        }
       }
 
       function stage_prompt(prompt) {
@@ -824,10 +834,20 @@
           document.getElementById("vote-slider-bg").style.display = 'block';
           slider.style.display = 'block';
           slider.name = prompt.id;
-          slider.value = myResponses[prompt.id] ? myResponses[prompt.id] : prompt.n_steps / 2;
+          if (myResponses[prompt.id]) {
+            slider.value = myResponses[prompt.id];
+            setVoteStatus(true);
+          } else {
+            slider.value = prompt.n_steps / 2
+            setVoteStatus(false);
+          }
+          slider.onmousedown = function () {
+            setVoteStatus(false);
+          }
           slider.onmouseup = function () {
             myResponses[prompt.id] = slider.value;  // Record locally since last page load
             document.getElementById("vote-form").submit();
+            setVoteStatus(true);
           }
         @endauth
 
@@ -863,5 +883,8 @@
       }
     </style>
   @endguest
+
+  <style data="test" type="text/css">
+  </style>
 
 </html>
