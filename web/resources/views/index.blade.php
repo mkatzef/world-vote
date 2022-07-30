@@ -176,6 +176,7 @@
             @csrf
             <x-vote-slider :promptId="1" />
           </form>
+          <p id="vote_status_msg"></p>
           @endauth
         </div>
       </div>
@@ -506,7 +507,9 @@
         @endauth
 
         set_pane_mode('pane_polls');
-        displayLoc();
+        @auth
+          displayLoc();
+        @endauth
   		});
       /* END OF MAP ON LOAD */
 
@@ -806,12 +809,15 @@
       function setVoteStatus(wasSubmitted=false) {
         var voteSliderStyle = document.querySelector('[data="test"]');
         if (wasSubmitted) {
-          voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');}";
+          voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');} .slider::-moz-range-thumb {background:url('/tick.png');}";
+          vote_status_msg.innerHTML = "Saved";
         } else {
-          voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');}";
+          voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');} .slider::-moz-range-thumb {background:url('/arrows.png');}";
+          vote_status_msg.innerHTML = "Not saved";
         }
       }
 
+      var isTouchDevice = false;  // assume not touch, but change after first touch
       function stage_prompt(prompt) {
         document.getElementById("staged-prompt-caption").innerText = prompt['caption'];
         document.getElementById("staged-prompt-option0").innerText = prompt['option0'];
@@ -838,16 +844,42 @@
             slider.value = myResponses[prompt.id];
             setVoteStatus(true);
           } else {
-            slider.value = prompt.n_steps / 2
+            slider.value = prompt.n_steps / 2;
             setVoteStatus(false);
           }
-          slider.onmousedown = function () {
-            setVoteStatus(false);
-          }
-          slider.onmouseup = function () {
+
+          var endVoteSelect = function () {
             myResponses[prompt.id] = slider.value;  // Record locally since last page load
             document.getElementById("vote-form").submit();
             setVoteStatus(true);
+          }
+
+          var startVoteSelect = function () {
+            setVoteStatus(false);
+          }
+
+
+          if (!isTouchDevice) {
+            slider.onmousedown = startVoteSelect;
+            slider.onmouseup = endVoteSelect;
+          }
+
+          slider.ontouchstart = function () {
+            if (!isTouchDevice) {
+              slider.onmousedown = () => {};
+              slider.onmouseup = () => {};
+              isTouchDevice = true;
+            }
+            startVoteSelect();
+          }
+
+          slider.ontouchend = function () {
+            if (!isTouchDevice) {
+              slider.onmousedown = () => {};
+              slider.onmouseup = () => {};
+              isTouchDevice = true;
+            }
+            endVoteSelect();
           }
         @endauth
 
@@ -860,7 +892,7 @@
       }
 
       @auth
-        const myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
+        var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
         const myRow = {{ auth()->user()->grid_row }};
         const myCol = {{ auth()->user()->grid_col }};
