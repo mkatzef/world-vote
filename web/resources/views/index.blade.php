@@ -20,6 +20,17 @@
   	<style>
   		body { margin: 0; padding: 0; }
   		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
+      #navOverlay {
+        position: fixed; /* Sit on top of the page content */
+        display: none; /* Hidden by default */
+        width: 100%; /* Full width (cover the whole page) */
+        top: {{ $title_height_px }}px;
+        left: 0;
+        right: 0;
+        background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+        z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+        cursor: pointer; /* Add a pointer on hover */
+      }
       .pane { position:fixed; overflow-y:scroll; background-color:#AAAAAA; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
       .paneElement { position:fixed; top:0px; overflow-y:auto; width: 100%; height:100%; text-align:center } //
   	</style>
@@ -35,33 +46,62 @@
       TITLE
     -->
     <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#000000">
-      <div style="float:left; width:{{ $pane_width_perc }}%; text-align:center">
+      <div style="float:left;max-width:70%;">
         <a href="/">
-          <img src="/logo.png" style="max-width:100%; max-height:{{ $title_height_px }}px"></img>
+          <img src="/logo.png" style="height:{{ $title_height_px }}px"></img>
         </a>
       </div>
 
-      <div style="float:right; height:{{ $title_height_px }}px">
-        <button onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
-          Polls
-        </button>
-        <button onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
-          About
-        </button>
-        @auth
-          <button onclick="button_update_details()" class="{{ $header_button_class }}">
-            My Details
+
+
+      <div style="float:right">
+        <a id="hammy" href="javascript:void(0)" onclick="hamburgerOpen()" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; width:50px">
+          <div class="space-y-2">
+            <div class="w-8 h-0.5" style="background-color:white"></div>
+            <div class="w-8 h-0.5" style="background-color:white"></div>
+            <div class="w-8 h-0.5" style="background-color:white"></div>
+          </div>
+        </a>
+
+        <div id="title_buttons" style="display:none">
+          <button onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
+            Polls
           </button>
-        @else
-          <button onclick="button_register()"
-            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
-            Vote!
+          <button onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
+            About
           </button>
-        @endauth
+          @auth
+            <button onclick="button_update_details()" class="{{ $header_button_class }}">
+              My Details
+            </button>
+          @else
+            <button onclick="button_register()"
+              class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+              Vote!
+            </button>
+          @endauth
+        </div>
       </div>
     </div>
 
-
+    <div id="navOverlay">
+      <button onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
+        Polls
+      </button><br>
+      <button onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
+        About
+      </button><br>
+      @auth
+        <button onclick="button_update_details()" class="{{ $header_button_class }}">
+          My Details
+        </button>
+      @else
+        <button onclick="button_register()"
+          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+          Vote!
+        </button>
+      @endauth
+    </div>
 
     <div id="pane_container" class="pane">
 
@@ -331,6 +371,7 @@
         // Remove all map elements
         tear_down_select_ui();
         display_mapped_prompt(null);
+        hamburgerClose();
 
         // disable all divs that aren't pane_mode
         pane_divs.forEach((pane_id) => {
@@ -342,6 +383,16 @@
         });
       }
 
+      function hamburgerOpen() {
+        navOverlay.style.display = 'block';
+        hammy.onclick = hamburgerClose;
+      }
+
+      function hamburgerClose() {
+        navOverlay.style.display = 'none';
+        hammy.onclick = hamburgerOpen;
+      }
+
       function optimizeLayout() {
         if (window.innerWidth < 800) {
           document.getElementById('pane_container').style.top = "40%";
@@ -350,6 +401,8 @@
           document.getElementById('map').style.height = "40%";
           document.getElementById('map').style.width = "100%";
           document.getElementById('map').style.left = "0px";
+          title_buttons.style.display = "none";
+          hammy.style.display = "block";
         } else {
           document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
           document.getElementById('pane_container').style['margin-top'] = "0px";
@@ -357,6 +410,8 @@
           document.getElementById('map').style.height = "";
           document.getElementById('map').style.width = "{{ 100 - $pane_width_perc }}%";
           document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
+          title_buttons.style.display = "block";
+          hammy.style.display = "none";
         }
         map.resize();
       }
