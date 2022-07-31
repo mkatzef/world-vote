@@ -2,7 +2,8 @@
 @php
   $title_height_px = 45;
   $pane_width_perc = 25;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded";
+  $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
 
 <html>
@@ -52,10 +53,8 @@
         </a>
       </div>
 
-
-
       <div style="float:right">
-        <a id="hammy" href="javascript:void(0)" onclick="hamburgerOpen()" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; width:50px">
+        <a id="hammy" href="javascript:void(0)" onclick="hamburgerOpen()" style="display:none; margin-top:10px; height:{{ $title_height_px }}px">
           <div class="space-y-2">
             <div class="w-8 h-0.5" style="background-color:white"></div>
             <div class="w-8 h-0.5" style="background-color:white"></div>
@@ -81,6 +80,10 @@
             </button>
           @endauth
         </div>
+      </div>
+
+      <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
+        <a href="javascript:void(0)" onclick="toggleMap()" style="color:white">Map</a>
       </div>
     </div>
 
@@ -155,31 +158,8 @@
       DATA
     -->
   	<div id="pane_polls" class="paneElement">
-      <div
-        class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-        style="height:25%; min-height:150px"
-      >
-        <div style="width:100%">
-          <p id="staged-prompt-caption">Select a poll</p>
-          <div>
-            <span id="staged-prompt-option0" style="float:left; width:50%"></span>
-            <span id="staged-prompt-option1" style="float:right; width:50%"></span>
-          </div>
-        </div>
 
-        <div style="width:80%; margin-left:10%">
-          <div id="stats-chart" style="display:flex; width:100%; height:40px; margin-bottom:5px"></div>
-          @auth
-          <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
-            @csrf
-            <x-vote-slider :promptId="1" />
-          </form>
-          <!--<p id="vote_status_msg"></p>-->
-          @endauth
-        </div>
-      </div>
-
-      <div style="height:calc(75% - 120px); overflow-y:scroll">
+      <div style="height:calc(100% - 130px); overflow-y:scroll">
         <div
           class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
         >
@@ -190,6 +170,7 @@
         <div style="display:flex; flex-direction:column; overflow-y:scroll">
           @foreach ($prompts as $prompt)
             <button
+              id="prompt_button_{{ $prompt->id }}"
               onclick="stage_prompt({{ $prompt }})"
               class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
             >
@@ -197,12 +178,34 @@
               <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {!! $prompt->is_mapped ? "&#127757; " : "" !!}{{ $prompt->caption }}
               </h5>
-              <p class="font-normal text-gray-700 dark:text-gray-400">
-                {{ $prompt->option0 }} OR {{ $prompt->option1 }}
-              </p>
             </button>
           @endforeach
         </div>
+
+        <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10%; display:none">
+          <span id="staged_option0" style="float:left; width:45%">
+          </span>
+          <span id="staged_option1" style="float:right; width:45%">
+          </span>
+
+          <table id="stats_chart" style="table-layout: fixed; width:100%; height:40px;">
+            <tr valign=bottom>
+              @for($i = 0; $i < $chart_n_elems; ++$i)
+                <td style="height:40px; width:{{ 100 / ($chart_n_elems - 1) }}%">
+                  <div id="stats_cell_{{ $i }}" style="width:100%; height:100%">
+                  </div>
+                </td>
+              @endfor
+            </tr>
+          </table>
+          @auth
+            <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
+              @csrf
+              <x-vote-slider :promptId="1" />
+            </form>
+          @endauth
+        </div>
+
 
       </div>
 
@@ -347,6 +350,8 @@
 
 
   	<script>
+      const chart_n_intervals = {{ $chart_n_elems }} - 1;
+
       @guest
       grecaptcha.enterprise.ready(function() {
         grecaptcha.enterprise.execute('6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT', {action: 'login'}).then(function(token) {
@@ -402,17 +407,33 @@
         hammy.onclick = hamburgerOpen;
       }
 
+      var showMap = true;
+      function toggleMap() {
+        showMap = !showMap;
+        optimizeLayout();
+      }
+
       function optimizeLayout() {
         if (window.innerWidth < 800) {
-          document.getElementById('pane_container').style.top = "40%";
+          if (showMap) {
+            document.getElementById('pane_container').style.top = "40%";
+            document.getElementById('map').style.display = "inline";
+          } else {
+            document.getElementById('pane_container').style.top = "0%";
+            document.getElementById('map').style.display = "none";
+          }
+
           document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
           document.getElementById('pane_container').style.width = "100%";
           document.getElementById('map').style.height = "40%";
           document.getElementById('map').style.width = "100%";
           document.getElementById('map').style.left = "0px";
           title_buttons.style.display = "none";
+          vert_options.style.display = "block";
           hammy.style.display = "block";
         } else {
+          document.getElementById('map').style.display = "inline";
+          stats_chart.style.display = "block";
           document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
           document.getElementById('pane_container').style['margin-top'] = "0px";
           document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
@@ -420,6 +441,7 @@
           document.getElementById('map').style.width = "{{ 100 - $pane_width_perc }}%";
           document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
           title_buttons.style.display = "block";
+          vert_options.style.display = "none";
           hammy.style.display = "none";
         }
         map.resize();
@@ -772,30 +794,17 @@
       );
 
       // Note: barColors can be a different length than data - uses linear interpolation
-      var currentBars = [];
       function displayStats(data, barColors) {
-        const n_elems = data.length;
-        const n_intervals = n_elems - 1;
-        var canvas = document.getElementById('stats-chart');
-        const width = 100 / n_elems;
-
-        for (let i = 0; i < currentBars.length; i++) {
-          canvas.removeChild(currentBars[i]);
-        }
-        currentBars = []
-        var new_bars = []
+        var n_elems = data.length;
+        var n_intervals = data.length - 1;
         for (let i = 0; i < n_elems; i++) {
-          var bar_container = document.createElement("div");
-          bar_container.style = "display:flex; width:" + width + "%; height:100%; background-color:#FFFFFF";
-
           var color = colorLerp(i / n_intervals, barColors);
-          var bar = document.createElement("div");
-          bar.style = "background-color: rgb("+ color.join(',') +");" +
-            "border-top: 1px solid #aaaaaa; border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:" + 100*data[i] + "%; align-self:flex-end";
+          var bar = document.getElementById("stats_cell_" + i);
+          bar.style['background-color'] = "rgb("+ color.join(',') +")";
+          bar.style['height'] = 100*data[i] + "%";
 
-          bar_container.appendChild(bar);
-          canvas.appendChild(bar_container);
-          currentBars.push(bar_container);
+            //"border-top: 1px solid #aaaaaa; border-top-left-radius:5px; border-top-right-radius:5px;" +
+            //"width:" + width + "%; height:" + 100*data[i] + "%;";
         }
       }
 
@@ -827,13 +836,17 @@
 
       var isTouchDevice = false;  // assume not touch, but change after first touch
       function stage_prompt(prompt) {
-        document.getElementById("staged-prompt-caption").innerText = prompt['caption'];
-        document.getElementById("staged-prompt-option0").innerText = prompt['option0'];
-        document.getElementById("staged-prompt-option1").innerText = prompt['option1'];
+        staged_option0.innerHTML = prompt.option0;
+        staged_option1.innerHTML = prompt.option1;
+
         var colorSteps = JSON.parse(prompt['colors']);
         if (colorSteps.length == 0)  {
           colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
         }
+        target_div = document.getElementById("prompt_button_" + prompt.id);
+        target_div.style.display = "inline";
+        active_prompt_content.style.display = "inline";
+        target_div.appendChild(active_prompt_content);
 
         @auth
           // Slider colors

@@ -53,5 +53,13 @@
 
 <div class="slidecontainer" style="position:relative">
     <div id="vote-slider-bg" style="position:absolute;height:25px;width:100%"></div>
-    <input type="range" class="slider" style:"position:absolute;top:-25px" id="vote-slider" min="0" max="10" value="{{ $voteValue }}"/>
+    <input
+      type="range"
+      class="slider"
+      style:"position:absolute;top:-25px"
+      id="vote-slider"
+      min="0"
+      max="10"
+      value="{{ $voteValue }}"
+    />
 </div>
