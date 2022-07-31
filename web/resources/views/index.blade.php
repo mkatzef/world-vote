@@ -182,7 +182,7 @@
           @endforeach
         </div>
 
-        <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10%; display:none">
+        <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10; display:none">
           <span id="staged_option0" style="float:left; width:45%">
           </span>
           <span id="staged_option1" style="float:right; width:45%">
@@ -192,7 +192,7 @@
             <tr valign=bottom>
               @for($i = 0; $i < $chart_n_elems; ++$i)
                 <td style="height:40px; width:{{ 100 / ($chart_n_elems - 1) }}%">
-                  <div id="stats_cell_{{ $i }}" style="width:100%; height:100%">
+                  <div id="stats_cell_{{ $i }}" style="{{ $i == ($chart_n_elems-1) ? "width:0%" : "width:100%" }}; height:100%">
                   </div>
                 </td>
               @endfor
@@ -350,8 +350,6 @@
 
 
   	<script>
-      const chart_n_intervals = {{ $chart_n_elems }} - 1;
-
       @guest
       grecaptcha.enterprise.ready(function() {
         grecaptcha.enterprise.execute('6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT', {action: 'login'}).then(function(token) {
