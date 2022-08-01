@@ -32,8 +32,17 @@
         z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
         cursor: pointer; /* Add a pointer on hover */
       }
-      .pane { position:fixed; overflow-y:scroll; background-color:#AAAAAA; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
-      .paneElement { position:fixed; top:0px; overflow-y:auto; width: 100%; height:100%; text-align:center } //
+      .scrolling-y {
+        overflow-y: scroll;
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+      .scrolling-y::-webkit-scrollbar {
+        display: none;
+      }
+
+      .pane { position:fixed; background-color:#000000; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
+      .paneElement { position:fixed; top:0px; width: 100%; height:100%; text-align:center } //
   	</style>
 
     <link href="nouislider.css" rel="stylesheet">
@@ -74,7 +83,7 @@
               My Details
             </button>
           @else
-            <button onclick="button_register()"
+            <button onclick="set_pane_mode('pane_user_type')"
               class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
               Vote!
             </button>
@@ -83,27 +92,42 @@
       </div>
 
       <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
-        <a href="javascript:void(0)" onclick="toggleMap()" style="color:white">Map</a>
+        <a href="javascript:void(0)" onclick="toggleMap()" style="color:white">
+          Toggle map
+        </a>
       </div>
     </div>
 
     <div id="navOverlay">
-      <button onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
-        Polls
-      </button><br>
-      <button onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
-        About
-      </button><br>
-      @auth
-        <button onclick="button_update_details()" class="{{ $header_button_class }}">
-          My Details
-        </button>
-      @else
-        <button onclick="button_register()"
-          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
-          Vote!
-        </button>
-      @endauth
+      <ul>
+        <li>
+          <a id="hammy_pane_polls" href="javascript:void(0)" onclick="set_pane_mode('pane_polls')"
+           style="color:white">
+            Polls
+          </a>
+        </li>
+        <li>
+          <a id="hammy_pane_about" href="javascript:void(0)" onclick="set_pane_mode('pane_about')"
+          style="color:white">
+            About
+          </a>
+        </li>
+        @auth
+        <li>
+          <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
+          style="color:white">
+            My Details
+          </a>
+        </li>
+        @else
+        <li>
+          <a id="hammy_pane_user_type" href="javascript:void(0)" onclick="set_pane_mode('pane_user_type')"
+          style="color:white">
+            Vote!
+          </a>
+        </li>
+        @endauth
+      </ul>
     </div>
 
     <div id="pane_container" class="pane">
@@ -115,42 +139,44 @@
       <p style="color:#FFFFFF">Loading, please wait!</p>
     </div>
 
-    <div id="pane_about" class="paneElement">
-      <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-      >
-        <h1>About</h1>
-      </div>
-      <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-      >
-        Social media has a tendency to focus on the extremes.
-        Here, everything is up to you &#128512;
-      </div>
-      <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-      >
-          myworld.vote lets you express yourself along with your world
-        <ul>
-          <li>Honestly</li>
-          <li>Anonymously</li>
-          <li>Securely</li>
-        </ul>
-      </div>
-      <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-      >
-      We created myworld.vote to:
-        <ul>
-          <li>Give everyone a voice</li>
-          <li>See how the world thinks</li>
-          <li>Make this information visible to everyone</li>
-        </ul>
-      </div>
-      <div
-        class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-      >
-        Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u>
+    <div id="pane_about" class="paneElement scrolling">
+      <div class="scrolling-y" style="height:100%">
+        <div
+          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+        >
+          <h1>About</h1>
+        </div>
+        <div
+          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+        >
+          Social media has a tendency to focus on the extremes.
+          Here, everything is up to you &#128512;
+        </div>
+        <div
+          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+        >
+            myworld.vote lets you express yourself along with your world
+          <ul>
+            <li>Honestly</li>
+            <li>Anonymously</li>
+            <li>Securely</li>
+          </ul>
+        </div>
+        <div
+          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+        >
+        We created myworld.vote to:
+          <ul>
+            <li>Give everyone a voice</li>
+            <li>See how the world thinks</li>
+            <li>Make this information visible to everyone</li>
+          </ul>
+        </div>
+        <div
+          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+        >
+          Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u>
+        </div>
       </div>
     </div>
 
@@ -158,24 +184,23 @@
       DATA
     -->
   	<div id="pane_polls" class="paneElement">
-
-      <div style="height:calc(100% - 130px); overflow-y:scroll">
+      <div class="scrolling-y" style="height:calc(100% - 100px)">
         <div
-          class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+          class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-          <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500 dark:text-white">
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500">
             Polls:
           </h5>
         </div>
-        <div style="display:flex; flex-direction:column; overflow-y:scroll">
+        <div class="scrolling-y" style="display:flex; flex-direction:column">
           @foreach ($prompts as $prompt)
             <button
               id="prompt_button_{{ $prompt->id }}"
               onclick="stage_prompt({{ $prompt }})"
-              class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+              class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
             >
 
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
                 {!! $prompt->is_mapped ? "&#127757; " : "" !!}{{ $prompt->caption }}
               </h5>
             </button>
@@ -183,16 +208,17 @@
         </div>
 
         <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10; display:none">
-          <span id="staged_option0" style="float:left; width:45%">
+          <span id="staged_option0" style="float:left; width:50%; text-align:left">
           </span>
-          <span id="staged_option1" style="float:right; width:45%">
+          <span id="staged_option1" style="float:right; width:50%; text-align:right">
           </span>
+          <br>
 
           <table id="stats_chart" style="table-layout: fixed; width:100%; height:40px;">
             <tr valign=bottom>
               @for($i = 0; $i < $chart_n_elems; ++$i)
-                <td style="height:40px; width:{{ 100 / ($chart_n_elems - 1) }}%">
-                  <div id="stats_cell_{{ $i }}" style="{{ $i == ($chart_n_elems-1) ? "width:0%" : "width:100%" }}; height:100%">
+                <td style="height:40px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
+                  <div id="stats_cell_{{ $i }}" style="width:100%; height:100%">
                   </div>
                 </td>
               @endfor
@@ -205,15 +231,13 @@
             </form>
           @endauth
         </div>
-
-
       </div>
 
       <div style="height:100px">
         <div id="captcha-container"></div>
         @auth
-          <div style="position:absolute; bottom:50px">
-            <p>Your login token is: <b>{{ auth()->user()->access_token }}</b></p>
+          <div style="position:absolute; bottom:50px; background-color:white; width:100%; text-align:center">
+            <p>Your login code is: <b>{{ auth()->user()->access_token }}</b></p>
           </div>
         @endauth
         <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
@@ -248,38 +272,58 @@
     <!--
       NEW
     -->
-    <div id="pane_new_user" class="paneElement">
-      <h1>Returning user</h1>
+    <div id="pane_user_type" class="paneElement">
+      <button onclick="set_pane_mode('pane_new_user')" class="{{ $header_button_class }}">
+        New vote!
+      </button>
+
+      <div style="background-color:white">
+        <h1>OR</h1>
+      </div>
+
       <button onclick="set_pane_mode('pane_login')" class="{{ $header_button_class }}">
         Login
       </button>
+    </div>
 
-      <h1>OR</h1>
 
-      <h2>New user</h2>
-      <button id="new_location_button" onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
-        Select location
-      </button>
+    <div id="pane_new_user" class="paneElement">
+      <div class="scrolling-y" style="height:100%">
+        <button onclick="set_pane_mode('pane_user_type')" class="{{ $header_button_class }}">
+          Back
+        </button>
+        <br>
 
-      <form id="new_vote_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
-        @csrf
-        <input type="number" id="new-row" name="grid_row" style="display:none">
-        <input type="number" id="new-col" name="grid_col" style="display:none">
+        <button id="new_location_button" onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
+          Select location
+        </button>
 
-        <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Select any tags for your vote:</h3>
-        <ul class="grid gap-6 w-full md:grid-cols-2">
-          @foreach ($tags as $tag)
-            <x-tag-checkbox :tag="$tag" prefix="new"/>
-          @endforeach
-        </ul>
+        <form id="new_vote_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
+          @csrf
+          <input type="number" id="new-row" name="grid_row" style="display:none">
+          <input type="number" id="new-col" name="grid_col" style="display:none">
 
-        <button
-          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
-        >
-          Submit
-        </button><br>
-        <input type="checkbox" name="remember_me">Remember me on this device</input>
-      </form>
+          <div style="background-color:white">
+            <h3 class="mb-5 text-lg font-medium text-gray-900">
+              Select any tags for your vote:
+            </h3>
+          </div>
+          <ul class="grid gap-6 w-full md:grid-cols-2">
+            @foreach ($tags as $tag)
+              <x-tag-checkbox :tag="$tag" prefix="new"/>
+            @endforeach
+          </ul>
+
+          <button
+            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+          >
+            Submit
+          </button><br>
+          <div style="background-color:white">
+            <input type="checkbox" name="remember_me">Remember me on this device</input>
+          </div>
+        </form>
+      </div>
     </div>
 
 
@@ -287,33 +331,41 @@
       UPDATE
     -->
     <div id="pane_my_details" class="paneElement">
-      <h1>Update Vote</h1>
-      <button id="update_location_button" onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
-        Select location
-      </button><br>
-      <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
-        @csrf
-        <input type="number" id="update-row" name="grid_row" style="display:none">
-        <input type="number" id="update-col" name="grid_col" style="display:none">
-
-        <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Select any tags for your vote:</h3>
-        <ul class="grid gap-6 w-full md:grid-cols-2">
-          @foreach ($tags as $tag)
-            <x-tag-checkbox :tag="$tag" prefix="update"/>
-          @endforeach
-        </ul>
-
-        <button
-          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
-        >
-          Submit
+      <div class="scrolling-y" style="height:100%">
+        <button id="update_location_button" onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
+          Select location
         </button><br>
-        <input type="checkbox" name="remember_me"
-        @auth
-          {{ request()->cookie('access_token') ? 'checked' : '' }}
-        @endauth
-        >Remember me on this device</input>
-      </form>
+        <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
+          @csrf
+          <input type="number" id="update-row" name="grid_row" style="display:none">
+          <input type="number" id="update-col" name="grid_col" style="display:none">
+
+          <div style="background-color:white">
+            <h3 class="mb-5 text-lg font-medium text-gray-900">
+              Select any tags for your vote:
+            </h3>
+          </div>
+          <ul class="grid gap-6 w-full md:grid-cols-2">
+            @foreach ($tags as $tag)
+              <x-tag-checkbox :tag="$tag" prefix="update"/>
+            @endforeach
+          </ul>
+
+          <button
+            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+          >
+            Submit
+          </button><br>
+          <div style="background-color:white">
+            <input type="checkbox" name="remember_me"
+              @auth
+                {{ request()->cookie('access_token') ? 'checked' : '' }}
+              @endauth
+              >Remember me on this device
+            </input>
+          </div>
+        </form>
+      </div>
     </div>
 
 
@@ -321,10 +373,15 @@
       LOGIN
     -->
     <div id="pane_login" class="paneElement">
-      <h1>Login</h1>
+      <button onclick="set_pane_mode('pane_user_type')" class="{{ $header_button_class }}">
+        Back
+      </button>
+      <br>
       <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
         @csrf
-        <label for="utoken">Login token:</label><br>
+        <div style="background-color:white">
+          <label for="utoken">Login code:</label><br>
+        </div>
         <input
           id="access_token"
           name="access_token"
@@ -336,9 +393,6 @@
           Submit
         </button>
       </form>
-      <button onclick="set_pane_mode('pane_new_user')" class="{{ $header_button_class }}">
-        Back
-      </button>
     </div>
 
     </div>
@@ -375,6 +429,7 @@
         'pane_polls',
         'pane_filters',
         'pane_new_user',
+        'pane_user_type',
         'pane_login',
         'pane_my_details',
       ];
@@ -387,10 +442,17 @@
 
         // disable all divs that aren't pane_mode
         pane_divs.forEach((pane_id) => {
+          var hammy_elem = document.getElementById("hammy_" + pane_id);
           if (pane_mode == pane_id) {
             document.getElementById(pane_id).style.display = 'inline';
+            if (hammy_elem) {
+              document.getElementById("hammy_" + pane_id).style.color = 'orange';
+            }
           } else {
             document.getElementById(pane_id).style.display = 'none';
+            if (hammy_elem) {
+              document.getElementById("hammy_" + pane_id).style.color = 'white';
+            }
           }
         });
       }
@@ -761,10 +823,6 @@
           currentClickHandler = null;
         }
   		}
-
-      function button_register() {
-        set_pane_mode('pane_new_user');
-      }
 
       function button_update_details() {
         set_pane_mode('pane_my_details');
