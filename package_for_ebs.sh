@@ -13,5 +13,5 @@ echo "Changing to src directory"
 cd $srcdir
 
 echo "Writing zip..."
-zip "../$outdir$base_name$num.zip" -r -xi * .platform/* -x "./vendor/*" -x "composer.lock"
+zip "../$outdir$base_name$num.zip" -r -xi * .platform/* .ebextensions/* -x "./vendor/*" -x "composer.lock"
 echo "Finished writing to: $outdir$base_name$num.zip"
