@@ -184,66 +184,112 @@
       DATA
     -->
   	<div id="pane_polls" class="paneElement">
-      <div class="scrolling-y" style="height:calc(100% - 100px)">
-        <div
-          class="block m-1 mt-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
-        >
-          <h5 class="mb-2 text-2xl font-bold tracking-tight text-orange-500">
-            Polls:
-          </h5>
-        </div>
-        <div class="scrolling-y" style="display:flex; flex-direction:column">
-          @foreach ($prompts as $prompt)
-            <button
-              id="prompt_button_{{ $prompt->id }}"
-              onclick="stage_prompt({{ $prompt }})"
-              class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
-            >
-
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-                {!! $prompt->is_mapped ? "&#127757; " : "" !!}{{ $prompt->caption }}
-              </h5>
-            </button>
-          @endforeach
-        </div>
-
-        <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10; display:none">
-          <span id="staged_option0" style="float:left; width:50%; text-align:left">
-          </span>
-          <span id="staged_option1" style="float:right; width:50%; text-align:right">
-          </span>
-          <br>
-
-          <table id="stats_chart" style="table-layout: fixed; width:100%; height:40px;">
-            <tr valign=bottom>
-              @for($i = 0; $i < $chart_n_elems; ++$i)
-                <td style="height:40px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
-                  <div id="stats_cell_{{ $i }}" style="width:100%; height:100%">
-                  </div>
-                </td>
-              @endfor
-            </tr>
-          </table>
-          @auth
-            <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
-              @csrf
-              <x-vote-slider :promptId="1" />
-            </form>
-          @endauth
-        </div>
+      <div
+        style="height:50px"
+        class="block p-2 bg-white rounded-t-lg border border-gray-200 shadow-md"
+      >
+        <h5 style="width:50%; float:left" class="mb-2 text-2xl font-bold tracking-tight">
+          <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')" style="color:orange">
+            Votes
+          </button>
+        </h5>
+        <h5 style="width:50%; float:right" class="mb-2 text-2xl font-bold tracking-tight">
+          <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')" style="color:gray">
+            Voters
+          </button>
+        </h5>
       </div>
 
-      <div style="height:100px">
-        <div id="captcha-container"></div>
+      <div
+        id="poll_tab_votes"
+        class="scrolling-y"
         @auth
-          <div style="position:absolute; bottom:50px; background-color:white; width:100%; text-align:center">
-            <p>Your login code is: <b>{{ auth()->user()->access_token }}</b></p>
-          </div>
+          style="height:calc(100% - 150px);
+        @else
+          style="height:calc(100% - 100px);
+        @endauth
+        display:flex; flex-direction:column; background-color:#505050">
+
+        @foreach ($prompts as $prompt)
+          <button
+            id="vote_button_{{ $prompt->id }}"
+            onclick="stage_vote({{ $prompt }})"
+            class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+          >
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+              {{ $prompt->caption }} {!! $prompt->is_mapped ? "&#127757; " : "" !!}
+            </h5>
+          </button>
+        @endforeach
+      </div>
+
+      <div
+        id="poll_tab_voters"
+        class="scrolling-y"
+        @auth
+          style="height:calc(100% - 150px); display:flex; flex-direction:column;
+        @else
+          style="height:calc(100% - 100px); display:flex; flex-direction:column;
+        @endauth
+        display:none; background-color:#505050">
+
+        @foreach ($tags as $tag)
+          <button
+            id="voter_button_{{ $tag->id }}"
+            onclick="stage_voter({{ $tag }})"
+            class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+          >
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+              {{ $tag->name }}
+            </h5>
+          </button>
+        @endforeach
+      </div>
+
+      <div
+        @auth
+          style="height:100px">
+            <div style="position:absolute; height:50px; bottom:50px; background-color:white; width:100%; text-align:center">
+              <p>Your login code is: <b>{{ auth()->user()->access_token }}</b></p>
+            </div>
+        @else
+          style="height:50px">
         @endauth
         <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
           <p>Big fat advertisement</p>
         </div>
+        <div id="captcha-container"></div>
       </div>
+    </div>
+
+
+    <!--
+    Stats and vote slider
+    NOTE: Initially hidden - moved to correct button as needed
+    -->
+    <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10; display:none">
+      <span id="staged_option0" style="float:left; width:50%; text-align:left">
+      </span>
+      <span id="staged_option1" style="float:right; width:50%; text-align:right">
+      </span>
+      <br>
+
+      <table id="stats_chart" style="table-layout: fixed; width:100%; height:40px;">
+        <tr valign=bottom>
+          @for($i = 0; $i < $chart_n_elems; ++$i)
+            <td style="height:40px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
+              <div id="stats_cell_{{ $i }}" style="width:100%; height:100%">
+              </div>
+            </td>
+          @endfor
+        </tr>
+      </table>
+      @auth
+        <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
+          @csrf
+          <x-vote-slider :promptId="1" />
+        </form>
+      @endauth
     </div>
 
 
@@ -308,7 +354,7 @@
               Select any tags for your vote:
             </h3>
           </div>
-          <ul class="grid gap-6 w-full md:grid-cols-2">
+          <ul class="grid gap-2 w-full md:grid-cols-1">
             @foreach ($tags as $tag)
               <x-tag-checkbox :tag="$tag" prefix="new"/>
             @endforeach
@@ -345,7 +391,7 @@
               Select any tags for your vote:
             </h3>
           </div>
-          <ul class="grid gap-6 w-full md:grid-cols-2">
+          <ul class="grid gap-2 w-full md:grid-cols-1">
             @foreach ($tags as $tag)
               <x-tag-checkbox :tag="$tag" prefix="update"/>
             @endforeach
@@ -455,6 +501,20 @@
             }
           }
         });
+      }
+
+      function set_pane_poll_mode(pane_poll_mode) {
+        if (pane_poll_mode == "votes") {
+          poll_tab_votes.style.display = 'flex';
+          poll_tab_voters.style.display = 'none';
+          poll_tab_vote_button.style.color = 'orange';
+          poll_tab_voter_button.style.color = 'gray';
+        } else {
+          poll_tab_votes.style.display = 'none';
+          poll_tab_voters.style.display = 'flex';
+          poll_tab_vote_button.style.color = 'gray';
+          poll_tab_voter_button.style.color = 'orange';
+        }
       }
 
       function hamburgerOpen() {
@@ -891,7 +951,7 @@
       }
 
       var isTouchDevice = false;  // assume not touch, but change after first touch
-      function stage_prompt(prompt) {
+      function stage_vote(prompt) {
         staged_option0.innerHTML = prompt.option0;
         staged_option1.innerHTML = prompt.option1;
 
@@ -899,7 +959,7 @@
         if (colorSteps.length == 0)  {
           colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
         }
-        target_div = document.getElementById("prompt_button_" + prompt.id);
+        target_div = document.getElementById("vote_button_" + prompt.id);
         target_div.style.display = "inline";
         active_prompt_content.style.display = "inline";
         target_div.appendChild(active_prompt_content);
