@@ -63,7 +63,8 @@
       </div>
 
       <div style="float:right">
-        <a id="hammy" href="javascript:void(0)" onclick="hamburgerOpen()" style="display:none; margin-top:10px; height:{{ $title_height_px }}px">
+        <a id="hammy" href="javascript:void(0)" onclick="hamburgerOpen()"
+          style="display:none; margin-top:10px; height:{{ $title_height_px }}px; margin-right:10px">
           <div class="space-y-2">
             <div class="w-8 h-0.5" style="background-color:white"></div>
             <div class="w-8 h-0.5" style="background-color:white"></div>
@@ -92,8 +93,11 @@
       </div>
 
       <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
-        <a href="javascript:void(0)" onclick="toggleMap()" style="color:white">
-          Toggle map
+        <a id="map_toggle_link" href="javascript:void(0)" onclick="toggleMap()">
+          <div id="map_toggle_bg" class="space-y-2"
+          style="width:45px; height:22px; background-color:white; border-radius:11px; margin-right:10px">
+            <img id="map_toggle_orb" src="/earth.png" style="width:22px; height:22px; float:left"></img>
+          </div>
         </a>
       </div>
     </div>
@@ -208,7 +212,7 @@
         @else
           style="height:calc(100% - 100px);
         @endauth
-        display:flex; flex-direction:column; background-color:#505050">
+        display:flex; flex-direction:column; background-color:gray">
 
         @foreach ($prompts as $prompt)
           <button
@@ -231,7 +235,7 @@
         @else
           style="height:calc(100% - 100px); display:flex; flex-direction:column;
         @endauth
-        display:none; background-color:#505050">
+        display:none; background-color:gray">
 
         @foreach ($tags as $tag)
           <button
@@ -530,6 +534,13 @@
       var showMap = true;
       function toggleMap() {
         showMap = !showMap;
+        if (showMap) {
+          map_toggle_bg.style['background-color'] = 'white';
+          map_toggle_orb.style.float = 'left';
+        } else {
+          map_toggle_bg.style['background-color'] = 'gray';
+          map_toggle_orb.style.float = 'right';
+        }
         optimizeLayout();
       }
 
