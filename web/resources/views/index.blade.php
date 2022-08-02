@@ -190,18 +190,18 @@
   	<div id="pane_polls" class="paneElement">
       <div
         style="height:50px"
-        class="block p-2 bg-white rounded-t-lg border border-gray-200 shadow-md"
+        class="block bg-black rounded-t-lg border-0 shadow-md"
       >
-        <h5 style="width:50%; float:left" class="mb-2 text-2xl font-bold tracking-tight">
-          <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')" style="color:orange">
-            Votes
-          </button>
-        </h5>
-        <h5 style="width:50%; float:right" class="mb-2 text-2xl font-bold tracking-tight">
-          <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')" style="color:gray">
-            Voters
-          </button>
-        </h5>
+        <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')"
+          class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
+          style="height:100%; width:50%; float:left; color:orange; background-color:white">
+          Votes
+        </button>
+        <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
+          class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
+          style="height:100%; width:50%; float:right; color:orange; background-color:gray">
+          Voters
+        </button>
       </div>
 
       <div
@@ -212,7 +212,7 @@
         @else
           style="height:calc(100% - 100px);
         @endauth
-        display:flex; flex-direction:column; background-color:gray">
+        display:flex; flex-direction:column; background-color:white">
 
         @foreach ($prompts as $prompt)
           <button
@@ -235,18 +235,60 @@
         @else
           style="height:calc(100% - 100px); display:flex; flex-direction:column;
         @endauth
-        display:none; background-color:gray">
+        display:none; background-color:white">
 
         @foreach ($tags as $tag)
-          <button
-            id="voter_button_{{ $tag->id }}"
-            onclick="stage_voter({{ $tag }})"
-            class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+          <div
+            id="voter_container_{{ $tag->id }}"
+            class="mb-2 text-2xl font-bold tracking-tight text-gray-900
+            block bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
           >
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-              {{ $tag->name }}
-            </h5>
-          </button>
+            <table style="width:100%; table-layout:fixed">
+              <tr style="height:60px">
+                <td style="width:80%">
+                  <a
+                    id="voter_button_{{ $tag->id }}"
+                    href="javascript:void(0)"
+                    onclick="stageVoter({{ $tag->id }})"
+                  >
+                    {{ $tag->name }}
+                  </a>
+                </td>
+                <td style="width:20%">
+                    <a
+                    id="voter_filter_button_{{ $tag->id }}"
+                    href="javascript:void(0)"
+                    onclick="addFilter({{ $tag->id }})"
+                    class="h-full">
+                      <div style="width:60%; height:60%" class="hover:bg-orange-200 p-1 rounded-full">
+                        <img
+                          id="voter_filter_icon_{{ $tag->id }}"
+                          src="/filter_add.png"
+                          style="height:100%">
+                        </img>
+                    </div>
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <div id="filter_container_{{ $tag->id }}"
+              style="width:100%; height:50px; display:none">
+              <table style="width:100%; text-align:center; margin-bottom:5px">
+                <tr>
+                  <td style="width:15%">
+                    Min
+                  </td>
+                  <td style="width:70%">
+                    <div id="filter_slider_{{ $tag->id }}" style="margin-left:15px; margin-right:15px"></div>
+                  </td>
+                  <td style="width:15%">
+                    Max
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
         @endforeach
       </div>
 
@@ -296,28 +338,6 @@
       @endauth
     </div>
 
-
-    <!--
-      FILTERS
-    -->
-    <div id="pane_filters" class="paneElement" style="visibility:hidden">
-      <h1>Filters</h1>
-      <button onclick="set_pane_mode('pane_polls')">Back</button><br>
-
-      <!--
-      <p>Demo filter:</p>
-      <div class="slidecontainer">
-        <input type="range" min="0" max="10" value="0" class="slider"
-        id="ranger" oninput="slide_func0()">
-      </div>
-
-      @foreach ($tags as $tag)
-        {{ $tag->name }}<br>
-        <div id="doubleslider-{{ $tag->slug }}" style="width:80%"></div>
-        <br>
-      @endforeach
-      -->
-    </div>
 
     <!--
       NEW
@@ -477,7 +497,6 @@
         'pane_overlay',
         'pane_about',
         'pane_polls',
-        'pane_filters',
         'pane_new_user',
         'pane_user_type',
         'pane_login',
@@ -511,14 +530,49 @@
         if (pane_poll_mode == "votes") {
           poll_tab_votes.style.display = 'flex';
           poll_tab_voters.style.display = 'none';
-          poll_tab_vote_button.style.color = 'orange';
-          poll_tab_voter_button.style.color = 'gray';
+          poll_tab_vote_button.style['background-color'] = 'white';
+          poll_tab_voter_button.style['background-color'] = 'gray';
         } else {
           poll_tab_votes.style.display = 'none';
           poll_tab_voters.style.display = 'flex';
-          poll_tab_vote_button.style.color = 'gray';
-          poll_tab_voter_button.style.color = 'orange';
+          poll_tab_vote_button.style['background-color'] = 'gray';
+          poll_tab_voter_button.style['background-color'] = 'white';
         }
+      }
+
+      function stageVoter(tagId) {
+        console.log('STAGE');
+        console.log(tagId);
+        var voterButton = document.getElementById("voter_button_" + tagId);
+        voterButton.onclick = () => {unstageVoter(tagId)};
+      }
+
+      function unstageVoter(tagId) {
+        console.log('UNSTAGE');
+        console.log(tagId);
+        var voterButton = document.getElementById("voter_button_" + tagId);
+        voterButton.onclick = () => {stageVoter(tagId)};
+      }
+
+      function addFilter(tagId) {
+        document.getElementById("voter_filter_button_" + tagId).onclick =
+          () => {removeFilter(tagId);};
+        var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
+        filterIcon.src = "/filter_rem.png";
+        filterIcon.parentNode.style['background-color'] = 'orange';
+
+        var filterContainer = document.getElementById("filter_container_" + tagId);
+        filterContainer.style.display = 'inline';
+      }
+
+      function removeFilter(tagId) {
+        document.getElementById("voter_filter_button_" + tagId).onclick =
+          () => {addFilter(tagId);};
+        var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
+        filterIcon.src = "/filter_add.png";
+        filterIcon.parentNode.style.removeProperty('background-color');
+        var filterContainer = document.getElementById("filter_container_" + tagId);
+        filterContainer.style.display = 'none';
       }
 
       function hamburgerOpen() {
@@ -734,8 +788,8 @@
   				]
   			)
   		}
-      function stylizeDoubleSlider(sliderId) {
-        var slider = document.getElementById("doubleslider-" + sliderId);
+      function stylizeDoubleSlider(tagId) {
+        var slider = document.getElementById("filter_slider_" + tagId);
         noUiSlider.create(slider, {
           start: [0, 1],
           connect: true,
@@ -746,13 +800,12 @@
           }
         });
 
-        //slider.noUiSlider.on('update', (e) => { console.log('FILTER TODO'); });
+        slider.noUiSlider.on('update', (e) => { updateFilter(tagId, e); });
       }
-      /*
-      foreach ($tags as $tag)
-        stylizeDoubleSlider("{{ $tag->slug }}");
-      endforeach
-      */
+
+      function updateFilter(tagId, e) {
+        console.log("UPDATE FILTER");
+      }
 
   		const maxZoom = 4;
   		const maxStepDeg = 15;
@@ -815,7 +868,6 @@
 
         map.on('zoom', (e) => { displayLoc() });
       @endauth
-
 
   		function display_clicked_cell(lngLat) {
   			map.getSource('clicked_loc').setData({
@@ -961,8 +1013,29 @@
         }
       }
 
+      function hidePromptContent(promptId) {
+        target_div = document.getElementById("vote_button_" + promptId);
+        active_prompt_content.style.display = "none";
+      }
+
+      function showPromptContent(promptId) {
+        target_div = document.getElementById("vote_button_" + promptId);
+        active_prompt_content.style.display = "inline";
+        target_div.appendChild(active_prompt_content);
+      }
+
       var isTouchDevice = false;  // assume not touch, but change after first touch
+      var stagedVoteId = null;
       function stage_vote(prompt) {
+        if (prompt.id == stagedVoteId) {
+          stagedVoteId = null;
+          hidePromptContent(prompt.id);
+          display_mapped_prompt(null);
+          return;
+        }
+        stagedVoteId = prompt.id;
+
+        showPromptContent(prompt.id);
         staged_option0.innerHTML = prompt.option0;
         staged_option1.innerHTML = prompt.option1;
 
@@ -970,10 +1043,6 @@
         if (colorSteps.length == 0)  {
           colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
         }
-        target_div = document.getElementById("vote_button_" + prompt.id);
-        target_div.style.display = "inline";
-        active_prompt_content.style.display = "inline";
-        target_div.appendChild(active_prompt_content);
 
         @auth
           // Slider colors
@@ -1038,6 +1107,10 @@
         }
       }
 
+
+      const tagsArr = {{ Js::from($tags) }};
+      tagsArr.map((elem) => {stylizeDoubleSlider(elem.id);});
+      const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       @auth
         var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
