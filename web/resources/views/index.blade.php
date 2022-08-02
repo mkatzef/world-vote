@@ -58,7 +58,7 @@
     <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#000000">
       <div style="float:left;max-width:70%;">
         <a href="/">
-          <img src="/logo.png" style="height:{{ $title_height_px }}px"></img>
+          <img id="logo_img" src="/logo.png" style="height:{{ $title_height_px }}px"></img>
         </a>
       </div>
 
@@ -200,7 +200,7 @@
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
           style="height:100%; width:50%; float:right; color:orange; background-color:gray">
-          Voters
+          Voters <span id="n_filters_msg" style="display:none"></span>
         </button>
       </div>
 
@@ -212,7 +212,7 @@
         @else
           style="height:calc(100% - 100px);
         @endauth
-        display:flex; flex-direction:column; background-color:white">
+        display:flex; flex-direction:column; background-color:white; border-top-right-radius:5px">
 
         @foreach ($prompts as $prompt)
           <button
@@ -235,7 +235,7 @@
         @else
           style="height:calc(100% - 100px); display:flex; flex-direction:column;
         @endauth
-        display:none; background-color:white">
+        display:none; background-color:white; border-top-left-radius:5px">
 
         @foreach ($tags as $tag)
           <div
@@ -540,18 +540,39 @@
         }
       }
 
+      var stagedVoterId = null;
       function stageVoter(tagId) {
+        if (tagId == stagedVoterId) {
+          stagedVoterId = null;
+          unstageVoter(tagId);
+          return;
+        } else if (stagedVoterId != null) {
+          unstageVoter(stagedVoterId);
+        }
+        stagedVoterId = tagId;
+
         console.log('STAGE');
         console.log(tagId);
-        var voterButton = document.getElementById("voter_button_" + tagId);
-        voterButton.onclick = () => {unstageVoter(tagId)};
+        var voterContainer = document.getElementById("voter_container_" + tagId);
+        replaceClasses(voterContainer, stagedClasses, unstagedClasses);
       }
 
       function unstageVoter(tagId) {
         console.log('UNSTAGE');
         console.log(tagId);
-        var voterButton = document.getElementById("voter_button_" + tagId);
-        voterButton.onclick = () => {stageVoter(tagId)};
+        var voterContainer = document.getElementById("voter_container_" + tagId);
+        replaceClasses(voterContainer, unstagedClasses, stagedClasses);
+      }
+
+      var activeFilters = {};
+      function refreshFilterMsg() {
+        const nFilters = Object.keys(activeFilters).length;
+        if (nFilters == 0) {
+          n_filters_msg.style.display = 'none';
+        } else {
+          n_filters_msg.style.display = 'inline';
+          n_filters_msg.innerHTML = "<sup>(" + nFilters + ")</sup>";
+        }
       }
 
       function addFilter(tagId) {
@@ -563,6 +584,8 @@
 
         var filterContainer = document.getElementById("filter_container_" + tagId);
         filterContainer.style.display = 'inline';
+        activeFilters[tagId] = [0,1];
+        refreshFilterMsg();
       }
 
       function removeFilter(tagId) {
@@ -573,6 +596,8 @@
         filterIcon.parentNode.style.removeProperty('background-color');
         var filterContainer = document.getElementById("filter_container_" + tagId);
         filterContainer.style.display = 'none';
+        delete activeFilters[tagId];
+        refreshFilterMsg();
       }
 
       function hamburgerOpen() {
@@ -607,6 +632,7 @@
             document.getElementById('pane_container').style.top = "0%";
             document.getElementById('map').style.display = "none";
           }
+          logo_img.src = "/logo-narrow.png";
 
           document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
           document.getElementById('pane_container').style.width = "100%";
@@ -617,6 +643,7 @@
           vert_options.style.display = "block";
           hammy.style.display = "block";
         } else {
+          logo_img.src = "/logo.png";
           document.getElementById('map').style.display = "inline";
           stats_chart.style.display = "block";
           document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
@@ -788,6 +815,7 @@
   				]
   			)
   		}
+
       function stylizeDoubleSlider(tagId) {
         var slider = document.getElementById("filter_slider_" + tagId);
         noUiSlider.create(slider, {
@@ -803,8 +831,11 @@
         slider.noUiSlider.on('update', (e) => { updateFilter(tagId, e); });
       }
 
+      // (!)
       function updateFilter(tagId, e) {
-        console.log("UPDATE FILTER");
+        // TODO
+        console.log(tagId);
+        console.log(e);
       }
 
   		const maxZoom = 4;
@@ -1016,25 +1047,47 @@
       function hidePromptContent(promptId) {
         target_div = document.getElementById("vote_button_" + promptId);
         active_prompt_content.style.display = "none";
+        replaceClasses(target_div, unstagedClasses, stagedClasses);
       }
 
       function showPromptContent(promptId) {
         target_div = document.getElementById("vote_button_" + promptId);
         active_prompt_content.style.display = "inline";
         target_div.appendChild(active_prompt_content);
+        replaceClasses(target_div, stagedClasses, unstagedClasses);
+      }
+
+      function addClasses(elem, classes) {
+        for (let i = 0; i < classes.length; i++) {
+          elem.classList.add(classes[i]);
+        }
+      }
+
+      function removeClasses(elem, classes) {
+        for (let i = 0; i < classes.length; i++) {
+          elem.classList.remove(classes[i]);
+        }
+      }
+
+      function replaceClasses(elem, toAdd, toRemove) {
+        addClasses(elem, toAdd);
+        removeClasses(elem, toRemove);
       }
 
       var isTouchDevice = false;  // assume not touch, but change after first touch
       var stagedVoteId = null;
+      const stagedClasses = ["border-4", "border-orange-200"];
+      const unstagedClasses = ["border", "border-gray-200"];
       function stage_vote(prompt) {
         if (prompt.id == stagedVoteId) {
           stagedVoteId = null;
           hidePromptContent(prompt.id);
           display_mapped_prompt(null);
           return;
+        } else if (stagedVoteId) {
+          hidePromptContent(stagedVoteId);
         }
         stagedVoteId = prompt.id;
-
         showPromptContent(prompt.id);
         staged_option0.innerHTML = prompt.option0;
         staged_option1.innerHTML = prompt.option1;
