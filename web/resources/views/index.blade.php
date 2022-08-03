@@ -44,9 +44,6 @@
       .pane { position:fixed; background-color:#000000; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
       .paneElement { position:fixed; top:0px; width: 100%; height:100%; text-align:center } //
   	</style>
-
-    <link href="nouislider.css" rel="stylesheet">
-    <script src="nouislider.js"></script>
   </head>
 
   <body>
@@ -200,7 +197,8 @@
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
           style="height:100%; width:50%; float:right; color:orange; background-color:gray">
-          Voters <span id="n_filters_msg" style="display:none"></span>
+          Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;
+            filter: invert(79%) sepia(33%) saturate(2885%) hue-rotate(324deg) brightness(100%) contrast(105%);"></img>
         </button>
       </div>
 
@@ -218,7 +216,8 @@
           <button
             id="vote_button_{{ $prompt->id }}"
             onclick="stage_vote({{ $prompt }})"
-            class="block m-1 p-2 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+            class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
+              m-2 border-4 border-gray-200"
           >
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
               {{ $prompt->caption }} {!! $prompt->is_mapped ? "&#127757; " : "" !!}
@@ -240,8 +239,9 @@
         @foreach ($tags as $tag)
           <div
             id="voter_container_{{ $tag->id }}"
-            class="mb-2 text-2xl font-bold tracking-tight text-gray-900
-            block bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+            class="text-2xl font-bold tracking-tight text-gray-900
+              block bg-white rounded-lg shadow-md hover:bg-gray-100
+              m-2 border-4 border-gray-200"
           >
             <table style="width:100%; table-layout:fixed">
               <tr style="height:60px">
@@ -251,20 +251,22 @@
                     href="javascript:void(0)"
                     onclick="stageVoter({{ $tag->id }})"
                   >
-                    {{ $tag->name }}
+                    <div class="h-full w-full p-3">
+                      {{ $tag->name }}
+                    </div>
                   </a>
                 </td>
                 <td style="width:20%">
                     <a
                     id="voter_filter_button_{{ $tag->id }}"
                     href="javascript:void(0)"
-                    onclick="addFilter({{ $tag->id }})"
-                    class="h-full">
-                      <div style="width:60%; height:60%" class="hover:bg-orange-200 p-1 rounded-full">
+                    onclick="addFilter({{ $tag->id }})">
+                      <div style="width:32px; height:32px"
+                        class="hover:bg-orange-200 p-1 rounded-full">
                         <img
                           id="voter_filter_icon_{{ $tag->id }}"
                           src="/filter_add.png"
-                          style="height:100%">
+                          style="max-height:24px; max-width:24px; height:auto; width:auto">
                         </img>
                     </div>
                   </a>
@@ -272,17 +274,17 @@
               </tr>
             </table>
 
-            <div id="filter_container_{{ $tag->id }}"
+            <div id="tag_key_container_{{ $tag->id }}"
               style="width:100%; height:50px; display:none">
               <table style="width:100%; text-align:center; margin-bottom:5px">
                 <tr>
-                  <td style="width:15%">
+                  <td style="width:15%" class="text-base">
                     Min
                   </td>
                   <td style="width:70%">
-                    <div id="filter_slider_{{ $tag->id }}" style="margin-left:15px; margin-right:15px"></div>
+                    <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0), rgba(255,157,71,1))"></div>
                   </td>
-                  <td style="width:15%">
+                  <td style="width:15%" class="text-base">
                     Max
                   </td>
                 </tr>
@@ -551,40 +553,42 @@
         }
         stagedVoterId = tagId;
 
-        console.log('STAGE');
-        console.log(tagId);
+        var filterContainer = document.getElementById("tag_key_container_" + tagId);
+        filterContainer.style.display = 'inline';
         var voterContainer = document.getElementById("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
       }
 
       function unstageVoter(tagId) {
-        console.log('UNSTAGE');
-        console.log(tagId);
+        var filterContainer = document.getElementById("tag_key_container_" + tagId);
+        filterContainer.style.display = 'none';
         var voterContainer = document.getElementById("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
       }
 
-      var activeFilters = {};
+      var activeFilter = null;
       function refreshFilterMsg() {
-        const nFilters = Object.keys(activeFilters).length;
-        if (nFilters == 0) {
-          n_filters_msg.style.display = 'none';
+        if (activeFilter == null) {
+          filters_msg.style.display = 'none';
         } else {
-          n_filters_msg.style.display = 'inline';
-          n_filters_msg.innerHTML = "<sup>(" + nFilters + ")</sup>";
+          filters_msg.style.display = 'inline';
         }
       }
 
       function addFilter(tagId) {
+        if (tagId == activeFilter) {
+          removeFilter(tagId);
+          return;
+        } else if (activeFilter) {
+          removeFilter(activeFilter);
+        }
         document.getElementById("voter_filter_button_" + tagId).onclick =
           () => {removeFilter(tagId);};
         var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
         filterIcon.src = "/filter_rem.png";
         filterIcon.parentNode.style['background-color'] = 'orange';
 
-        var filterContainer = document.getElementById("filter_container_" + tagId);
-        filterContainer.style.display = 'inline';
-        activeFilters[tagId] = [0,1];
+        activeFilter = tagId;
         refreshFilterMsg();
       }
 
@@ -594,9 +598,7 @@
         var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
         filterIcon.src = "/filter_add.png";
         filterIcon.parentNode.style.removeProperty('background-color');
-        var filterContainer = document.getElementById("filter_container_" + tagId);
-        filterContainer.style.display = 'none';
-        delete activeFilters[tagId];
+        activeFilter = null;
         refreshFilterMsg();
       }
 
@@ -815,28 +817,6 @@
   				]
   			)
   		}
-
-      function stylizeDoubleSlider(tagId) {
-        var slider = document.getElementById("filter_slider_" + tagId);
-        noUiSlider.create(slider, {
-          start: [0, 1],
-          connect: true,
-          step: 0.1,
-          range: {
-              'min': 0,
-              'max': 1
-          }
-        });
-
-        slider.noUiSlider.on('update', (e) => { updateFilter(tagId, e); });
-      }
-
-      // (!)
-      function updateFilter(tagId, e) {
-        // TODO
-        console.log(tagId);
-        console.log(e);
-      }
 
   		const maxZoom = 4;
   		const maxStepDeg = 15;
@@ -1070,14 +1050,14 @@
       }
 
       function replaceClasses(elem, toAdd, toRemove) {
-        addClasses(elem, toAdd);
         removeClasses(elem, toRemove);
+        addClasses(elem, toAdd);
       }
 
       var isTouchDevice = false;  // assume not touch, but change after first touch
       var stagedVoteId = null;
-      const stagedClasses = ["border-4", "border-orange-200"];
-      const unstagedClasses = ["border", "border-gray-200"];
+      const stagedClasses = ["border-orange-200"];
+      const unstagedClasses = ["border-transparent-200"];
       function stage_vote(prompt) {
         if (prompt.id == stagedVoteId) {
           stagedVoteId = null;
@@ -1162,7 +1142,6 @@
 
 
       const tagsArr = {{ Js::from($tags) }};
-      tagsArr.map((elem) => {stylizeDoubleSlider(elem.id);});
       const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       @auth
         var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
