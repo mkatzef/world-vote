@@ -13,9 +13,10 @@
     @guest
       <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT"></script>
     @endguest
-    <!-- TODO: use alternative tailwind method -->
-    <script src="https://cdn.tailwindcss.com"></script>
-  	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @vite('resources/css/app.css')
+
   	<link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
   	<style>

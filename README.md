@@ -21,29 +21,23 @@ You can install the above with `pip install -r src/requirements.txt`
 ## Web
 Early versions had a simple `index.html` that could be loaded in a web browser directly.
 
-We're not in Kansas anymore; navigate to `./web` and run:  
-`php artisan serve`  
-OR  
-`art serve`  
-If you have the recommended `laravel` shell config.
+We're not in Kansas anymore; navigate to `./web` in TWO terminals,
+1. run `npm run dev`  
+2. run `php artisan serve` (OR `art serve` if you have the recommended `laravel` shell config)  
 
 The locally-hosted URL will appear in your terminal when running. Navigate to that link in a web browser and continue debugging.
 
 
 ## Next steps
 Small:
-* Add caption to votes/voters panes
-* Fix filter icons
-* Fix tag button click box
-* Add color scale to filter bars
 * Fix about display
 * Fix user type display
+* Install tailwind
 
 Big:  
 * Move database processing to aws lambda  
 * Add google ads to web app  
 * Connect captchas with login  
-* Add filters based on tags (show only the cells with tag ratio in [min, max])  
 * Improve unique keys
 Optional:
 * Add location compatibility filter (cosine similarity)
