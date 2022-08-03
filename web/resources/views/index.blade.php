@@ -205,36 +205,47 @@
       <div
         id="poll_tab_votes"
         class="scrolling-y"
-        @auth
-          style="height:calc(100% - 150px);
-        @else
-          style="height:calc(100% - 100px);
-        @endauth
-        display:flex; flex-direction:column; background-color:white; border-top-right-radius:5px">
+        style="height:calc(100% - 100px); display:flex; flex-direction:column;
+          background-color:white; border-top-right-radius:5px">
+        <div
+          class="block bg-white rounded-lg shadow-md p-2
+            m-2 border-4 border-gray-200"
+        >
+          Info
+          @auth
+            <div style="width:100%; text-align:center">
+              Your login code is: <b>{{ auth()->user()->access_token }}</b>
+            </div>
+          @endauth
+        </div>
 
         @foreach ($prompts as $prompt)
-          <button
+          <div
             id="vote_button_{{ $prompt->id }}"
-            onclick="stage_vote({{ $prompt }})"
             class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
               m-2 border-4 border-gray-200"
           >
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+            <h5
+              onclick="stage_vote({{ $prompt }})"
+              class="cursor-pointer mb-2 text-2xl font-bold tracking-tight text-gray-900">
               {{ $prompt->caption }} {!! $prompt->is_mapped ? "&#127757; " : "" !!}
             </h5>
-          </button>
+          </div>
         @endforeach
       </div>
 
       <div
         id="poll_tab_voters"
         class="scrolling-y"
-        @auth
-          style="height:calc(100% - 150px); display:flex; flex-direction:column;
-        @else
-          style="height:calc(100% - 100px); display:flex; flex-direction:column;
-        @endauth
-        display:none; background-color:white; border-top-left-radius:5px">
+        style="height:calc(100% - 100px); display:flex; flex-direction:column;
+          display:none; background-color:white; border-top-left-radius:5px">
+
+        <div
+          class="block bg-white rounded-lg shadow-md p-2
+            m-2 border-4 border-gray-200"
+        >
+          See where people are voting from and filter votes by tag!
+        </div>
 
         @foreach ($tags as $tag)
           <div
@@ -294,20 +305,10 @@
         @endforeach
       </div>
 
-      <div
-        @auth
-          style="height:100px">
-            <div style="position:absolute; height:50px; bottom:50px; background-color:white; width:100%; text-align:center">
-              <p>Your login code is: <b>{{ auth()->user()->access_token }}</b></p>
-            </div>
-        @else
-          style="height:50px">
-        @endauth
-        <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
-          <p>Big fat advertisement</p>
-        </div>
-        <div id="captcha-container"></div>
+      <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
+        <p>Big fat advertisement</p>
       </div>
+      <div id="captcha-container"></div>
     </div>
 
 
