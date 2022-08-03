@@ -29,7 +29,7 @@
         top: {{ $title_height_px }}px;
         left: 0;
         right: 0;
-        background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+        background-color: rgb(255, 255, 255, 0.5);
         z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
         cursor: pointer; /* Add a pointer on hover */
       }
@@ -42,7 +42,7 @@
         display: none;
       }
 
-      .pane { position:fixed; background-color:#000000; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
+      .pane { position:fixed; background-color:#ffffff; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
       .paneElement { position:fixed; top:0px; width: 100%; height:100%; text-align:center } //
   	</style>
   </head>
@@ -53,10 +53,10 @@
     <!--
       TITLE
     -->
-    <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#000000">
+    <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#ffffff">
       <div style="float:left;max-width:70%;">
         <a href="/">
-          <img id="logo_img" src="/logo.png" style="height:{{ $title_height_px }}px"></img>
+          <img id="logo_img" src="/logo-w.png" style="height:{{ $title_height_px }}px"></img>
         </a>
       </div>
 
@@ -64,9 +64,9 @@
         <a id="hammy" href="javascript:void(0)" onclick="hamburgerOpen()"
           style="display:none; margin-top:10px; height:{{ $title_height_px }}px; margin-right:10px">
           <div class="space-y-2">
-            <div class="w-8 h-0.5" style="background-color:white"></div>
-            <div class="w-8 h-0.5" style="background-color:white"></div>
-            <div class="w-8 h-0.5" style="background-color:white"></div>
+            <div class="w-8 h-0.5" style="background-color:black"></div>
+            <div class="w-8 h-0.5" style="background-color:black"></div>
+            <div class="w-8 h-0.5" style="background-color:black"></div>
           </div>
         </a>
 
@@ -93,7 +93,7 @@
       <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
         <a id="map_toggle_link" href="javascript:void(0)" onclick="toggleMap()">
           <div id="map_toggle_bg" class="space-y-2"
-          style="width:45px; height:22px; background-color:white; border-radius:11px; margin-right:10px">
+            style="width:52px; height:26px; background-color:white; border-width:2px; border-color:orange; border-radius:13px; margin-right:10px">
             <img id="map_toggle_orb" src="/earth.png" style="width:22px; height:22px; float:left"></img>
           </div>
         </a>
@@ -104,20 +104,20 @@
       <ul>
         <li>
           <a id="hammy_pane_polls" href="javascript:void(0)" onclick="set_pane_mode('pane_polls')"
-           style="color:white">
+           style="color:black">
             Polls
           </a>
         </li>
         <li>
           <a id="hammy_pane_about" href="javascript:void(0)" onclick="set_pane_mode('pane_about')"
-          style="color:white">
+          style="color:black">
             About
           </a>
         </li>
         @auth
         <li>
           <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
-          style="color:white">
+          style="color:black">
             My Details
           </a>
         </li>
@@ -137,8 +137,8 @@
     <!--
       OVERLAY
     -->
-  	<div id="pane_overlay" style="position:absolute;width:100%;height:100%;background-color:#000000">
-      <p style="color:#FFFFFF">Loading, please wait!</p>
+  	<div id="pane_overlay"
+      style="position:absolute; width:100%; height:100%; background-color:white">
     </div>
 
     <div id="pane_about" class="paneElement scrolling">
@@ -188,21 +188,23 @@
   	<div id="pane_polls" class="paneElement">
       <div
         style="height:50px"
-        class="block bg-black rounded-t-lg border-0 shadow-md"
+        class="block rounded-t-lg border-0 shadow-md"
       >
         <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:left; color:orange; background-color:white">
-          Votes
+          style="height:100%; width:50%; float:left; color:orange; background-color:white;
+            border-top-width:2px; border-right-width:2px;">
+            Votes
         </button>
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:right; color:orange; background-color:gray">
-          Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;
-            filter: invert(79%) sepia(33%) saturate(2885%) hue-rotate(324deg) brightness(100%) contrast(105%);"></img>
+          style="height:100%; width:50%; float:right; color:black; background-color:orange;
+            border-top-width:2px; border-left-width:2px">
+            Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;"></img>
         </button>
       </div>
 
+    <div style="background-color:orange; height:100%; width:100%"><!-- Cosmetic -->
       <div
         id="poll_tab_votes"
         class="scrolling-y"
@@ -305,6 +307,7 @@
           </div>
         @endforeach
       </div>
+    </div><!-- Cosmetic -->
 
       <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
         <p>Big fat advertisement</p>
@@ -347,30 +350,36 @@
       NEW
     -->
     <div id="pane_user_type" class="paneElement">
-      <button onclick="set_pane_mode('pane_new_user')" class="{{ $header_button_class }}">
-        New vote!
-      </button>
+      <div style="display:flex; position:fixed; height:100%; width:25%; left:0px;
+        text-align:center; align-items:center">
+        <div style="width:100%">
+          <button onclick="set_pane_mode('pane_new_user')"
+            class="{{ $header_button_class }}"
+            style="width:70%; margin-bottom:50px">
+            New vote!
+          </button>
 
-      <div style="background-color:white">
-        <h1>OR</h1>
+          <div style="background-color:white">
+            <h1>OR</h1>
+          </div>
+
+          <button onclick="set_pane_mode('pane_login')"
+            class="{{ $header_button_class }}"
+            style="width:70%; margin-top:50px">
+            Login
+          </button>
+        </div>
       </div>
-
-      <button onclick="set_pane_mode('pane_login')" class="{{ $header_button_class }}">
-        Login
-      </button>
     </div>
 
 
     <div id="pane_new_user" class="paneElement">
       <div class="scrolling-y" style="height:100%">
-        <button onclick="set_pane_mode('pane_user_type')" class="{{ $header_button_class }}">
-          Back
-        </button>
-        <br>
 
-        <button id="new_location_button" onclick="set_up_select_ui('new')" class="{{ $header_button_class }}">
-          Select location
-        </button>
+        Please choose your rought location on the map:
+        <span id="new_location_button">
+          In progress...
+        </span>
 
         <form id="new_vote_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
           @csrf
@@ -394,7 +403,7 @@
             Submit
           </button><br>
           <div style="background-color:white">
-            <input type="checkbox" name="remember_me">Remember me on this device</input>
+            <input type="checkbox" name="remember_me">Remember me on this device (uses cookies)</input>
           </div>
         </form>
       </div>
@@ -407,7 +416,7 @@
     <div id="pane_my_details" class="paneElement">
       <div class="scrolling-y" style="height:100%">
         <button id="update_location_button" onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
-          Select location
+          Update location
         </button><br>
         <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
           @csrf
@@ -416,7 +425,7 @@
 
           <div style="background-color:white">
             <h3 class="mb-5 text-lg font-medium text-gray-900">
-              Select any tags for your vote:
+              Update your tags:
             </h3>
           </div>
           <ul class="grid gap-2 w-full md:grid-cols-1">
@@ -425,6 +434,13 @@
             @endforeach
           </ul>
 
+          <button
+            class="{{ $header_button_class }}"
+            type="button"
+            onclick="set_pane_mode('pane_polls')"
+          >
+            Cancel
+          </button>
           <button
             class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
           >
@@ -435,7 +451,7 @@
               @auth
                 {{ request()->cookie('access_token') ? 'checked' : '' }}
               @endauth
-              >Remember me on this device
+              >Remember me on this device (uses cookies)
             </input>
           </div>
         </form>
@@ -497,15 +513,15 @@
   	  });
 
       /* Page layout */
-      const pane_divs = [
-        'pane_overlay',
-        'pane_about',
-        'pane_polls',
-        'pane_new_user',
-        'pane_user_type',
-        'pane_login',
-        'pane_my_details',
-      ];
+      const pane_divs = {
+        'pane_overlay': {},
+        'pane_about': {},
+        'pane_polls': {},
+        'pane_new_user': {'on_entry': () => {set_up_select_ui('new');}},
+        'pane_user_type': {},
+        'pane_login': {},
+        'pane_my_details': {},
+      };
 
       function set_pane_mode(pane_mode) {
         // Remove all map elements
@@ -514,20 +530,23 @@
         hamburgerClose();
 
         // disable all divs that aren't pane_mode
-        pane_divs.forEach((pane_id) => {
+        for (let pane_id in pane_divs) {
           var hammy_elem = document.getElementById("hammy_" + pane_id);
           if (pane_mode == pane_id) {
             document.getElementById(pane_id).style.display = 'inline';
+            if ('on_entry' in pane_divs[pane_id]) {
+              pane_divs[pane_id]['on_entry']();
+            }
             if (hammy_elem) {
-              document.getElementById("hammy_" + pane_id).style.color = 'orange';
+              hammy_elem.style.color = 'orange';
             }
           } else {
             document.getElementById(pane_id).style.display = 'none';
             if (hammy_elem) {
-              document.getElementById("hammy_" + pane_id).style.color = 'white';
+              hammy_elem.style.color = 'black';
             }
           }
-        });
+        }
       }
 
       function set_pane_poll_mode(pane_poll_mode) {
@@ -535,12 +554,16 @@
           poll_tab_votes.style.display = 'flex';
           poll_tab_voters.style.display = 'none';
           poll_tab_vote_button.style['background-color'] = 'white';
-          poll_tab_voter_button.style['background-color'] = 'gray';
+          poll_tab_vote_button.style['color'] = 'orange';
+          poll_tab_voter_button.style['background-color'] = 'orange';
+          poll_tab_voter_button.style['color'] = 'black';
         } else {
           poll_tab_votes.style.display = 'none';
           poll_tab_voters.style.display = 'flex';
-          poll_tab_vote_button.style['background-color'] = 'gray';
+          poll_tab_vote_button.style['background-color'] = 'orange';
+          poll_tab_vote_button.style['color'] = 'black';
           poll_tab_voter_button.style['background-color'] = 'white';
+          poll_tab_voter_button.style['color'] = 'orange';
         }
       }
 
@@ -621,7 +644,7 @@
           map_toggle_bg.style['background-color'] = 'white';
           map_toggle_orb.style.float = 'left';
         } else {
-          map_toggle_bg.style['background-color'] = 'gray';
+          map_toggle_bg.style['background-color'] = '#505050';
           map_toggle_orb.style.float = 'right';
         }
         optimizeLayout();
@@ -636,7 +659,7 @@
             document.getElementById('pane_container').style.top = "0%";
             document.getElementById('map').style.display = "none";
           }
-          logo_img.src = "/logo-narrow.png";
+          logo_img.src = "/logo-w-stacked.png";
 
           document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
           document.getElementById('pane_container').style.width = "100%";
@@ -647,7 +670,7 @@
           vert_options.style.display = "block";
           hammy.style.display = "block";
         } else {
-          logo_img.src = "/logo.png";
+          logo_img.src = "/logo-w.png";
           document.getElementById('map').style.display = "inline";
           stats_chart.style.display = "block";
           document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
@@ -1141,7 +1164,6 @@
           display_mapped_prompt(null);
         }
       }
-
 
       const tagsArr = {{ Js::from($tags) }};
       const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
