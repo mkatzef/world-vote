@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\App;
+
 use App\Models\User;
 use App\Models\Tag;
 use App\Models\Prompt;
@@ -12,6 +14,10 @@ class RegisterController extends Controller
 {
   public function store()
   {
+    if (!App::environment('local') && !$this->captchaIsValid()) {
+      return redirect('/unsuccessful');
+    }
+
     $attributes = request()->validate([
       'grid_row' => 'required',
       'grid_col' => 'required',
@@ -89,8 +95,23 @@ class RegisterController extends Controller
 
   public function login()
   {
+    if (!App::environment('local') && !$this->captchaIsValid()) {
+      return redirect('/unsuccessful');
+    }
+
     $user = User::where('access_token', '=', request()->get('access_token'))->first();
     auth()->login($user);
     return redirect("/");
+  }
+
+  private function captchaIsValid() {
+    $captchaResponse = request()['g-recaptcha-response'];
+
+    $secretKey = env('CAPTCHA_SECRET_KEY');
+    $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) .  '&response=' . urlencode($captchaResponse);
+    $response = file_get_contents($url);
+    $responseKeys = json_decode($response, true);
+
+    return $responseKeys['success'];
   }
 }

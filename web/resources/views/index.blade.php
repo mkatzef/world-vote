@@ -11,7 +11,7 @@
   	<meta charset="utf-8">
   	<title>My World Vote</title>
     @guest
-      <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT"></script>
+      <script src="https://www.google.com/recaptcha/enterprise.js"></script>
     @endguest
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -247,7 +247,7 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
-          See where people are voting from and filter votes by tag!
+          See where voters are from and filter responses by tag
         </div>
 
         @foreach ($tags as $tag)
@@ -312,7 +312,12 @@
       <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
         <p>Big fat advertisement</p>
       </div>
-      <div id="captcha-container"></div>
+      <div id="captcha-container"
+        class="g-recaptcha"
+        data-sitekey="6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT";
+        data-callback="submitWithCaptcha"
+        data-size="invisible">
+      </div>
     </div>
 
 
@@ -350,7 +355,7 @@
       NEW
     -->
     <div id="pane_user_type" class="paneElement">
-      <div style="display:flex; position:fixed; height:100%; width:25%; left:0px;
+      <div style="display:flex; height:100%; width:100%; left:0px;
         text-align:center; align-items:center">
         <div style="width:100%">
           <button onclick="set_pane_mode('pane_new_user')"
@@ -376,13 +381,14 @@
     <div id="pane_new_user" class="paneElement">
       <div class="scrolling-y" style="height:100%">
 
-        Please choose your rought location on the map:
+        Please choose your rough location on the map:<br>
         <span id="new_location_button">
           In progress...
         </span>
 
-        <form id="new_vote_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
+        <form id="new_details_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
           @csrf
+          <input type="text" id="captcha_val_new" name="g-recaptcha-response" style="display:none">
           <input type="number" id="new-row" name="grid_row" style="display:none">
           <input type="number" id="new-col" name="grid_col" style="display:none">
 
@@ -398,7 +404,9 @@
           </ul>
 
           <button
+            type="button"
             class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+            onclick="newVoteSubmit()"
           >
             Submit
           </button><br>
@@ -441,9 +449,7 @@
           >
             Cancel
           </button>
-          <button
-            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
-          >
+          <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
             Submit
           </button><br>
           <div style="background-color:white">
@@ -463,12 +469,9 @@
       LOGIN
     -->
     <div id="pane_login" class="paneElement">
-      <button onclick="set_pane_mode('pane_user_type')" class="{{ $header_button_class }}">
-        Back
-      </button>
-      <br>
-      <form id="login_form" action="/login" method="POST"> <!--target="form_sink">-->
+      <form id="login_details_form" action="/login" method="POST"> <!--target="form_sink">-->
         @csrf
+        <input type="text" id="captcha_val_login" name="g-recaptcha-response" style="display:none">
         <div style="background-color:white">
           <label for="utoken">Login code:</label><br>
         </div>
@@ -478,6 +481,15 @@
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
         <button
+          type="button"
+          onclick="set_pane_mode('pane_user_type')"
+          class="{{ $header_button_class }}"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          onclick="primeForCaptcha('login')"
           class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
         >
           Submit
@@ -494,13 +506,19 @@
 
 
   	<script>
-      @guest
-      grecaptcha.enterprise.ready(function() {
-        grecaptcha.enterprise.execute('6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT', {action: 'login'}).then(function(token) {
-          // TODO: connect with user actions!
-        });
-      });
-      @endguest
+      var activeCaptchaForm = null;  // 'new' or 'login'
+      function primeForCaptcha(formType) {
+        activeCaptchaForm = formType;
+        {{ App::environment('local') ? "submitWithCaptcha();" : "grecaptcha.enterprise.execute();" }}
+      }
+
+      function submitWithCaptcha(token=null) {
+        if (token) {
+          document.getElementById('captcha_val_' + activeCaptchaForm).value = token;
+        }
+        document.getElementById(activeCaptchaForm + "_details_form").submit();
+      }
+
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
       const map = new mapboxgl.Map({
@@ -644,7 +662,7 @@
           map_toggle_bg.style['background-color'] = 'white';
           map_toggle_orb.style.float = 'left';
         } else {
-          map_toggle_bg.style['background-color'] = '#505050';
+          map_toggle_bg.style['background-color'] = 'darkorange';
           map_toggle_orb.style.float = 'right';
         }
         optimizeLayout();
@@ -992,15 +1010,14 @@
         }
       }
 
-      new_vote_form.addEventListener('submit',
-        function (e) {
-          if (document.getElementById('new-row').value == "" ||
-              document.getElementById('new-col').value == "") {
-            e.preventDefault();
-            alert("Please confirm the location for your vote");
-          }
+      function newVoteSubmit() {
+        if (document.getElementById('new-row').value == "" ||
+            document.getElementById('new-col').value == "") {
+          alert("Please confirm the location for your vote");
+        } else {
+          primeForCaptcha('new');
         }
-      );
+      }
 
       update_details_form.addEventListener('submit',
         function (e) {
@@ -1191,8 +1208,7 @@
       }
     </style>
   @endguest
-
+  <!-- Needed for the current workaround/hack to give feedback on sliders -->
   <style data="test" type="text/css">
   </style>
-
 </html>
