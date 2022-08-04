@@ -29,7 +29,7 @@
         top: {{ $title_height_px }}px;
         left: 0;
         right: 0;
-        background-color: rgb(255, 255, 255, 0.5);
+        background-color: rgb(255, 255, 255, 0.85);
         z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
         cursor: pointer; /* Add a pointer on hover */
       }
@@ -101,35 +101,37 @@
     </div>
 
     <div id="navOverlay">
-      <ul>
-        <li>
-          <a id="hammy_pane_polls" href="javascript:void(0)" onclick="set_pane_mode('pane_polls')"
-           style="color:black">
-            Polls
-          </a>
-        </li>
-        <li>
-          <a id="hammy_pane_about" href="javascript:void(0)" onclick="set_pane_mode('pane_about')"
-          style="color:black">
-            About
-          </a>
-        </li>
-        @auth
-        <li>
-          <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
-          style="color:black">
-            My Details
-          </a>
-        </li>
-        @else
-        <li>
-          <a id="hammy_pane_user_type" href="javascript:void(0)" onclick="set_pane_mode('pane_user_type')"
-          style="color:white">
-            Vote!
-          </a>
-        </li>
-        @endauth
-      </ul>
+      <p>
+        <a id="hammy_pane_polls" href="javascript:void(0)" onclick="set_pane_mode('pane_polls')"
+         class="text-2xl m-2"
+         style="color:black">
+          Polls
+        </a>
+      </p>
+      <hr>
+      <p>
+        <a id="hammy_pane_about" href="javascript:void(0)" onclick="set_pane_mode('pane_about')"
+        class="text-2xl m-2"
+        style="color:black">
+          About
+        </a>
+      </p>
+      <hr>
+      <p>
+      @auth
+        <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
+        class="text-2xl m-2"
+        style="color:black">
+          My Details
+        </a>
+      @else
+        <a id="hammy_pane_user_type" href="javascript:void(0)" onclick="set_pane_mode('pane_user_type')"
+        class="text-2xl m-2"
+        style="color:black">
+          Vote!
+        </a>
+      @endauth
+      </p>
     </div>
 
     <div id="pane_container" class="pane">
@@ -1208,7 +1210,9 @@
       }
     </style>
   @endguest
+
   <!-- Needed for the current workaround/hack to give feedback on sliders -->
-  <style data="test" type="text/css">
-  </style>
+  <style data="test" type="text/css"></style>
+  <!-- See above -->
+
 </html>

@@ -4,13 +4,13 @@
 # Iterate over all records, binning results into each raw array (sums, counts)
 # save as separate .npy files
 
-import mysql.connector
 import json
 import numpy as np
 import os
 import sys
 
 from common import *
+from db_common import DB_CNX
 
 if len(sys.argv) < 2:
     print("Insufficient arguments, needs out_dir")
@@ -24,10 +24,10 @@ if not os.path.exists(out_dir):
         print("Could not open or create given directory:", out_dir)
 
 
-cnx = mysql.connector.connect(user='root', password='',
+DB_CNX = mysql.connector.connect(user='root', password='',
                               host='127.0.0.1',
                               database='world_vote')
-cursor = cnx.cursor()
+cursor = DB_CNX.cursor()
 
 cursor.execute("SELECT slug FROM tags")
 all_tags = list([e[0] for e in cursor])
@@ -78,4 +78,4 @@ for p_id, base_data in map_data_dict.items():
 np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_dict, dtype=object))
 
 cursor.close()
-cnx.close()
+DB_CNX.close()

@@ -4,16 +4,13 @@
 # Iterate over all records, binning results into each raw array (sums, counts)
 # save as separate .npy files
 
-import mysql.connector
 import random
 import json
 
 from common import *
+from db_common import DB_CNX
 
-cnx = mysql.connector.connect(user='root', password='',
-                              host='127.0.0.1',
-                              database='world_vote')
-cursor = cnx.cursor()
+cursor = DB_CNX.cursor()
 
 cursor.execute("SELECT slug FROM tags")
 all_tags = list([e[0] for e in cursor])
@@ -47,7 +44,7 @@ sql_parts = [
     {'db_key': 'responses', 'format_spec': '%s', 'rng_gen': get_rnd_responses},
 ]
 
-def add_n_users(n, cursor, cnx, start_token=0):
+def add_n_users(n, cursor, DB_CNX, start_token=0):
     global COUNT
     COUNT = start_token
     for i in range(n):
@@ -55,9 +52,9 @@ def add_n_users(n, cursor, cnx, start_token=0):
         val = get_sql_val(sql_parts)
         COUNT += 1
         cursor.execute(sql, val)
-    cnx.commit()
+    DB_CNX.commit()
 
-add_n_users(1000000, cursor, cnx, start_token=100010)
+add_n_users(1000000, cursor, DB_CNX, start_token=100010)
 
 cursor.close()
-cnx.close()
+DB_CNX.close()
