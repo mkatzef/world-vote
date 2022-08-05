@@ -1104,6 +1104,7 @@
       );
 
       // Note: barColors can be a different length than data - uses linear interpolation
+      // TODO: add refresh option to update wrt filters
       function displayStats(data, barColors) {
         var n_elems = data.length;
         var n_intervals = data.length - 1;
@@ -1112,9 +1113,6 @@
           var bar = document.getElementById("stats_cell_" + i);
           bar.style['background-color'] = "rgb("+ color.join(',') +")";
           bar.style['height'] = 100*data[i] + "%";
-
-            //"border-top: 1px solid #aaaaaa; border-top-left-radius:5px; border-top-right-radius:5px;" +
-            //"width:" + width + "%; height:" + 100*data[i] + "%;";
         }
       }
 
@@ -1252,7 +1250,8 @@
           }
         @endauth
 
-        displayStats(JSON.parse(prompt['count_ratios']), colorSteps);
+        var filterKey = (activeFilterId ? allTags[activeFilterId].slug : 'all');
+        displayStats(JSON.parse(prompt['count_ratios'])[filterKey], colorSteps);
         if (prompt.is_mapped) {
           display_mapped_prompt(prompt.id, colorSteps);
         } else {

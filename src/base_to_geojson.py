@@ -80,8 +80,7 @@ def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir):
             'tag_key': tag_key},
             dtype=object)
         np.save(outname, tmp_obj)
-
-        return total_count
+    return total_count
 
 
 def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
@@ -110,6 +109,8 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
         filtered_counts = np.where(kept_indices, counts, sentinel_val).astype(float)
         # Perform 0 ('all') last
         for i in list(range(1, len(tag_key))) + [0]:
+            if np.sum(kept_indices[:, :, i]) == 0:
+                continue
             # Calculate the ratio of responses with each tag
             layer_data = filtered_counts[:, :, i][kept_indices[:, :, i]]
             if i > 0:

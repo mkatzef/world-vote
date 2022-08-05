@@ -32,7 +32,7 @@ class BaseData:
 def get_base_data(tags, mapped_prompts, counted_prompts, users):
     tag_key = ['all'] + tags  # Order of data: starts with all, followed by each tag
     tag_dict = dict([(k, i) for i, k in enumerate(tags)])
-    n_layers = len(tags)
+    n_layers = len(tag_key)
 
     map_data_dict = dict([(p_id, BaseData(p_id, tag_key=tag_key)) for p_id in mapped_prompts])
     counts_dict = dict([(p_id, np.zeros((VOTE_MAX_STEP+1, n_layers))) for p_id in counted_prompts])
@@ -57,14 +57,14 @@ def get_base_data(tags, mapped_prompts, counted_prompts, users):
 
             counts_dict[p_id][val, tag_inds] += 1
 
-    return map_data_dict, counts_dict
+    return map_data_dict, {'counts': counts_dict, 'tag_key': tag_key}
 
 
 def main(out_dir, tags, mapped_prompts, counted_prompts, users):
-    map_data_dict, counts_dict = get_base_data(tags, mapped_prompts, counted_prompts, users)
+    map_data_dict, counts_obj = get_base_data(tags, mapped_prompts, counted_prompts, users)
     for p_id, base_data in map_data_dict.items():
         base_data.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))
-    np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_dict, dtype=object))
+    np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_obj, dtype=object))
 
 
 if __name__ == "__main__":
