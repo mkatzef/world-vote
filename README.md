@@ -8,7 +8,7 @@
 ## Data formats
 * `base`: `.npy` containing raw data sums and counts; one per data channel e.g., `demo0.npy`  
 * `zoom array`: `.npy` of the same name as the data channel, averaged, filtered, and binned for multiple zoom levels, e.g., `z04/demo0.npy`  
-* `cells`: `.json` all `zoom array`s at the current zoom aggregated into geojson (one polygon per array cell), e.g., `z04/cells.json`
+* `cells`: `.pbf` all `zoom array`s at the current zoom aggregated into geojson (converted to protobuf) (one polygon per array cell), e.g., `z04/cells.pbf`
 * `tiles`: `.mbtiles` directly from the `cells` file for that zoom level, e.g., `z04/tiles.mbtiles`  
 * `tiles-comb`: `.mbtiles` combining each of the individual `tiles` files (this is the output file ready for mapbox), e.g., `tiles-comb.mbtiles`  
 
