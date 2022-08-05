@@ -8,7 +8,8 @@ access_token.txt
 web_uploads/*
 *.env
 *.env-*
-*rds_config.py
+*db_config.py
+*__pycache__*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

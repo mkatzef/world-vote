@@ -22,7 +22,7 @@ You can install the above with `pip install -r src/requirements.txt`
 Early versions had a simple `index.html` that could be loaded in a web browser directly.
 
 We're not in Kansas anymore; navigate to `./web` in TWO terminals,
-1. run `npm run dev`  
+1. run `npm run dev` or `prod` to generate the js and css in `/public`  
 2. run `php artisan serve` (OR `art serve` if you have the recommended `laravel` shell config)  
 
 The locally-hosted URL will appear in your terminal when running. Navigate to that link in a web browser and continue debugging.

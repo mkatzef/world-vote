@@ -2,11 +2,15 @@
 Started as an AWS lambda shenanigan but only parts of the process could be completed there
 Moving to a docker container so that multiple hosting options are opened up.
 
+## Docker usage sequence
+Create new, tagged image
+`docker build -t world_vote .`
 
-# Installing new packages
-New packages need to be present in the packages directory
-Install `pkg` directly to the packages directory using:
-`pip install --target ./package pkg'
+Run it as a daemon, take note of its container ID
+`docker run -d -it world_vote`
 
-# Preparing for upload
-Run `./map_package.sh` to generate an `upload.zip` file containing source and package contents.
+Interact with your creation
+`docker exec -it C_ID bash`
+
+# TODO:
+Map host storage to container, run end-to-end scripts

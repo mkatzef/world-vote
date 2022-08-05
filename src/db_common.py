@@ -1,9 +1,9 @@
 import mysql.connector
-import rds_config
+import db_config
 
 DB_CNX = mysql.connector.connect(
-            user=rds_config.db_username,
-            password=rds_config.db_password,
-            host=rds_config.db_endpoint,
-            database=rds_config.db_name
+            user=db_config.username,
+            password=db_config.password,
+            host=db_config.endpoint,
+            database=db_config.db_name
         )

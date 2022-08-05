@@ -3,6 +3,7 @@ Treats the world map as an image array with integral indices
 0,0 is the top-left cell, defined by its top-left point of [-180, 90]
 """
 
+import argparse
 import json
 import random
 import numpy as np
@@ -30,14 +31,6 @@ def BASE_POLY():
     }
 
 
-def generate_demo(demo_name='demo.npy', demo_zoom=MAX_ZOOM):
-    nx, ny = n_cells_xy(demo_zoom)
-    res_counts = np.random.randint(0, 1000, (ny, nx))
-    rnd_ratios = np.random.uniform(0, 1, (ny, nx))
-    res_sums = np.round(rnd_ratios * res_counts)
-    save_base_data('stats/%s' % demo_name, demo_zoom, res_sums, res_counts)
-
-
 def get_bbox_from_anchor(lonlat, step_size):
     lon, lat = lonlat
     return [(lon + dx * step_size, lat + dy * step_size) for dx, dy in COORD_ORDER]
@@ -53,64 +46,77 @@ def get_bbox_for_cell(zoom, x, y, step_size=None):
     return get_bbox_from_anchor((lon, lat), step_size)
 
 
-def bin_stats_to_zooms(stats_dir):
-    for stat_filename in next(os.walk(stats_dir))[2]:
+def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir):
+    # For each channel, we have a high res array
+    base_data = np.load(os.path.join(base_dir, stat_filename), allow_pickle=True).tolist()
+    properties = base_data['properties']
+    max_zoom = properties['max_zoom']
+    sums = base_data['res_sums']
+    counts = base_data['res_counts']
+    tag_key = base_data['tag_key']  # ['all' or the slug of each tag as the last dim of the data arrays]
+
+    assert THRESHOLD_COUNT > 0, "Divide by zero can occur"
+    sentinel_val = -1
+
+    print("max zoom:", max_zoom)
+    for zoom in range(max_zoom, -1, -1):
+        pathname = os.path.join(out_dir, "z%02d" % zoom)
+        if not os.path.exists(pathname):
+            os.makedirs(pathname)
+        if zoom < max_zoom:
+            sums = block_reduce(sums, block_size=(2, 2, 1), func=np.sum)
+            counts = block_reduce(counts, block_size=(2, 2, 1), func=np.sum)
+
+        kept_indices = counts > THRESHOLD_COUNT
+        # Sums
+        filtered_data = np.where(kept_indices, sums, sentinel_val)  # hide low-volume data for privacy
+        # Means
+        filtered_data[kept_indices] /= counts[kept_indices]  # Guaranteed to avoid divide by 0
+
+        outname = os.path.join(pathname, stat_filename)
+        tmp_obj = np.array({
+            'prompt_data': filtered_data,
+            'tag_key': tag_key},
+            dtype=object)
+        np.save(outname, tmp_obj)
+
+        # TODO: tags can be processed similarly.
+        # Need to divide tag layers by their corresponding all layer to get frequency
+        # Min/max scale each layer of frequency
+
+        #amin = np.amin(sums, axis=(0, 1), where=kept_indices)
+        #amax = np.amax(sums, axis=(0, 1), where=kept_indices)
+        # Remove bottom layer, skip layers with amin==amax
+        #filtered_data[kept_indices] = (filtered_data[kept_indices] - amin) / (amax - amin)
+
+
+def bin_stats_to_zooms(base_dir, out_dir):
+    for stat_filename in next(os.walk(base_dir))[2]:
         print("File:", stat_filename, end=', ')
         if not stat_filename.endswith('.npy') or stat_filename.startswith('_'):
             print("Skipping '_' or non .npy file:", stat_filename)
             continue
 
-        # For each channel, we have a high res array
-        base_data = np.load(os.path.join(stats_dir, stat_filename), allow_pickle=True).tolist()
-        properties = base_data['properties']
-        max_zoom = properties['max_zoom']
-        agg_mode = 'absolute'  # absolute: per-cell ratios, relative: per-cell ratios AND min/max scaled
-        sums = base_data['res_sums']
-        counts = base_data['res_counts']
-
-        assert THRESHOLD_COUNT > 0, "Divide by zero can occur"
-        sentinel_val = -1
-
-        print("max zoom:", max_zoom)
-        for zoom in range(max_zoom, -1, -1):
-            pathname = os.path.join(stats_dir, "z%02d" % zoom)
-            if not os.path.exists(pathname):
-                os.makedirs(pathname)
-            if zoom < max_zoom:
-                sums = block_reduce(sums, block_size=(2, 2), func=np.sum)
-                counts = block_reduce(counts, block_size=(2, 2), func=np.sum)
-
-            kept_indices = counts > THRESHOLD_COUNT
-            # Sums
-            filtered_data = np.where(kept_indices, sums, sentinel_val)  # hide low-volume data for privacy
-            # Means
-            filtered_data[kept_indices] /= counts[kept_indices]  # Guaranteed to avoid divide by 0
-
-            if agg_mode == 'relative':
-                # Useful in the case where values are low globally (like smaller religious groups)
-                # Possibly more useful to use a detailed/mult-layered colour scale
-                amin = sums.amin()
-                amax = sums.amax()
-                filtered_data[kept_indices] = (filtered_data[kept_indices] - amin) / (amax - amin)
-
-            outname = os.path.join(pathname, stat_filename)
-            np.save(outname, filtered_data)
+        bin_stats_to_zooms_single(base_dir, stat_filename, out_dir)
 
 
-def write_cells(stats_dir):
-    for zoom_dir in next(os.walk(stats_dir))[1]:  # "z%02d"
+def write_cells(in_dir, out_dir, compress_json_floats=False):
+    for zoom_dir in next(os.walk(in_dir))[1]:  # "z%02d"
         print("Entering:", zoom_dir)
         zoom = int(zoom_dir[1:])
         # Load all data at this zoom into memory
         stat_list = []  # (label, array) pairs
-        zoom_path = os.path.join(stats_dir, zoom_dir)
+        zoom_path = os.path.join(in_dir, zoom_dir)
         for stat_filename in next(os.walk(zoom_path))[2]:
             if not stat_filename.endswith('.npy'):
                 print("Skipping non .npy file:", stat_filename)
                 continue
             stat_label = stat_filename[:-4]
             stat_path = os.path.join(zoom_path, stat_filename)
-            stat_list.append((stat_label, np.load(stat_path)))
+            tmp_stats = np.load(stat_path, allow_pickle=True).tolist()
+            stat_array = tmp_stats['prompt_data']
+            stat_tags = tmp_stats['tag_key']
+            stat_list.append((stat_label, stat_array, stat_tags))
 
         output = BASE_GEOJSON()
         features = []
@@ -120,33 +126,45 @@ def write_cells(stats_dir):
                 bbox = get_bbox_for_cell(zoom, col, row)
                 cell_poly = BASE_POLY()
                 cell_poly['geometry']['coordinates'] = [bbox + [bbox[0]]]
-                for slabel, sarr in stat_list:
-                    cell_poly['properties'][slabel] = float(sarr[row][col])
+                for stats_label, stats_arr, tag_key in stat_list:
+                    for tag_i, tag in enumerate(tag_key):
+                        cell_poly['properties']["%s-%s" % (stats_label, tag)] = float(stats_arr[row][col][tag_i])
 
                 features.append(cell_poly)
         output['features'] = features
 
+        # As per https://stackoverflow.com/a/29066406, python's json dump
+        # doesn't have float formatting but its LOAD does
+        if compress_json_floats:
+            output = json.loads(json.dumps(output), parse_float=lambda x: round(float(x), 3))
+
         out_path = os.path.join(zoom_path, 'cells.json')
         with open(out_path, 'w') as outfile:
-            outfile.write(json.dumps(output))
+            json.dump(output, outfile)
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("Insufficient arguments, needs out_dir")
-        sys.exit(1)
-
-    out_dir = sys.argv[-1]
-    if not os.path.exists(out_dir):
-        try:
-            os.makedirs(out_dir)
-        except:
-            print("Could not open or create given directory:", out_dir)
-
-    bin_stats_to_zooms(stats_dir=out_dir)
-    write_cells(stats_dir=out_dir)
+def main(in_dir, tmp_dir, out_dir):
+    bin_stats_to_zooms(base_dir=in_dir, out_dir=tmp_dir)
+    write_cells(in_dir=tmp_dir, out_dir=out_dir, compress_json_floats=True)
 
 
 if __name__ == "__main__":
-    main()
-    #generate_demo('demo0.npy')
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--in_dir', type=str, nargs='?', default='./out', help='where numpy "base" files can be found')
+    parser.add_argument('--tmp_dir', type=str, nargs='?', default='./out', help='where numpy cell file will be written to for temp use')
+    parser.add_argument('--out_dir', type=str, nargs='?', default='./out', help='where geoJSON files are to be saved')
+    args = parser.parse_args()
+
+    in_dir = args.in_dir
+    if not os.path.exists(in_dir):
+        os.makedirs(in_dir)
+
+    tmp_dir = args.tmp_dir
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
+    out_dir = args.out_dir
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    main(in_dir, tmp_dir, out_dir)

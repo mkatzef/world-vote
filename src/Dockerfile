@@ -21,5 +21,6 @@ RUN pip3 install mapboxcli
 
 RUN mkdir /world_vote_tiles
 COPY *.py /world_vote_tiles
+COPY ./prod/*.py /world_vote_tiles
 COPY *.sh /world_vote_tiles
 WORKDIR /world_vote_tiles

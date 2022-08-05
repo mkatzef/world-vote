@@ -35,7 +35,7 @@ class RegisterController extends Controller
     }
     $attributes['tags'] = json_encode($tags);
 
-    $attributes['responses'] = '[]';
+    $attributes['responses'] = '{}';
 
     auth()->login(User::create($attributes));
 

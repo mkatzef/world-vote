@@ -1,9 +1,13 @@
-# Open mysql database
-# Read all tags
-# Read all mapped prompts
-# Iterate over all records, binning results into each raw array (sums, counts)
-# save as separate .npy files
-
+"""
+Open mysql database
+Take tag ids from command line [or read all tags]
+Take mapped prompt ids from command line [or read all and filter]
+Take counted prompt ids from command line [or read all]
+Iterate over users from given table/where clause [or iterate over all records]
+    binning results into each raw array (sums, counts)
+Save as separate .npy files (one array per mapped prompt, one count per counted prompt)
+"""
+import argparse
 import json
 import numpy as np
 import os
@@ -12,70 +16,96 @@ import sys
 from common import *
 from db_common import DB_CNX
 
-if len(sys.argv) < 2:
-    print("Insufficient arguments, needs out_dir")
-    sys.exit(1)
-
-out_dir = sys.argv[-1]
-if not os.path.exists(out_dir):
-    try:
-        os.makedirs(out_dir)
-    except:
-        print("Could not open or create given directory:", out_dir)
-
-
-DB_CNX = mysql.connector.connect(user='root', password='',
-                              host='127.0.0.1',
-                              database='world_vote')
-cursor = DB_CNX.cursor()
-
-cursor.execute("SELECT slug FROM tags")
-all_tags = list([e[0] for e in cursor])
-N_TAGS = len(all_tags)
-
-cursor.execute("SELECT id, is_mapped FROM prompts")
-all_prompts = []
-mapped_prompts = []
-for p_id, is_mapped in cursor:
-    all_prompts.append(p_id)
-    if is_mapped:
-        mapped_prompts.append(p_id)
 
 class BaseData:
-    def __init__(self, p_id, n_rows=MAX_ROWS, n_cols=MAX_COLS):
+    def __init__(self, p_id, n_rows=MAX_ROWS, n_cols=MAX_COLS, tag_key=[]):
         self.p_id = p_id
-        self.sums = np.empty((n_rows, n_cols), dtype=float)
-        self.counts = np.empty((n_rows, n_cols), dtype=float)
+        self.tag_key = tag_key
+        n_layers = len(tag_key)
+        self.sums = np.empty((n_rows, n_cols, n_layers), dtype=float)
+        self.counts = np.empty((n_rows, n_cols, n_layers), dtype=float)
 
     def save_as(self, out_path):
-        save_base_data(out_path, MAX_ZOOM, self.sums/VOTE_MAX_STEP, self.counts)
+        save_base_data(out_path, MAX_ZOOM, self.sums/VOTE_MAX_STEP, self.counts, self.tag_key)
 
 
-map_data_dict = dict([(p_id, BaseData(p_id)) for p_id in mapped_prompts])
-counts_dict = dict([(p_id, np.zeros((VOTE_MAX_STEP+1,))) for p_id in all_prompts])
-# TODO: tags
+def get_base_data(tags, mapped_prompts, counted_prompts, users):
+    tag_key = ['all'] + tags  # Order of data: starts with all, followed by each tag
+    tag_dict = dict([(k, i) for i, k in enumerate(tags)])
+    n_layers = len(tags)
 
-query = ("SELECT grid_row, grid_col, tags, responses FROM users")
-cursor.execute(query)
-for grid_row, grid_col, tags, responses in cursor:
-    grid_row = int(grid_row)
-    grid_col = int(grid_col)
-    #tags = json.loads(tags)
-    responses = json.loads(responses)  # TODO: replace with regex for performance
-    for p_id, val in responses.items():
-        p_id = int(p_id)
+    map_data_dict = dict([(p_id, BaseData(p_id, tag_key=tag_key)) for p_id in mapped_prompts])
+    counts_dict = dict([(p_id, np.zeros((VOTE_MAX_STEP+1, n_layers))) for p_id in counted_prompts])
 
-        # Map data
-        if p_id in map_data_dict:
-            map_data_dict[p_id].sums[grid_row, grid_col] += val
-            map_data_dict[p_id].counts[grid_row, grid_col] += 1
+    for grid_row, grid_col, tags, responses in users:
+        grid_row = int(grid_row)
+        grid_col = int(grid_col)
 
-        counts_dict[p_id][val] += 1
+        tags = json.loads(tags)
+        tag_inds = [0] + [tag_dict[t] for t in tags]  # Tag layers to write to
+        responses = json.loads(responses)
 
-for p_id, base_data in map_data_dict.items():
-    base_data.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))
+        if len(responses) == 0:  # TODO: fix default value as {} instead of []
+            continue
 
-np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_dict, dtype=object))
+        for p_id, val in responses.items():
+            p_id = int(p_id)
+            # Map data
+            if p_id in map_data_dict:
+                map_data_dict[p_id].sums[grid_row, grid_col, tag_inds] += val
+                map_data_dict[p_id].counts[grid_row, grid_col, tag_inds] += 1
 
-cursor.close()
-DB_CNX.close()
+            counts_dict[p_id][val, tag_inds] += 1
+
+    return map_data_dict, counts_dict
+
+
+def main(out_dir, tags, mapped_prompts, counted_prompts, users):
+    map_data_dict, counts_dict = get_base_data(tags, mapped_prompts, counted_prompts, users)
+    for p_id, base_data in map_data_dict.items():
+        base_data.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))
+    np.save(os.path.join(out_dir, "_counts.npy"), np.array(counts_dict, dtype=object))
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--tags', type=str, nargs='*', default=[], help='tag slugs')
+    parser.add_argument('--mapped_prompts', type=str, nargs='*', default=[], help='prompts being mapped')
+    parser.add_argument('--counted_prompts', type=str, nargs='*', default=[], help='prompts being counted')
+    parser.add_argument('--user_src', type=str, nargs='?', default='users', help='part of the database query')
+    parser.add_argument('--out_dir', type=str, nargs='?', default='./out', help='where numpy files are to be saved')
+    args = parser.parse_args()
+
+    out_dir = args.out_dir
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    cursor = DB_CNX.cursor()
+
+    if len(args.tags) == 0:
+        cursor.execute("SELECT slug FROM tags")
+        tags = list([str(e[0]) for e in cursor])
+    else:
+        tags = args.tags
+
+    if len(args.mapped_prompts) == 0 and len(args.counted_prompts) == 0:
+        cursor.execute("SELECT id, is_mapped FROM prompts")
+        counted_prompts = []
+        mapped_prompts = []
+        for p_id, is_mapped in cursor:
+            counted_prompts.append(p_id)
+            if is_mapped:
+                mapped_prompts.append(p_id)
+    elif args.counted_prompts[0] == 'same':
+        mapped_prompts = args.mapped_prompts
+        counted_prompts = args.mapped_prompts
+    else:
+        mapped_prompts = args.mapped_prompts
+        counted_prompts = args.counted_prompts
+
+    user_src = args.user_query_src = "users"  # can be "users WHERE ..."
+    query = "SELECT grid_row, grid_col, tags, responses FROM " + user_src
+    cursor.execute(query)
+    main(out_dir, tags, mapped_prompts, counted_prompts, cursor)
+    cursor.close()
+    DB_CNX.close()

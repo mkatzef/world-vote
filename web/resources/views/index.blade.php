@@ -45,7 +45,7 @@
       .pane { position:fixed; background-color:#ffffff; top: {{ $title_height_px }}px; bottom: 0px; width: {{ $pane_width_perc }}%; text-align:center } //
       .paneElement { position:fixed; top:0px; width: 100%; height:100%; text-align:center } //
 
-      .earth_transform {
+      .map_toggle_transition {
         -webkit-transition: all 0.35s ease;
         -moz-transition: all 0.35s ease;
         -o-transition: all 0.35s ease;
@@ -53,12 +53,20 @@
         transition: all 0.35s ease;
       }
 
-      .main_transform {
+      .main_transition {
         -webkit-transition: all 0.5s ease;
         -moz-transition: all 0.5s ease;
         -o-transition: all 0.5s ease;
         -ms-transition: all 0.5s ease;
         transition: all 0.5s ease;
+      }
+
+      .button_transition {
+        -webkit-transition: all 0.25s ease;
+        -moz-transition: all 0.25s ease;
+        -o-transition: all 0.25s ease;
+        -ms-transition: all 0.25s ease;
+        transition: all 0.25s ease;
       }
   	</style>
   </head>
@@ -112,7 +120,7 @@
             style="width:52px; height:26px; background-color:white; border-width:2px; border-color:orange; border-radius:13px; margin-right:10px">
             <img id="map_toggle_orb" src="/earth.png"
               style="margin-left:0px; width:22px; height:22px"
-              class="earth_transform"></img>
+              class="map_toggle_transition"></img>
           </div>
         </a>
       </div>
@@ -152,7 +160,7 @@
       </p>
     </div>
 
-    <div id="pane_container" class="pane main_transform">
+    <div id="pane_container" class="pane main_transition">
 
     <!--
       OVERLAY
@@ -246,7 +254,7 @@
           <div
             id="vote_button_{{ $prompt->id }}"
             class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-              m-2 border-4 border-gray-200"
+              m-2 border-4 border-gray-200 button_transition"
           >
             <h5
               onclick="stage_vote({{ $prompt }})"
@@ -275,7 +283,7 @@
             id="voter_container_{{ $tag->id }}"
             class="text-2xl font-bold tracking-tight text-gray-900
               block bg-white rounded-lg shadow-md hover:bg-gray-100
-              m-2 border-4 border-gray-200"
+              m-2 border-4 border-gray-200 button_transition"
           >
             <table style="width:100%; table-layout:fixed">
               <tr style="height:60px">
@@ -522,7 +530,7 @@
     <!--
       MAP
     -->
-    <div id="map" class="main_transform"></div>
+    <div id="map" class="main_transition"></div>
 
 
   	<script>
@@ -585,6 +593,7 @@
             }
           }
         }
+        optimizeLayout();
       }
 
       function set_pane_poll_mode(pane_poll_mode) {

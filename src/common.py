@@ -8,6 +8,7 @@ COORD_ORDER = ((0, 0), (0, -1), (1, -1), (1, 0))
 THRESHOLD_COUNT = 100  # only include results for counts > THRESHOLD_COUNT
 VOTE_MAX_STEP = 10
 
+
 def get_step_size_deg(zoom):
     return BASE_STEP_DEG / (2 ** zoom)
 
@@ -25,16 +26,17 @@ MAX_ZOOM = 4
 MAX_COLS, MAX_ROWS = n_cells_xy(MAX_ZOOM)
 
 
-def get_base_data(zoom, sums, counts):
+def get_base_data(zoom, sums, counts, tag_key):
     return np.array({
-        'properties': {
-            'max_zoom': zoom
-        },
-        'res_sums': sums,
-        'res_counts': counts
-    }, dtype=object)
+            'properties': {
+                'max_zoom': zoom
+            },
+            'res_sums': sums,
+            'res_counts': counts,
+            'tag_key': tag_key,
+        }, dtype=object)
 
 
-def save_base_data(out_path, zoom, sums, counts):
-    contents = get_base_data(zoom, sums, counts)
+def save_base_data(out_path, zoom, sums, counts, tag_key):
+    contents = get_base_data(zoom, sums, counts, tag_key)
     np.save(out_path, contents)
