@@ -632,6 +632,8 @@
         filterContainer.style.display = 'inline';
         var voterContainer = document.getElementById("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
+        map.setLayoutProperty('tags', 'visibility', 'visible');
+        paint_tag();
       }
 
       function unstageVoter(tagId) {
@@ -639,6 +641,7 @@
         filterContainer.style.display = 'none';
         var voterContainer = document.getElementById("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
+        map.setLayoutProperty('tags', 'visibility', 'none');
       }
 
       var activeFilterId = null;
@@ -766,7 +769,7 @@
         mapHasLoaded = true;
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': "mapbox://mkatzeff.akmfcwtb"//{{ $tileset->mb_tile_id }}"
+					'url': "mapbox://mkatzeff.72wordkn"//{{ $tileset->mb_tile_id }}"
 				});
 
   			map.addSource('clicked_loc', {
@@ -842,6 +845,28 @@
         });
         @endauth
 
+        map.addLayer({
+          'id': 'prompts',
+          'type': 'fill',
+          'source': 'vote-data',
+          'source-layer': 'cells',
+          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
+          'layout': {
+            'visibility': 'none'
+          }
+        });
+
+        map.addLayer({
+          'id': 'tags',
+          'type': 'fill',
+          'source': 'vote-data',
+          'source-layer': 'cells',
+          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
+          'layout': {
+            'visibility': 'none'
+          }
+        });
+
         set_pane_mode('pane_polls');
         @auth
           displayLoc();
@@ -851,45 +876,35 @@
 
       /*
         Mapbox's interpolation has numerical issues resulting in colors
-        [min-eps, max+eps] which causes errors in colors [0, 255]
+        [min-eps, max+eps]
       */
       function SC(val) {
         return Math.max(0.1, Math.min(254.9, val));
       }
 
   		var activePromptId = null;
-      var activeColorSteps = null;
+      var activePromptColorSteps = null;
   		function display_mapped_prompt(promptId, colorSteps) {
-        if (activePromptId != null) {
-          map.removeLayer('layer-' + activePromptId);
-        }
-        if (promptId == null) {
+        if (promptId == null || promptId == activePromptId) {
           activePromptId = null;
+          map.setLayoutProperty('prompts', 'visibility', 'none');
           return;
         }
-        activeColorSteps = colorSteps;
+        activePromptColorSteps = colorSteps;
         activePromptId = promptId;
-
-        map.addLayer({
-          'id': 'layer-' + activePromptId,
-          'type': 'fill',
-          'source': 'vote-data',
-          'source-layer': 'cells',
-          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
-          'layout': {
-            'visibility': 'visible'
-          }
-        });
-
+        map.setLayoutProperty('prompts', 'visibility', 'visible');
         paint_filtered_prompt();
   		}
 
       function paint_filtered_prompt() {
-        const C = activeColorSteps;
+        if (!activePromptId) {
+          return;
+        }
+        const C = activePromptColorSteps;
         const dataId = 'prompt-' + activePromptId + '-' +
           (activeFilterId ? allTags[activeFilterId].slug : 'all');
         map.setPaintProperty(
-          'layer-' + activePromptId,
+          'prompts',
           'fill-color',
           [
             "case",
@@ -904,6 +919,25 @@
         );
       }
 
+      // NOTE: copied version of above --- a class would be good
+      function paint_tag() {
+        const C = [[255,157,71], [255,157,71], [255,157,71]];
+        const dataId = 'tag-' + allTags[stagedVoterId].slug;  // TODO: update for an 'all'
+        map.setPaintProperty(
+          'tags',
+          'fill-color',
+          [
+            "case",
+            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+            ["rgba",
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+              0.5  // opacity
+            ]
+          ]
+        );
+      }
 
   		const maxZoom = 4;
   		const maxStepDeg = 15;
