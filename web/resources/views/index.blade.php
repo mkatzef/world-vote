@@ -94,7 +94,9 @@
         <a id="map_toggle_link" href="javascript:void(0)" onclick="toggleMap()">
           <div id="map_toggle_bg" class="space-y-2"
             style="width:52px; height:26px; background-color:white; border-width:2px; border-color:orange; border-radius:13px; margin-right:10px">
-            <img id="map_toggle_orb" src="/earth.png" style="width:22px; height:22px; float:left"></img>
+            <img id="map_toggle_orb" src="/earth.png"
+              style="width:22px; height:22px"
+              class="earth_transform earth_toggle_active"></img>
           </div>
         </a>
       </div>
@@ -570,6 +572,9 @@
       }
 
       function set_pane_poll_mode(pane_poll_mode) {
+        if (!mapHasLoaded) {
+          return;
+        }
         if (pane_poll_mode == "votes") {
           poll_tab_votes.style.display = 'flex';
           poll_tab_voters.style.display = 'none';
@@ -662,10 +667,10 @@
         showMap = !showMap;
         if (showMap) {
           map_toggle_bg.style['background-color'] = 'white';
-          map_toggle_orb.style.float = 'left';
+          replaceClasses(map_toggle_orb, ['earth_toggle_active'], ['earth_toggle_inactive']);
         } else {
           map_toggle_bg.style['background-color'] = 'darkorange';
-          map_toggle_orb.style.float = 'right';
+          replaceClasses(map_toggle_orb, ['earth_toggle_inactive'], ['earth_toggle_active']);
         }
         optimizeLayout();
       }
@@ -716,7 +721,9 @@
   	  });
 
       /* MAP ON LOAD */
+      var mapHasLoaded = false;
   		map.on('load', () => {
+        mapHasLoaded = true;
   			map.addSource('vote-data', {
 					'type': 'vector',
 					'url': "mapbox://{{ $tileset->mb_tile_id }}"
@@ -1214,5 +1221,23 @@
   <!-- Needed for the current workaround/hack to give feedback on sliders -->
   <style data="test" type="text/css"></style>
   <!-- See above -->
+
+  <style>
+  .earth_transform {
+    -webkit-transition: all 0.35s ease;
+    -moz-transition: all 0.35s ease;
+    -o-transition: all 0.35s ease;
+    -ms-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+  }
+
+  .earth_toggle_active {
+    margin-left: 0px;
+  }
+
+  .earth_toggle_inactive {
+    margin-left: 26px;
+  }
+  </style>
 
 </html>
