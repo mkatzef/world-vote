@@ -641,9 +641,9 @@
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
       }
 
-      var activeFilter = null;
+      var activeFilterId = null;
       function refreshFilterMsg() {
-        if (activeFilter == null) {
+        if (activeFilterId == null) {
           filters_msg.style.display = 'none';
         } else {
           filters_msg.style.display = 'inline';
@@ -651,11 +651,11 @@
       }
 
       function addFilter(tagId) {
-        if (tagId == activeFilter) {
+        if (tagId == activeFilterId) {
           removeFilter(tagId);
           return;
-        } else if (activeFilter) {
-          removeFilter(activeFilter);
+        } else if (activeFilterId) {
+          removeFilter(activeFilterId);
         }
         document.getElementById("voter_filter_button_" + tagId).onclick =
           () => {removeFilter(tagId);};
@@ -663,8 +663,9 @@
         filterIcon.src = "/filter_rem.png";
         filterIcon.parentNode.style['background-color'] = 'orange';
 
-        activeFilter = tagId;
+        activeFilterId = tagId;
         refreshFilterMsg();
+        paint_filtered_prompt();
       }
 
       function removeFilter(tagId) {
@@ -673,8 +674,9 @@
         var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
         filterIcon.src = "/filter_add.png";
         filterIcon.parentNode.style.removeProperty('background-color');
-        activeFilter = null;
+        activeFilterId = null;
         refreshFilterMsg();
+        paint_filtered_prompt();
       }
 
       function hamburgerOpen() {
@@ -764,7 +766,7 @@
         mapHasLoaded = true;
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': "mapbox://{{ $tileset->mb_tile_id }}"
+					'url': "mapbox://mkatzeff.akmfcwtb"//{{ $tileset->mb_tile_id }}"
 				});
 
   			map.addSource('clicked_loc', {
@@ -855,58 +857,53 @@
         return Math.max(0.1, Math.min(254.9, val));
       }
 
-  		var activeLayerId = null;
+  		var activePromptId = null;
+      var activeColorSteps = null;
   		function display_mapped_prompt(promptId, colorSteps) {
-        if (activeLayerId != null) {
-          map.removeLayer(activeLayerId);
+        if (activePromptId != null) {
+          map.removeLayer('layer-' + activePromptId);
         }
         if (promptId == null) {
-          activeLayerId = null;
+          activePromptId = null;
           return;
         }
+        activeColorSteps = colorSteps;
+        activePromptId = promptId;
 
-        const C = colorSteps;
-        activeLayerId = 'layer-' + promptId;
-        const dataId = 'prompt-' + promptId;
         map.addLayer({
-          'id': activeLayerId,
+          'id': 'layer-' + activePromptId,
           'type': 'fill',
           'source': 'vote-data',
           'source-layer': 'cells',
-          'paint': {
-            'fill-color':
-              [
-                "case",
-                ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
-                ["rgba",
-                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
-                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
-                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
-                  0.5  // opacity
-                ]
-              ],
-            'fill-outline-color': 'rgba(0,0,0,0)'
-          },
+          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
           'layout': {
             'visibility': 'visible'
           }
         });
+
+        paint_filtered_prompt();
   		}
 
-      // FILTER COMPONENTS
-  		function demo_filter_func() {
-        // TODO: remove/replace
-  			let threshold = ranger.value / 10;
-  			map.setPaintProperty(
-  				'vote-data-layer0',
-  				'fill-color', [
-  					"case",
-  					[">", ["get", 'demo1'], threshold], 'rgba(0,0,0,0)',
-  					["==", ["get", 'demo0'], -1], 'rgba(0,0,0,0)',
-  					["rgba", 255, 0, 0, ["get", 'demo0']]
-  				]
-  			)
-  		}
+      function paint_filtered_prompt() {
+        const C = activeColorSteps;
+        const dataId = 'prompt-' + activePromptId + '-' +
+          (activeFilterId ? allTags[activeFilterId].slug : 'all');
+        map.setPaintProperty(
+          'layer-' + activePromptId,
+          'fill-color',
+          [
+            "case",
+            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+            ["rgba",
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+              0.5  // opacity
+            ]
+          ]
+        );
+      }
+
 
   		const maxZoom = 4;
   		const maxStepDeg = 15;
