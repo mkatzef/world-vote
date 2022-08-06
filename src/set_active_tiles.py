@@ -10,7 +10,7 @@ cursor = DB_CNX.cursor()
 
 cursor.execute('UPDATE tilesets SET is_active = 1 where mb_tile_id = "%s"' % active)
 cursor.execute('UPDATE tilesets SET is_active = 0 WHERE mb_tile_id != "%s"' % active)
-cnx.commit()
+DB_CNX.commit()
 
 cursor.close()
 DB_CNX.close()

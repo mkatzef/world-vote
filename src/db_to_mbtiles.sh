@@ -30,16 +30,16 @@ else
   exit
 fi
 
-last_upload=`cat dblbuf.txt`
-upload_id="tick"
-if [ "$last_upload" = "tick" ]; then
-  upload_id='tock'
+last_staged=`cat dblbuf.txt`
+echo "Set PREVIOUS as active in database (avoids race condition)"
+python3 set_active_tiles.py mkatzeff.vote$last_staged
+
+staged_id="tick"
+if [ "$last_staged" = "tick" ]; then
+  staged_id='tock'
 fi
-echo "Uploading tileset to mapbox as mkatzeff.vote$upload_id"
-mapbox upload mkatzeff.vote$upload_id $out_dir/$out_file
+echo "Uploading tileset to mapbox as mkatzeff.vote$staged_id"
+mapbox upload mkatzeff.vote$staged_id $out_dir/$out_file
 
-echo "Setting double buffer to $upload_id"
-echo $upload_id > dblbuf.txt
-
-echo "Set as active in database"
-python3 set_active_tiles.py mkatzeff.vote$upload_id
+echo "Setting double buffer to $staged_id"
+echo $staged_id > dblbuf.txt
