@@ -257,7 +257,7 @@
               m-2 border-4 border-gray-200 button_transition"
           >
             <h5
-              onclick="stage_vote({{ $prompt }})"
+              onclick="stage_vote({{ $prompt->id }})"
               class="cursor-pointer mb-2 text-2xl font-bold tracking-tight text-gray-900">
               {{ $prompt->caption }} {!! $prompt->is_mapped ? "&#127757; " : "" !!}
             </h5>
@@ -572,7 +572,7 @@
       function set_pane_mode(pane_mode) {
         // Remove all map elements
         tear_down_select_ui();
-        display_mapped_prompt(null);
+        display_prompt(null);
         hamburgerClose();
 
         // disable all divs that aren't pane_mode
@@ -884,7 +884,7 @@
 
   		var activePromptId = null;
       var activePromptColorSteps = null;
-  		function display_mapped_prompt(promptId, colorSteps) {
+  		function display_prompt(promptId, isMapped, colorSteps) {
         if (promptId == null || promptId == activePromptId) {
           activePromptId = null;
           map.setLayoutProperty('prompts', 'visibility', 'none');
@@ -893,7 +893,7 @@
         activePromptColorSteps = colorSteps;
         activePromptId = promptId;
         map.setLayoutProperty('prompts', 'visibility', 'visible');
-        paint_filtered_prompt();
+        paint_filtered_prompt(promptId);
   		}
 
       function paint_filtered_prompt() {
@@ -901,27 +901,29 @@
           return;
         }
         const C = activePromptColorSteps;
-        const dataId = 'prompt-' + activePromptId + '-' +
-          (activeFilterId ? allTags[activeFilterId].slug : 'all');
-        map.setPaintProperty(
-          'prompts',
-          'fill-color',
-          [
-            "case",
-            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
-            ["rgba",
-              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
-              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
-              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
-              0.5  // opacity
+        var filterKey = (activeFilterId ? allTags[activeFilterId].slug : 'all');
+        displayStats(JSON.parse(allPrompts[activePromptId]['count_ratios'])[filterKey], activePromptColorSteps);
+        if (allPrompts[activePromptId].is_mapped) {
+          const dataId = 'prompt-' + activePromptId + '-' + filterKey;
+          map.setPaintProperty(
+            'prompts',
+            'fill-color',
+            [
+              "case",
+              ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+              ["rgba",
+                ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+                ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+                ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+                0.5  // opacity
+              ]
             ]
-          ]
-        );
+          );
+        }
       }
 
       // NOTE: copied version of above --- a class would be good
       function paint_tag() {
-        const C = [[255,157,71], [255,157,71], [255,157,71]];
         const dataId = 'tag-' + allTags[stagedVoterId].slug;  // TODO: update for an 'all'
         map.setPaintProperty(
           'tags',
@@ -930,10 +932,8 @@
             "case",
             ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
             ["rgba",
-              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
-              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
-              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
-              0.5  // opacity
+              255,157,71,
+              ["interpolate", ["linear"], ["get", dataId], 0, 0, 1, 1]
             ]
           ]
         );
@@ -1176,11 +1176,12 @@
       var stagedVoteId = null;
       const stagedClasses = ["border-orange-200"];
       const unstagedClasses = ["border-transparent-200"];
-      function stage_vote(prompt) {
+      function stage_vote(promptId) {
+        var prompt = allPrompts[promptId];
         if (prompt.id == stagedVoteId) {
           stagedVoteId = null;
           hidePromptContent(prompt.id);
-          display_mapped_prompt(null);
+          display_prompt(null);
           return;
         } else if (stagedVoteId) {
           hidePromptContent(stagedVoteId);
@@ -1250,15 +1251,11 @@
           }
         @endauth
 
-        var filterKey = (activeFilterId ? allTags[activeFilterId].slug : 'all');
-        displayStats(JSON.parse(prompt['count_ratios'])[filterKey], colorSteps);
-        if (prompt.is_mapped) {
-          display_mapped_prompt(prompt.id, colorSteps);
-        } else {
-          display_mapped_prompt(null);
-        }
+        display_prompt(prompt.id, prompt.is_mapped, colorSteps);
       }
 
+      const allPromptsRaw = {{ Js::from($prompts) }};
+      const allPrompts = allPromptsRaw.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const tagsArr = {{ Js::from($tags) }};
       const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       @auth
