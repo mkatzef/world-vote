@@ -383,25 +383,50 @@
       NEW
     -->
     <div id="pane_user_type" class="paneElement">
-      <div style="display:flex; height:100%; width:100%; left:0px;
-        text-align:center; align-items:center">
-        <div style="width:100%">
-          <button onclick="set_pane_mode('pane_new_user')"
-            class="{{ $header_button_class }}"
-            style="width:70%; margin-bottom:50px">
-            New vote!
-          </button>
+      <div style="display:flex; flex-direction:column; height:100%; width:100%;
+        padding-top:20%; padding-bottom: 20%; text-align:center; align-items:center">
+        <button onclick="set_pane_mode('pane_new_user')"
+          class="{{ $header_button_class }}"
+          style="width:80%; max-width:200px; margin-bottom:50px">
+          New vote!
+        </button>
 
-          <div style="background-color:white">
-            <h1>OR</h1>
-          </div>
 
-          <button onclick="set_pane_mode('pane_login')"
-            class="{{ $header_button_class }}"
-            style="width:70%; margin-top:50px">
-            Login
-          </button>
+        <div style="background-color:white">
+          <h1>OR</h1>
         </div>
+
+        <div style="width:80%; max-width:200px; margin-top:50px">
+          <form id="login_details_form" action="/login" method="POST"> <!--target="form_sink">-->
+            @csrf
+            <input type="text" id="captcha_val_login" name="g-recaptcha-response" style="display:none">
+            <div style="background-color:white">
+              <label for="utoken">Login code:</label><br>
+            </div>
+            <input
+              id="access_token"
+              name="access_token"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+            <button
+              type="button"
+              onclick="set_pane_mode('pane_polls')"
+              style="width:45%"
+              class="{{ $header_button_class }}"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              style="width:45%"
+              onclick="primeForCaptcha('login')"
+              class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
 
@@ -493,38 +518,7 @@
     </div>
 
 
-    <!--
-      LOGIN
-    -->
-    <div id="pane_login" class="paneElement">
-      <form id="login_details_form" action="/login" method="POST"> <!--target="form_sink">-->
-        @csrf
-        <input type="text" id="captcha_val_login" name="g-recaptcha-response" style="display:none">
-        <div style="background-color:white">
-          <label for="utoken">Login code:</label><br>
-        </div>
-        <input
-          id="access_token"
-          name="access_token"
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        >
-        <button
-          type="button"
-          onclick="set_pane_mode('pane_user_type')"
-          class="{{ $header_button_class }}"
-        >
-          Back
-        </button>
-        <button
-          type="button"
-          onclick="primeForCaptcha('login')"
-          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
-        >
-          Submit
-        </button>
-      </form>
-    </div>
-
+    <!-- End of pane divs -->
     </div>
 
     <!--
@@ -565,7 +559,6 @@
         'pane_polls': {},
         'pane_new_user': {'on_entry': () => {set_up_select_ui('new');}},
         'pane_user_type': {},
-        'pane_login': {},
         'pane_my_details': {},
       };
 
@@ -922,9 +915,8 @@
         }
       }
 
-      // NOTE: copied version of above --- a class would be good
       function paint_tag() {
-        const dataId = 'tag-' + allTags[stagedVoterId].slug;  // TODO: update for an 'all'
+        const dataId = 'tag-' + allTags[stagedVoterId].slug;
         map.setPaintProperty(
           'tags',
           'fill-color',
@@ -1104,7 +1096,6 @@
       );
 
       // Note: barColors can be a different length than data - uses linear interpolation
-      // TODO: add refresh option to update wrt filters
       function displayStats(data, barColors) {
         var n_elems = data.length;
         var n_intervals = data.length - 1;

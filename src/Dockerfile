@@ -16,11 +16,8 @@ RUN make \
   && make install
 
 RUN apt-get install -y python3-pip
-RUN pip3 install setuptools numpy mysql.connector
+RUN pip3 install setuptools numpy mysql.connector scikit-image
 RUN pip3 install mapboxcli
 
 RUN mkdir /world_vote_tiles
-COPY *.py /world_vote_tiles
-COPY ./prod/*.py /world_vote_tiles
-COPY *.sh /world_vote_tiles
-WORKDIR /world_vote_tiles
+WORKDIR /src

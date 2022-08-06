@@ -22,3 +22,24 @@ tile-join -o $out_dir/$out_file $out_dir/z0*/tiles.mbtiles --force
 
 echo "Writing stats to database"
 python3 write_stats_to_db.py $out_dir
+
+if [ -f "access_token.txt" ]; then
+  export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
+else
+  echo "No access token found for mapbox upload"
+  exit
+fi
+
+last_upload=`cat dblbuf.txt`
+upload_id="tick"
+if [ "$last_upload" = "tick" ]; then
+  upload_id='tock'
+fi
+echo "Uploading tileset to mapbox as mkatzeff.vote$upload_id"
+mapbox upload mkatzeff.vote$upload_id $out_dir/$out_file
+
+echo "Setting double buffer to $upload_id"
+echo $upload_id > dblbuf.txt
+
+echo "Set as active in database"
+python3 set_active_tiles.py mkatzeff.vote$upload_id
