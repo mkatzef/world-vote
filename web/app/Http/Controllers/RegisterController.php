@@ -24,8 +24,7 @@ class RegisterController extends Controller
     ]);
 
     // TODO: ensure unique
-    $attributes['access_token'] = uniqid();
-    $attributes['share_token'] = 's_' . uniqid();
+    $attributes['access_token'] = $this->uniqid();
 
     $tags = [];
     foreach (Tag::all() as $t) {
@@ -113,5 +112,18 @@ class RegisterController extends Controller
     $responseKeys = json_decode($response, true);
 
     return $responseKeys['success'];
+  }
+
+  private function uniqid() {
+    $id_int = random_int(0, 2e9);
+    $id_candidate = base_convert($id_int, 10, 36);
+
+    // 1 in 2 billion chance of repeating
+    while (User::where('access_token', '=', $id_candidate)->exists()) {
+      $id_int = random_int(0, 1e9);
+      $id_candidate = base_convert($id_int, 10, 36);
+    }
+
+    return strval($id_candidate);
   }
 }

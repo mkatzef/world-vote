@@ -12,7 +12,6 @@ class User extends Authenticatable
 
     protected $fillable = array(
       'access_token',
-      'share_token',
       'grid_row',
       'grid_col',
       'tags',
