@@ -245,7 +245,14 @@
           Info
           @auth
             <div style="width:100%; text-align:center">
-              Your login code is: <b>{{ auth()->user()->access_token }}</b>
+              Your login code is:<br>
+              <button onclick="navigator.clipboard.writeText('{{ auth()->user()->access_token }}')"
+                class="hover:bg-white rounded-lg shadow-m hover:bg-gray-100">
+                <div>
+                  <img src="/copy.png" style="float:left; height:16px; width:16px; margin:4px"></img>
+                  <b style="float:right">{{ auth()->user()->access_token }}</b>
+                </div>
+              </button>
             </div>
           @endauth
         </div>
@@ -762,7 +769,7 @@
         mapHasLoaded = true;
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': "mapbox://mkatzeff.72wordkn"//{{ $tileset->mb_tile_id }}"
+					'url': "mapbox://{{ $tileset->mb_tile_id }}"
 				});
 
   			map.addSource('clicked_loc', {
