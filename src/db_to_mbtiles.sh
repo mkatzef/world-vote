@@ -4,6 +4,20 @@ min_zoom="0"
 max_zoom="4"
 out_file="tiles-comb.mbtiles"
 
+last_staged=`cat dblbuf.txt`
+echo "Set PREVIOUS as active in database (avoids race condition)"
+python3 set_active_tiles.py mkatzeff.vote$last_staged
+
+staged_id="tick"
+if [ "$last_staged" = "tick" ]; then
+  staged_id='tock'
+fi
+echo "Uploading tileset to mapbox as mkatzeff.vote$staged_id"
+mapbox upload mkatzeff.vote$staged_id $out_dir/$out_file
+
+echo "Setting double buffer to $staged_id"
+echo $staged_id > dblbuf.txt
+
 mkdir -p $out_dir
 
 echo "Collecting base data from database"
@@ -29,17 +43,3 @@ else
   echo "No access token found for mapbox upload"
   exit
 fi
-
-last_staged=`cat dblbuf.txt`
-echo "Set PREVIOUS as active in database (avoids race condition)"
-python3 set_active_tiles.py mkatzeff.vote$last_staged
-
-staged_id="tick"
-if [ "$last_staged" = "tick" ]; then
-  staged_id='tock'
-fi
-echo "Uploading tileset to mapbox as mkatzeff.vote$staged_id"
-mapbox upload mkatzeff.vote$staged_id $out_dir/$out_file
-
-echo "Setting double buffer to $staged_id"
-echo $staged_id > dblbuf.txt
