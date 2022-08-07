@@ -13,6 +13,7 @@ if [ "$last_staged" = "tick" ]; then
   staged_id='tock'
 fi
 echo "Uploading tileset to mapbox as mkatzeff.vote$staged_id"
+export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
 mapbox upload mkatzeff.vote$staged_id $out_dir/$out_file
 
 echo "Setting double buffer to $staged_id"
