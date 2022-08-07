@@ -242,18 +242,22 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
-          Info
+          Click on any of the questions below to see user responses
           @auth
             <div style="width:100%; text-align:center">
               Your login code is:<br>
-              <button onclick="navigator.clipboard.writeText('{{ auth()->user()->access_token }}')"
+              <button
+                onclick="code_copy_msg.innerText='Copied!';navigator.clipboard.writeText('{{ auth()->user()->access_token }}')"
                 class="hover:bg-white rounded-lg shadow-m hover:bg-gray-100">
                 <div>
                   <img src="/copy.png" style="float:left; height:16px; width:16px; margin:4px"></img>
                   <b style="float:right">{{ auth()->user()->access_token }}</b>
                 </div>
               </button>
+              <p id="code_copy_msg"></p>
             </div>
+          @else
+            <br>Create an anonymous account to cast your own vote
           @endauth
         </div>
 
@@ -282,7 +286,9 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
-          See where voters are from and filter responses by tag
+          Voter demographics<br>
+          See where people voted from and how they identify<br>
+          &amp; filter votes by tag
         </div>
 
         @foreach ($tags as $tag)
@@ -328,13 +334,13 @@
               <table style="width:100%; text-align:center; margin-bottom:5px">
                 <tr>
                   <td style="width:15%" class="text-base">
-                    Min
+                    Min %
                   </td>
                   <td style="width:70%">
                     <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0), rgba(255,157,71,1))"></div>
                   </td>
                   <td style="width:15%" class="text-base">
-                    Max
+                    Max %
                   </td>
                 </tr>
               </table>

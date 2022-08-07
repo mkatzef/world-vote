@@ -114,16 +114,20 @@ class RegisterController extends Controller
     return $responseKeys['success'];
   }
 
-  private function uniqid() {
-    $id_int = random_int(0, 2e9);
-    $id_candidate = base_convert($id_int, 10, 36);
+  private function idPart() {
+    return strval(base_convert(random_int(0, 1e7), 10, 36));
+  }
+  private function anId() {
+    return $this->idPart() . $this->idPart();
+  }
 
-    // 1 in 2 billion chance of repeating
+  private function uniqid() {
+    $id_candidate = $this->anId();
+
     while (User::where('access_token', '=', $id_candidate)->exists()) {
-      $id_int = random_int(0, 1e9);
-      $id_candidate = base_convert($id_int, 10, 36);
+      $id_candidate = $this->anId();
     }
 
-    return strval($id_candidate);
+    return $id_candidate;
   }
 }

@@ -8,7 +8,7 @@
        tracking-tight text-gray-900
         block bg-white rounded-lg shadow-md hover:bg-gray-100
         m-2 border-4 border-gray-200 button_transition">
-        <div class="block">
+        <div class="block cursor-pointer">
             <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
         </div>
     </label>
