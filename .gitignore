@@ -7,12 +7,15 @@ stats/*
 */out-fast/*
 */out-tick/*
 */out-tock/*
+*/slow-tick/*
+*/slow-tock/*
 access_token.txt
 web_uploads/*
 *.env
 *.env-*
 *db_config.py
 *__pycache__*
+*out_dir.state
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
