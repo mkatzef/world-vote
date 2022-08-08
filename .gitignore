@@ -4,6 +4,9 @@ node_modules/*
 package-lock.json
 stats/*
 */out/*
+*/out-fast/*
+*/out-tick/*
+*/out-tock/*
 access_token.txt
 web_uploads/*
 *.env

@@ -103,7 +103,7 @@ if __name__ == "__main__":
         mapped_prompts = args.mapped_prompts
         counted_prompts = args.counted_prompts
 
-    user_src = args.user_query_src = "users"  # can be "users WHERE ..."
+    user_src = args.user_src or "users"  # can be "users WHERE ..."
     query = "SELECT grid_row, grid_col, tags, responses FROM " + user_src
     cursor.execute(query)
     main(out_dir, tags, mapped_prompts, counted_prompts, cursor)

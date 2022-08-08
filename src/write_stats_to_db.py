@@ -9,13 +9,7 @@ import sys
 from common import *
 from db_common import DB_CNX
 
-out_dir = "./out"
-if not os.path.exists(out_dir):
-    try:
-        os.makedirs(out_dir)
-    except:
-        print("Could not open or create given directory:", out_dir)
-
+out_dir = sys.argv[-1]
 cursor = DB_CNX.cursor()
 
 data = np.load(os.path.join(out_dir, "_counts.npy"), allow_pickle=True).tolist()
