@@ -21,7 +21,7 @@ You can install the above with `pip install -r src/requirements.txt`
 ## Web
 Early versions had a simple `index.html` that could be loaded in a web browser directly.
 
-We're not in Kansas anymore; navigate to `./web` in TWO terminals,
+We're not in Kansas anymore; navigate to `./web` **IMPORTANT** for both,
 1. run `npm run dev` or `prod` to generate the js and css in `/public`  
 2. run `php artisan serve` (OR `art serve` if you have the recommended `laravel` shell config)  
 
@@ -33,7 +33,6 @@ Required:
 * Add google ads to web app  
 * Add server-side response validation
 * Optimize page load time
-* Document upload pattern (verify mapbox refresh time)
 * Update about info
 * Fix vote bar spacing
 * Fix tailwind installation

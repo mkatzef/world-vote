@@ -2,7 +2,7 @@
 @php
   $title_height_px = 45;
   $pane_width_perc = 25;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-700 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded";
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
 
@@ -105,9 +105,14 @@
             <button onclick="button_update_details()" class="{{ $header_button_class }}">
               My Details
             </button>
+            <a href="/logout">
+              <button class="{{ $header_button_class }}">
+                Logout
+              </button>
+            </a>
           @else
             <button onclick="set_pane_mode('pane_user_type')"
-              class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+              class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
               Vote!
             </button>
           @endauth
@@ -117,7 +122,7 @@
       <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
         <a id="map_toggle_link" href="javascript:void(0)" onclick="toggleMap()">
           <div id="map_toggle_bg" class="space-y-2"
-            style="width:52px; height:26px; background-color:white; border-width:2px; border-color:orange; border-radius:13px; margin-right:10px">
+            style="width:52px; height:26px; background-color:white; border-width:2px; border-color:#FF9D47; border-radius:13px; margin-right:10px">
             <img id="map_toggle_orb" src="/earth.png"
               style="margin-left:0px; width:22px; height:22px"
               class="map_toggle_transition"></img>
@@ -143,21 +148,31 @@
         </a>
       </p>
       <hr>
-      <p>
       @auth
+      <p>
         <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
         class="text-2xl m-2"
         style="color:black">
           My Details
         </a>
+      </p>
+      <hr>
+      <p>
+        <a id="hammy_pane_logout" href="/logout"
+        class="text-2xl m-2"
+        style="color:black">
+          Logout
+        </a>
+      </p>
       @else
+      <p>
         <a id="hammy_pane_user_type" href="javascript:void(0)" onclick="set_pane_mode('pane_user_type')"
         class="text-2xl m-2"
         style="color:black">
           Vote!
         </a>
-      @endauth
       </p>
+      @endauth
     </div>
 
     <div id="pane_container" class="pane main_transition">
@@ -220,19 +235,19 @@
       >
         <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:left; color:orange; background-color:white;
+          style="height:100%; width:50%; float:left; color:#FF9D47; background-color:white;
             border-top-width:2px; border-right-width:2px;">
             Votes
         </button>
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:right; color:black; background-color:orange;
+          style="height:100%; width:50%; float:right; color:black; background-color:#FF9D47;
             border-top-width:2px; border-left-width:2px">
             Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;"></img>
         </button>
       </div>
 
-    <div style="background-color:orange; height:100%; width:100%"><!-- Cosmetic -->
+    <div style="background-color:#FF9D47; height:100%; width:100%"><!-- Cosmetic -->
       <div
         id="poll_tab_votes"
         class="scrolling-y"
@@ -242,6 +257,7 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
+          <p style="color:red">Under development</p>
           Click on any of the questions below to see user responses
           @auth
             <div style="width:100%; text-align:center">
@@ -317,7 +333,7 @@
                     href="javascript:void(0)"
                     onclick="addFilter({{ $tag->id }})">
                       <div style="width:32px; height:32px"
-                        class="hover:bg-orange-200 p-1 rounded-full">
+                        class="hover:bg-orange-500 p-1 rounded-full">
                         <img
                           id="voter_filter_icon_{{ $tag->id }}"
                           src="/filter_add.png"
@@ -433,7 +449,7 @@
               type="button"
               style="width:45%"
               onclick="primeForCaptcha('login')"
-              class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+              class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
             >
               Submit
             </button>
@@ -465,13 +481,26 @@
           </div>
           <ul class="grid gap-2 w-full md:grid-cols-1">
             @foreach ($tags as $tag)
-              <x-tag-checkbox :tag="$tag" prefix="new"/>
+              <li>
+                <input type="checkbox" id="new-checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}" class="hidden peer">
+                <label for="new-checkbox-{{ $tag->slug }}"
+                  class="
+                  peer-checked:border-orange-300 peer-checked:text-gray-600
+                   tracking-tight text-gray-900
+                    block bg-white rounded-lg shadow-md hover:bg-gray-100
+                    m-2 border-4 border-gray-200 button_transition">
+                  <div class="block cursor-pointer">
+                    <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
+                  </div>
+                </label>
+              </li>
+
             @endforeach
           </ul>
 
           <button
             type="button"
-            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded"
+            class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
             onclick="newVoteSubmit()"
           >
             Submit
@@ -504,7 +533,20 @@
           </div>
           <ul class="grid gap-2 w-full md:grid-cols-1">
             @foreach ($tags as $tag)
-              <x-tag-checkbox :tag="$tag" prefix="update"/>
+            <li>
+              <input type="checkbox" id="update-checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}" class="hidden peer">
+              <label for="update-checkbox-{{ $tag->slug }}"
+                class="
+                peer-checked:border-orange-300 peer-checked:text-gray-600
+                 tracking-tight text-gray-900
+                  block bg-white rounded-lg shadow-md hover:bg-gray-100
+                  m-2 border-4 border-gray-200 button_transition">
+                <div class="block cursor-pointer">
+                  <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
+                </div>
+              </label>
+            </li>
+
             @endforeach
           </ul>
 
@@ -515,7 +557,7 @@
           >
             Cancel
           </button>
-          <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded">
+          <button class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
             Submit
           </button><br>
           <div style="background-color:white">
@@ -1178,7 +1220,7 @@
 
       var isTouchDevice = false;  // assume not touch, but change after first touch
       var stagedVoteId = null;
-      const stagedClasses = ["border-orange-200"];
+      const stagedClasses = ["border-orange-500"];
       const unstagedClasses = ["border-transparent-200"];
       function stage_vote(promptId) {
         var prompt = allPrompts[promptId];

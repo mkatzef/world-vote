@@ -34,6 +34,11 @@ Route::get('unsuccessful', function () {
   return 'Something went wrong! Please try again later';
 });
 
+Route::get('logout', function () {
+  Session::flush();
+  Auth::logout();
+  return redirect('/');
+})->middleware('auth');
 
 Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');
 Route::post('update_responses', [RegisterController::class, 'update_responses'])->middleware('auth');
