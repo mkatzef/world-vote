@@ -11,6 +11,7 @@ else
   exit
 fi
 
+echo "Working in "$out_dir
 mkdir -p $out_dir
 
 echo "Collecting base data from database"
