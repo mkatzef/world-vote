@@ -775,7 +775,7 @@
         mapHasLoaded = true;
   			map.addSource('vote-data', {
 					'type': 'vector',
-					'url': "mapbox://{{ $tileset->mb_tile_id }}"
+					'url': "mapbox://{{ $tileset_id }}"
 				});
 
   			map.addSource('clicked_loc', {

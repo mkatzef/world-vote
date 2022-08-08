@@ -29,21 +29,22 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 
 ## Next steps
-Small:
-* Fix about display
-* Fix user type display
-* Install tailwind
-
-Big:  
-* Move database processing to aws lambda  
+Required:  
 * Add google ads to web app  
-* Connect captchas with login  
-* Improve unique keys
+* Add server-side response validation
+* Optimize page load time
+* Document upload pattern (verify mapbox refresh time)
+* Update about info
+* Fix vote bar spacing
+* Fix tailwind installation
+* Update theme to use same orange
 Optional:
+* Add color options
 * Add location compatibility filter (cosine similarity)
 * Add delete option and logout option
-* Add vote categories  
-* Add vote search  
+* Add user-submitted prompts
+* Add prompt categories  
+* Add prompt search  
 
 
 ## Useful tools

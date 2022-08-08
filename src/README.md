@@ -18,5 +18,35 @@ Interact with your creation
 `docker run --mount type=bind,source=$(pwd),target=/src world_vote ./db_to_mbtiles.sh`
 Maps pwd (which should be `src`) to `/src` inside the container, letting you call any script that's in `pwd` inside the container (which has the right dependencies installed!)
 
-# TODO:
-Map host storage to container, run end-to-end scripts
+# Map data sequencing
+The data shown to users is processed in the following steps:
+Current time period: 1 hour
+Consistency time period: 24 hours
+
+## Outdated
+Run the following once per time period (outdated, tick/tock based):
+* Switch the active tileset to the one generated in the PREVIOUS period, e.g., tick
+* Read entire database to collect base data + counts
+* Bin data into zoom levels and corresponding geojson
+* Generate mbtiles for each zoom level
+* Combine mbtiles for each zoom level
+* Upload combined mbtiles to the inactive tileset id, e.g., tock
+* Update state variables to mark the staged tileset
+
+## New
+Run the following once per consistency time period (updated):
+* Read entire database to collect base data + counts
+* Bin data into zoom levels (the "master base data")
+* Record the maximum user id used in processing
+
+Run the following once per time period (updated):
+* Set the active tileset to the previously staged tileset
+* Set the deleted tileset to the active tileset
+* Read user database (where user id > last collected) to collect base data + counts
+* Bin data into zoom levels
+* Add to this the master base data
+* Generate corresponding geojson
+* Generate mbtiles for each zoom level
+* Combine mbtiles for each zoom level
+* Upload combined mbtiles to mapbox-defined ID
+* Delete 

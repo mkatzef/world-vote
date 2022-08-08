@@ -4,20 +4,16 @@ min_zoom="0"
 max_zoom="4"
 out_file="tiles-comb.mbtiles"
 
-last_staged=`cat dblbuf.txt`
-echo "Set PREVIOUS as active in database (avoids race condition)"
-python3 set_active_tiles.py mkatzeff.vote$last_staged
-
-staged_id="tick"
-if [ "$last_staged" = "tick" ]; then
-  staged_id='tock'
+if [ -f "access_token.txt" ]; then
+  export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
+else
+  echo "No access token found for mapbox upload"
+  exit
 fi
-echo "Uploading tileset to mapbox as mkatzeff.vote$staged_id"
-export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
-mapbox upload mkatzeff.vote$staged_id $out_dir/$out_file
 
-echo "Setting double buffer to $staged_id"
-echo $staged_id > dblbuf.txt
+echo "Moving pending to active"
+pending_delete=`python3 promote_staged_tiles.py`
+echo "Previously active: $pending_delete"
 
 mkdir -p $out_dir
 
@@ -38,9 +34,8 @@ tile-join -o $out_dir/$out_file $out_dir/z0*/tiles.mbtiles --force
 echo "Writing stats to database"
 python3 write_stats_to_db.py $out_dir
 
-if [ -f "access_token.txt" ]; then
-  export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
-else
-  echo "No access token found for mapbox upload"
-  exit
-fi
+upload_name=`mapbox upload $out_dir/$out_file | python3 get_from_json.py tileset`
+python3 set_staged_tiles.py $upload_name
+
+echo "Deleting previously active tiles $pending_delete"
+tilesets delete -f $pending_delete

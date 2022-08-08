@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Prompt;
 use App\Models\Tag;
-use App\Models\Tileset;
+use App\Models\General;
 use App\Models\User;
 use App\Http\Controllers\RegisterController;
 
@@ -26,7 +26,7 @@ Route::get('/', function () {
     return view('index', [
       'tags' => Tag::all(),
       'prompts' => Prompt::all(),
-      'tileset' => Tileset::where('is_active', '=', '1')->first()
+      'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue')
     ]);
 });
 
