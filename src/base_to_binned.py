@@ -33,7 +33,7 @@ def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir):
             sums = block_reduce(sums, block_size=(2, 2, 1), func=np.sum)
             counts = block_reduce(counts, block_size=(2, 2, 1), func=np.sum)
 
-        kept_indices = counts > THRESHOLD_COUNT
+        kept_indices = counts >= THRESHOLD_COUNT
         # Sums
         filtered_data = np.where(kept_indices, sums, sentinel_val)  # hide low-volume data for privacy
         # Means

@@ -1,5 +1,3 @@
-
-
 import mysql.connector
 import numpy as np
 import json
