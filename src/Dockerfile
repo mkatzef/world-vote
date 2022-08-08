@@ -17,6 +17,6 @@ RUN make \
 
 RUN apt-get install -y python3-pip
 RUN pip3 install setuptools numpy mysql.connector scikit-image
-RUN pip3 install mapboxcli
+RUN pip3 install mapboxcli mapbox-tilesets
 
 WORKDIR /src
