@@ -632,9 +632,13 @@
 
       function set_pane_mode(pane_mode) {
         // Remove all map elements
-        tear_down_select_ui();
-        display_prompt(null);
-        hamburgerClose();
+        if (mapHasLoaded) {
+          tear_down_select_ui();
+          display_prompt(null);
+          hamburgerClose();
+        } else if (pane_mode != "pane_polls") {
+          return;
+        }
 
         // disable all divs that aren't pane_mode
         for (let pane_id in pane_divs) {
@@ -958,6 +962,7 @@
   		}
 
       function paint_filtered_prompt() {
+        // Used as a workaround so that filters can affect map and charts
         if (!activePromptId) {
           return;
         }
@@ -980,6 +985,8 @@
               ]
             ]
           );
+        } else {
+          map.setLayoutProperty('prompts', 'visibility', 'none');
         }
       }
 
