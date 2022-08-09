@@ -409,7 +409,13 @@
     Stats and vote slider
     NOTE: Initially hidden - moved to correct button as needed
     -->
-    <div id="active_prompt_content" style="width:100%; height:100px; margin-left:10; display:none">
+    <div id="active_prompt_content" style="width:100%;
+      @auth
+        height:90px;
+      @else
+        height:60px;
+      @endauth
+      margin-left:10; display:none">
       <span id="staged_option0" style="float:left; width:50%; text-align:left">
       </span>
       <span id="staged_option1" style="float:right; width:50%; text-align:right">
@@ -428,7 +434,7 @@
       </table>
       <a href="javascript:void(0)" onclick="revealStats()">
         <div id="stats_mask" style="margin-top:-40px; width:100%; height:40px;
-          backdrop-filter: blur(20px); border-top-left-radius:5px; border-top-right-radius:5px"
+          -webkit-backdrop-filter: blur(20px); border-top-left-radius:5px; border-top-right-radius:5px"
         >
           Show LIVE stats
         </div>
