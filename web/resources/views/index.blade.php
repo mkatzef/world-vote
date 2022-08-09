@@ -393,7 +393,7 @@
         <tr valign=bottom>
           @for($i = 0; $i < $chart_n_elems; ++$i)
             <td style="height:40px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
-              <div id="stats_cell_{{ $i }}" style="width:100%; height:100%">
+              <div id="stats_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; border-top:2px solid #CCCCCC; width:100%; height:100%">
               </div>
             </td>
           @endfor
