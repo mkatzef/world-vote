@@ -559,6 +559,10 @@ video {
 .m-1 {
   margin: 0.25rem;
 }
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
 .mt-5 {
   margin-top: 1.25rem;
 }
@@ -693,10 +697,6 @@ video {
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
-}
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
 }
 .text-2xl {
   font-size: 1.5rem;

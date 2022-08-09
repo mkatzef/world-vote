@@ -19,5 +19,6 @@ module.exports = {
     "text-orange-300",
     "text-orange-400",
     "text-orange-500",
+    "mx-1",
   ],
 }

@@ -77,7 +77,9 @@
     <!--
       TITLE
     -->
-    <div id="title_bar" style="position:fixed; height:{{ $title_height_px }}px; width:100%; background-color:#ffffff">
+    <div id="title_bar"
+      style="position:fixed; height:{{ $title_height_px }}px; width:100%;
+      background-color:#ffffff; margin-top:2px">
       <div style="float:left;max-width:70%;">
         <a href="/">
           <img id="logo_img" src="/logo-w.png" style="height:{{ $title_height_px }}px"></img>
@@ -95,23 +97,32 @@
         </a>
 
         <div id="title_buttons" style="display:none">
-          <button onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
+          <button
+            style="margin-left:2px; margin-right:2px"
+            onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
             Polls
           </button>
-          <button onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
+          <button
+            style="margin-left:2px; margin-right:2px"
+            onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
             About
           </button>
           @auth
-            <button onclick="button_update_details()" class="{{ $header_button_class }}">
+            <button
+              style="margin-left:2px; margin-right:2px"
+              onclick="button_update_details()" class="{{ $header_button_class }}">
               My Details
             </button>
             <a href="/logout">
-              <button class="{{ $header_button_class }}">
+              <button
+                style="margin-left:2px; margin-right:2px"
+                class="{{ $header_button_class }}">
                 Logout
               </button>
             </a>
           @else
             <button onclick="set_pane_mode('pane_user_type')"
+              style="margin-left:2px; margin-right:2px"
               class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
               Vote!
             </button>
@@ -413,10 +424,10 @@
     -->
     <div id="pane_user_type" class="paneElement">
       <div style="display:flex; flex-direction:column; height:100%; width:100%;
-        padding-top:20%; padding-bottom: 20%; text-align:center; align-items:center">
+        padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
         <button onclick="set_pane_mode('pane_new_user')"
-          class="{{ $header_button_class }}"
-          style="width:80%; max-width:200px; margin-bottom:50px">
+          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          style="width:80%; max-width:200px; margin-bottom:20px">
           New vote!
         </button>
 
@@ -425,7 +436,7 @@
           <h1>OR</h1>
         </div>
 
-        <div style="width:80%; max-width:200px; margin-top:50px">
+        <div style="width:100%; max-width:200px; margin-top:20px">
           <form id="login_details_form" action="/login" method="POST"> <!--target="form_sink">-->
             @csrf
             <input type="text" id="captcha_val_login" name="g-recaptcha-response" style="display:none">
@@ -435,23 +446,23 @@
             <input
               id="access_token"
               name="access_token"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="m-1 shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             >
             <button
               type="button"
-              onclick="set_pane_mode('pane_polls')"
-              style="width:45%"
-              class="{{ $header_button_class }}"
+              style="width:100%; max-width:200px"
+              onclick="primeForCaptcha('login')"
+              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
             >
-              Back
+              Submit
             </button>
             <button
               type="button"
-              style="width:45%"
-              onclick="primeForCaptcha('login')"
-              class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              onclick="set_pane_mode('pane_polls')"
+              style="width:100%; max-width:200px"
+              class="m-1 {{ $header_button_class }}"
             >
-              Submit
+              Back
             </button>
           </form>
         </div>
@@ -518,7 +529,9 @@
     -->
     <div id="pane_my_details" class="paneElement">
       <div class="scrolling-y" style="height:100%">
-        <button id="update_location_button" onclick="set_up_select_ui('update')" class="{{ $header_button_class }}">
+        <button id="update_location_button" onclick="set_up_select_ui('update')"
+          style="width:80%"
+          class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
           Update location
         </button><br>
         <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->

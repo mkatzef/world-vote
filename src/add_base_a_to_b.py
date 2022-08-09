@@ -10,6 +10,19 @@ import os
 from common import *
 
 
+def add_a_to_b_using_keys(arr_a, key_a, arr_b, key_b):
+    b_layer_lookup = dict([(k, i) for i, k in enumerate(key_b)])
+
+    for a_layer_i, a_layer_key in enumerate(key_a):
+        # Skip any layers that were present in the src data but not dst
+        # Example: a tag was removed sometime that day
+        if a_layer_key not in b_layer_lookup:
+            continue
+        arr_b[:, :, b_layer_lookup[a_layer_key]] += arr_a[:, :, a_layer_i]
+
+    return arr_b
+
+
 def main(in_dir, out_dir):
     src_files = next(os.walk(in_dir))[2]
     dst_files = set(next(os.walk(out_dir))[2])
@@ -28,9 +41,11 @@ def main(in_dir, out_dir):
         dst_path = os.path.join(out_dir, stat_filename)
         src_data = np.load(src_path, allow_pickle=True).tolist()
         dst_data = np.load(dst_path, allow_pickle=True).tolist()
-        dst_data['res_sums'] += src_data['res_sums']
-        dst_data['res_counts'] += src_data['res_counts']
-
+        src_key = src_data['tag_key']
+        dst_key = dst_data['tag_key']
+        for data_name in ['res_sums', 'res_counts']:
+            dst_data[data_name] = add_a_to_b_using_keys(src_data[data_name], src_key,
+                                                        dst_data[data_name], dst_key)
         np.save(dst_path, dst_data)
 
     counts_filename = "_counts.npy"
@@ -39,8 +54,17 @@ def main(in_dir, out_dir):
     dst_counts_path = os.path.join(out_dir, counts_filename)
     src_counts = np.load(src_counts_path, allow_pickle=True).tolist()
     dst_counts = np.load(dst_counts_path, allow_pickle=True).tolist()
-    for k, v in src_counts['counts'].items():
-        dst_counts['counts'][k] += v
+    src_key = src_counts['tag_key']
+    dst_key = dst_counts['tag_key']
+    dst_layer_lookup = dict([(k, i) for i, k in enumerate(dst_key)])
+
+    for src_p_id, src_p_dict in src_counts['counts'].items():
+        if src_p_id not in dst_counts['counts']:
+            continue
+        for src_layer_i, src_layer_tag in enumerate(src_key):
+            if src_layer_tag not in dst_layer_lookup:
+                continue
+            dst_counts['counts'][src_p_id][:, dst_layer_lookup[src_layer_tag]] += src_p_dict[:, src_layer_i]
     np.save(dst_counts_path, dst_counts)
 
 

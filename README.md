@@ -1,22 +1,19 @@
 # World Vote
 
 ## Structure
-`src/`
-`base_to_geojson.py`: create geojson files  
-`db_to_mbtiles.sh`: automated conversion process from database to `mbtiles`
+* `web/` laravel web app  
+* `src/` bash and python utilities to process data for the web app  
+* `web_uploads/` packaged versions of the laravel web app (for elastic beanstalk)  
+
 
 ## Data formats
 * `base`: `.npy` containing raw data sums and counts; one per data channel e.g., `demo0.npy`  
 * `zoom array`: `.npy` of the same name as the data channel, averaged, filtered, and binned for multiple zoom levels, e.g., `z04/demo0.npy`  
-* `cells`: `.pbf` all `zoom array`s at the current zoom aggregated into geojson (converted to protobuf) (one polygon per array cell), e.g., `z04/cells.pbf`
+* `cells`: `.json` all `zoom array`s at the current zoom aggregated into geojson (one polygon per array cell), e.g., `z04/cells.pbf`
 * `tiles`: `.mbtiles` directly from the `cells` file for that zoom level, e.g., `z04/tiles.mbtiles`  
 * `tiles-comb`: `.mbtiles` combining each of the individual `tiles` files (this is the output file ready for mapbox), e.g., `tiles-comb.mbtiles`  
 
-This is all handled by `db_to_mbtiles.sh` provided you have the relevant python packages installed:
-* `numpy`
-* `mysql.connector`
-* `mapboxcli` (for automatic upload)  
-You can install the above with `pip install -r src/requirements.txt`  
+The tasks of reading from database, writing the above formats, and uploading are all described in [src/README.md](src/README.md)
 
 ## Web
 Early versions had a simple `index.html` that could be loaded in a web browser directly.
@@ -34,13 +31,9 @@ Required:
 * Add server-side response validation
 * Optimize page load time
 * Update about info
-* Fix vote bar spacing
-* Fix tailwind installation
-* Update theme to use same orange
 Optional:
 * Add color options
 * Add location compatibility filter (cosine similarity)
-* Add delete option and logout option
 * Add user-submitted prompts
 * Add prompt categories  
 * Add prompt search  
