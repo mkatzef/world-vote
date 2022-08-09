@@ -16,6 +16,7 @@ web_uploads/*
 *db_config.py
 *__pycache__*
 *out_dir.state
+*profiler.php
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

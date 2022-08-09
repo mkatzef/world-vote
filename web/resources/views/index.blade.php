@@ -2,6 +2,7 @@
 @php
   $title_height_px = 45;
   $pane_width_perc = 25;
+  $ad_width_perc = 15;
   $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
@@ -16,12 +17,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
+     crossorigin="anonymous"></script>
 
   	<link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
   	<style>
   		body { margin: 0; padding: 0; }
-  		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc }}%; }
+  		#map { position: absolute; top: {{ $title_height_px }}px; bottom: 0; left: {{ $pane_width_perc }}%; width: {{ 100 - $pane_width_perc - $ad_width_perc }}%; }
       #navOverlay {
         position: fixed; /* Sit on top of the page content */
         display: none; /* Hidden by default */
@@ -78,7 +81,7 @@
       TITLE
     -->
     <div id="title_bar"
-      style="position:fixed; height:{{ $title_height_px }}px; width:100%;
+      style="position:fixed; height:{{ $title_height_px }}px; width:calc(100% - {{ $ad_width_perc }}%);
       background-color:#ffffff; margin-top:2px">
       <div style="float:left;max-width:70%;">
         <a href="/">
@@ -377,10 +380,12 @@
       </div>
     </div><!-- Cosmetic -->
 
-      <div id="ad-container" style="position:absolute; height:50px; bottom:0px; width:100%; background:white">
-        <p>Big fat advertisement</p>
+      <div id="ad_container1" style="display:none; position:absolute; height:50px; bottom:0px; width:100%; background:white">
+        <p>ad_container1</p>
       </div>
-      <div id="captcha-container"
+
+      <div id="captcha_container"
+        style="display:none"
         class="g-recaptcha"
         data-sitekey="6LcwziwhAAAAAHOR6JERUohR4Z1FFJdSIUxUWSuT";
         data-callback="submitWithCaptcha"
@@ -594,6 +599,21 @@
     -->
     <div id="map" class="main_transition"></div>
 
+    <div id="ad_container2"
+      style="position:fixed; top:0px; bottom:0px; right:0px; width:{{ $ad_width_perc }}%">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
+           crossorigin="anonymous"></script>
+      <!-- vertical_fullheight -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-2181179435401368"
+           data-ad-slot="2831926051"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
 
   	<script>
       var activeCaptchaForm = null;  // 'new' or 'login'
@@ -625,12 +645,22 @@
         'pane_overlay': {},
         'pane_about': {},
         'pane_polls': {},
-        'pane_new_user': {'on_entry': () => {set_up_select_ui('new');}},
-        'pane_user_type': {},
+        'pane_new_user': {
+          'on_entry': () => {
+            set_up_select_ui('new');
+            captcha_container.style.display = "block"
+          }
+        },
+        'pane_user_type': {
+          'on_entry': () => {
+            captcha_container.style.display = "block"
+          }
+        },
         'pane_my_details': {},
       };
 
       function set_pane_mode(pane_mode) {
+        captcha_container.style.display = "none";
         // Remove all map elements
         if (mapHasLoaded) {
           tear_down_select_ui();
@@ -788,6 +818,11 @@
           title_buttons.style.display = "none";
           vert_options.style.display = "block";
           hammy.style.display = "block";
+          ad_container1.style.display = "block";
+          ad_container2.style.display = "none";
+          poll_tab_votes.style.height = "calc(100% - 100px)";
+          poll_tab_voters.style.height = "calc(100% - 100px)";
+          title_bar.style.width = "100%";
           delayedMapRefresh(550);
         } else {
           logo_img.src = "/logo-w.png";
@@ -797,11 +832,16 @@
           document.getElementById('pane_container').style['margin-top'] = "0px";
           document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
           document.getElementById('map').style.height = "";
-          document.getElementById('map').style.width = "{{ 100 - $pane_width_perc }}%";
+          document.getElementById('map').style.width = "{{ 100 - $pane_width_perc - $ad_width_perc }}%";
           document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
           title_buttons.style.display = "block";
           vert_options.style.display = "none";
           hammy.style.display = "none";
+          ad_container1.style.display = "none";
+          ad_container2.style.display = "block";
+          poll_tab_votes.style.height = "calc(100% - 50px)";
+          poll_tab_voters.style.height = "calc(100% - 50px)";
+          title_bar.style.width = "calc(100% - {{ $ad_width_perc }}%)";
           delayedMapRefresh(20);
         }
       }
