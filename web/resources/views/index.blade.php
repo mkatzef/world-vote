@@ -381,7 +381,18 @@
     </div><!-- Cosmetic -->
 
       <div id="ad_container1" style="display:none; position:absolute; height:50px; bottom:0px; width:100%; background:white">
-        <p>ad_container1</p>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
+             crossorigin="anonymous"></script>
+        <!-- horizontal_full -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-2181179435401368"
+             data-ad-slot="3263472216"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
       </div>
 
       <div id="captcha_container"
@@ -398,7 +409,7 @@
     Stats and vote slider
     NOTE: Initially hidden - moved to correct button as needed
     -->
-    <div id="active_prompt_content" style="width:80%; height:100px; margin-left:10; display:none">
+    <div id="active_prompt_content" style="width:100%; height:100px; margin-left:10; display:none">
       <span id="staged_option0" style="float:left; width:50%; text-align:left">
       </span>
       <span id="staged_option1" style="float:right; width:50%; text-align:right">
@@ -415,6 +426,13 @@
           @endfor
         </tr>
       </table>
+      <a href="javascript:void(0)" onclick="revealStats()">
+        <div id="stats_mask" style="margin-top:-40px; width:100%; height:40px;
+          backdrop-filter: blur(20px); border-top-left-radius:5px; border-top-right-radius:5px"
+        >
+          Show LIVE stats
+        </div>
+      </a>
       @auth
         <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
           @csrf
@@ -605,7 +623,7 @@
            crossorigin="anonymous"></script>
       <!-- vertical_fullheight -->
       <ins class="adsbygoogle"
-           style="display:block"
+           style="display:block; height:100%"
            data-ad-client="ca-pub-2181179435401368"
            data-ad-slot="2831926051"
            data-ad-format="auto"
@@ -1212,6 +1230,7 @@
 
       // Note: barColors can be a different length than data - uses linear interpolation
       function displayStats(data, barColors) {
+        stats_mask.style.display = 'block';  // Initially mask all stats
         var n_elems = data.length;
         var n_intervals = data.length - 1;
         for (let i = 0; i < n_elems; i++) {
@@ -1256,7 +1275,7 @@
 
       function showPromptContent(promptId) {
         target_div = document.getElementById("vote_button_" + promptId);
-        active_prompt_content.style.display = "inline";
+        active_prompt_content.style.display = "block";
         target_div.appendChild(active_prompt_content);
         replaceClasses(target_div, stagedClasses, unstagedClasses);
       }
@@ -1297,10 +1316,9 @@
         staged_option0.innerHTML = prompt.option0;
         staged_option1.innerHTML = prompt.option1;
 
-        var colorSteps = JSON.parse(prompt['colors']);
-        if (colorSteps.length == 0)  {
-          colorSteps = [[255, 0, 0], [255, 255, 255], [0, 255, 0]];
-        }
+        var stagedColors = getRandomCombo();
+        //var colorSteps = JSON.parse(prompt['colors']);
+        var colorSteps = [stagedColors[0], [200,200,200], stagedColors[1]];
 
         @auth
           // Slider colors
@@ -1358,6 +1376,22 @@
         @endauth
 
         display_prompt(prompt.id, prompt.is_mapped, colorSteps);
+      }
+
+      const colorOptions = [[255,0,0], [0, 255, 0], [0, 0, 255], [255, 255, 0], [255, 0, 255], [0, 255, 255]];
+      function getRandomCombo(cOptions=colorOptions) {
+        const nOptions = cOptions.length;
+        var index1 = Math.floor(Math.random() * nOptions);
+        var index2 = Math.floor(Math.random() * (nOptions - 1));
+        if (index2 >= index1) {
+          index2++;
+        }
+
+        return [cOptions[index1], cOptions[index2]];
+      }
+
+      function revealStats() {
+        stats_mask.style.display = 'none';
       }
 
       const allPromptsRaw = {{ Js::from($prompts) }};
