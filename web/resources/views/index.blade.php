@@ -431,7 +431,7 @@
         </tr>
       </table>
       <a href="javascript:void(0)" onclick="revealStats()">
-        <div id="stats_mask" style="margin-top:-40px; width:100%; height:40px;
+        <div id="stats_mask" style="margin-top:-40px; width:100%; height:44px;
           -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
           border-top-left-radius:5px; border-top-right-radius:5px"
         >
@@ -1297,7 +1297,6 @@
 
       color_input_option0.addEventListener('change', () => {updateStagedColors();});
       color_input_option1.addEventListener('change', () => {updateStagedColors();});
-
 
       function showPromptContent() {
         var prompt = allPrompts[stagedVoteId];
