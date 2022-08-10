@@ -85,7 +85,7 @@
       background-color:#ffffff; margin-top:2px">
       <div style="float:left;max-width:70%;">
         <a href="/">
-          <img id="logo_img" src="/logo-w.png" style="height:{{ $title_height_px }}px"></img>
+          <img id="logo_img" src="/logo-w.png" style="height:calc({{ $title_height_px }}px - 4px)"></img>
         </a>
       </div>
 
@@ -136,9 +136,9 @@
       <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
         <a id="map_toggle_link" href="javascript:void(0)" onclick="toggleMap()">
           <div id="map_toggle_bg" class="space-y-2"
-            style="width:52px; height:26px; background-color:white; border-width:2px; border-color:#FF9D47; border-radius:13px; margin-right:10px">
+            style="width:52px; height:24px; background-color:white; border-width:2px; border-color:#FF9D47; border-radius:12px; margin-right:10px">
             <img id="map_toggle_orb" src="/earth.png"
-              style="margin-left:0px; width:22px; height:22px"
+              style="margin-left:0px; width:20px; height:20px"
               class="map_toggle_transition"></img>
           </div>
         </a>
@@ -409,24 +409,22 @@
     Stats and vote slider
     NOTE: Initially hidden - moved to correct button as needed
     -->
-    <div id="active_prompt_content" style="width:100%;
-      @auth
-        height:90px;
-      @else
-        height:60px;
-      @endauth
-      margin-left:10; display:none">
-      <span id="staged_option0" style="float:left; width:50%; text-align:left">
-      </span>
-      <span id="staged_option1" style="float:right; width:50%; text-align:right">
-      </span>
+    <div id="active_prompt_content" style="width:100%; height:90px; margin-left:10; display:none">
+      <div style="float:left; width:50%; text-align:left">
+        <input id="color_input_option0" type="color" value="#FFFFFF"/>
+        <span id="staged_option0"></span>
+      </div>
+      <div style="float:right; width:50%; text-align:right">
+        <span id="staged_option1"></span>
+        <input id="color_input_option1" type="color" value="#FFFFFF"/>
+      </div>
       <br>
 
       <table id="stats_chart" style="table-layout: fixed; width:100%; height:40px;">
         <tr valign=bottom>
           @for($i = 0; $i < $chart_n_elems; ++$i)
             <td style="height:40px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
-              <div id="stats_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; border-top:2px solid #CCCCCC; width:100%; height:100%">
+              <div id="stats_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:100%">
               </div>
             </td>
           @endfor
@@ -434,7 +432,8 @@
       </table>
       <a href="javascript:void(0)" onclick="revealStats()">
         <div id="stats_mask" style="margin-top:-40px; width:100%; height:40px;
-          -webkit-backdrop-filter: blur(20px); border-top-left-radius:5px; border-top-right-radius:5px"
+          -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+          border-top-left-radius:5px; border-top-right-radius:5px"
         >
           Show LIVE stats
         </div>
@@ -444,6 +443,11 @@
           @csrf
           <x-vote-slider :promptId="1" />
         </form>
+      @else
+        <button onclick="set_pane_mode('pane_user_type')"
+          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
+          Vote!
+        </button>
       @endauth
     </div>
 
@@ -1014,15 +1018,14 @@
   		var activePromptId = null;
       var activePromptColorSteps = null;
   		function display_prompt(promptId, isMapped, colorSteps) {
-        if (promptId == null || promptId == activePromptId) {
-          activePromptId = null;
-          map.setLayoutProperty('prompts', 'visibility', 'none');
-          return;
-        }
         activePromptColorSteps = colorSteps;
         activePromptId = promptId;
-        map.setLayoutProperty('prompts', 'visibility', 'visible');
-        paint_filtered_prompt(promptId);
+        if (promptId) {
+          map.setLayoutProperty('prompts', 'visibility', 'visible');
+          paint_filtered_prompt(promptId);
+        } else {
+          map.setLayoutProperty('prompts', 'visibility', 'none');
+        }
   		}
 
       function paint_filtered_prompt() {
@@ -1236,7 +1239,11 @@
 
       // Note: barColors can be a different length than data - uses linear interpolation
       function displayStats(data, barColors) {
-        stats_mask.style.display = 'block';  // Initially mask all stats
+        if (! ('has_been_opened' in allPrompts[activePromptId])) {
+          stats_mask.style.display = 'block';  // Initially mask all stats
+        } else {
+          stats_mask.style.display = 'none';
+        }
         var n_elems = data.length;
         var n_intervals = data.length - 1;
         for (let i = 0; i < n_elems; i++) {
@@ -1279,53 +1286,40 @@
         replaceClasses(target_div, unstagedClasses, stagedClasses);
       }
 
-      function showPromptContent(promptId) {
-        target_div = document.getElementById("vote_button_" + promptId);
+
+      function updateStagedColors() {
+        allPrompts[stagedVoteId].userPromptColors = [
+          hexToColorArr(color_input_option0.value),
+          hexToColorArr(color_input_option1.value)
+        ];
+        showPromptContent();
+      }
+
+      color_input_option0.addEventListener('change', () => {updateStagedColors();});
+      color_input_option1.addEventListener('change', () => {updateStagedColors();});
+
+
+      function showPromptContent() {
+        var prompt = allPrompts[stagedVoteId];
+        target_div = document.getElementById("vote_button_" + prompt.id);
         active_prompt_content.style.display = "block";
         target_div.appendChild(active_prompt_content);
         replaceClasses(target_div, stagedClasses, unstagedClasses);
-      }
 
-      function addClasses(elem, classes) {
-        for (let i = 0; i < classes.length; i++) {
-          elem.classList.add(classes[i]);
-        }
-      }
-
-      function removeClasses(elem, classes) {
-        for (let i = 0; i < classes.length; i++) {
-          elem.classList.remove(classes[i]);
-        }
-      }
-
-      function replaceClasses(elem, toAdd, toRemove) {
-        removeClasses(elem, toRemove);
-        addClasses(elem, toAdd);
-      }
-
-      var isTouchDevice = false;  // assume not touch, but change after first touch
-      var stagedVoteId = null;
-      const stagedClasses = ["border-orange-500"];
-      const unstagedClasses = ["border-transparent-200"];
-      function stage_vote(promptId) {
-        var prompt = allPrompts[promptId];
-        if (prompt.id == stagedVoteId) {
-          stagedVoteId = null;
-          hidePromptContent(prompt.id);
-          display_prompt(null);
-          return;
-        } else if (stagedVoteId) {
-          hidePromptContent(stagedVoteId);
-        }
-        stagedVoteId = prompt.id;
-        showPromptContent(prompt.id);
         staged_option0.innerHTML = prompt.option0;
         staged_option1.innerHTML = prompt.option1;
 
-        var stagedColors = getRandomCombo();
+        if ('userPromptColors' in allPrompts[stagedVoteId]) {
+          var stagedColors = allPrompts[stagedVoteId].userPromptColors;
+        } else {
+          var stagedColors = getRandomColorCombo();
+        }
         //var colorSteps = JSON.parse(prompt['colors']);
         var colorSteps = [stagedColors[0], [200,200,200], stagedColors[1]];
+        color_input_option0.value = colorArrToHex(stagedColors[0]);
+        color_input_option1.value = colorArrToHex(stagedColors[1]);
 
+        var shouldRevealStats = false;
         @auth
           // Slider colors
           document.getElementById("vote-slider-bg").style["background-image"] =
@@ -1342,6 +1336,7 @@
           if (myResponses[prompt.id]) {
             slider.value = myResponses[prompt.id];
             setVoteStatus(true);
+            shouldRevealStats = true;
           } else {
             slider.value = prompt.n_steps / 2;
             setVoteStatus(false);
@@ -1351,6 +1346,7 @@
             myResponses[prompt.id] = slider.value;  // Record locally since last page load
             document.getElementById("vote-form").submit();
             setVoteStatus(true);
+            revealStats();
           }
 
           var startVoteSelect = function () {
@@ -1382,10 +1378,63 @@
         @endauth
 
         display_prompt(prompt.id, prompt.is_mapped, colorSteps);
+        if (shouldRevealStats) {
+          revealStats();
+        }
+      }
+
+      function addClasses(elem, classes) {
+        for (let i = 0; i < classes.length; i++) {
+          elem.classList.add(classes[i]);
+        }
+      }
+
+      function removeClasses(elem, classes) {
+        for (let i = 0; i < classes.length; i++) {
+          elem.classList.remove(classes[i]);
+        }
+      }
+
+      function replaceClasses(elem, toAdd, toRemove) {
+        removeClasses(elem, toRemove);
+        addClasses(elem, toAdd);
+      }
+
+      function colorArrToHex(colArr) {
+        // Expects [r, g, b] in 0--255
+        return '#' + colArr.map(
+          (v) => {var ret = v.toString(16); return v > 15 ? ret: '0' + ret;}
+        ).join('');
+      }
+
+      function hexToColorArr(hexStr) {
+        return [
+          parseInt(hexStr.slice(1,3), 16),
+          parseInt(hexStr.slice(3,5), 16),
+          parseInt(hexStr.slice(5,7), 16),
+        ];
+      }
+
+      var isTouchDevice = false;  // assume not touch, but change after first touch
+      var stagedVoteId = null;
+      const stagedClasses = ["border-orange-500"];
+      const unstagedClasses = ["border-transparent-200"];
+      function stage_vote(promptId) {
+        var prompt = allPrompts[promptId];
+        if (prompt.id == stagedVoteId) {
+          stagedVoteId = null;
+          hidePromptContent(prompt.id);
+          display_prompt(null);
+          return;
+        } else if (stagedVoteId) {
+          hidePromptContent(stagedVoteId);
+        }
+        stagedVoteId = prompt.id;
+        showPromptContent();
       }
 
       const colorOptions = [[255,0,0], [0, 255, 0], [0, 0, 255], [255, 255, 0], [255, 0, 255], [0, 255, 255]];
-      function getRandomCombo(cOptions=colorOptions) {
+      function getRandomColorCombo(cOptions=colorOptions) {
         const nOptions = cOptions.length;
         var index1 = Math.floor(Math.random() * nOptions);
         var index2 = Math.floor(Math.random() * (nOptions - 1));
@@ -1398,6 +1447,7 @@
 
       function revealStats() {
         stats_mask.style.display = 'none';
+        allPrompts[stagedVoteId].has_been_opened = true;
       }
 
       const allPromptsRaw = {{ Js::from($prompts) }};
