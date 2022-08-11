@@ -70,7 +70,7 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
             counts = block_reduce(counts, block_size=(2, 2, 1), func=np.sum)
 
         # Ignore cells that have too few votes
-        kept_indices = counts > THRESHOLD_COUNT
+        kept_indices = counts >= THRESHOLD_COUNT
         filtered_counts = np.where(kept_indices, counts, sentinel_val).astype(float)
         # Perform 0 ('all') last
         for i in list(range(1, len(tag_key))) + [0]:
