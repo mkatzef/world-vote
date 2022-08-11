@@ -14,8 +14,10 @@
       height: 25px; /* Specified height */
       left: 25px;
       background: #d3d3d3; /* Grey background */
+      border-bottom-left-radius:12px;
+      border-bottom-right-radius:12px;
       outline: none; /* Remove outline */
-      opacity: 0.6; /* Set transparency (for mouse-over effects on hover) */
+      opacity: .6; /* Set transparency (for mouse-over effects on hover) */
       -webkit-transition: .2s; /* 0.2 seconds transition on hover */
       transition: opacity .2s;
       margin: 0;
@@ -23,7 +25,7 @@
 
     /* Mouse-over effects */
     .slider:hover {
-      opacity: 0.3; /* Fully shown on mouse-over */
+      opacity: .4; /* Fully shown on mouse-over */
     }
 
     /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
@@ -52,11 +54,13 @@
 @endonce
 
 <div class="slidecontainer" style="position:relative">
-    <div id="vote_slider_bg_{{ $prompt->id }}" style="position:absolute;height:25px;width:100%"></div>
+    <div id="vote_slider_bg_{{ $prompt->id }}"
+      style="position:absolute;height:25px;width:100%;
+      border-bottom-left-radius:12px; border-bottom-right-radius:12px">
+    </div>
     <input
       type="range"
       class="slider"
-      style:"position:absolute;top:-25px"
       id="vote_slider_{{ $prompt->id }}"
       min="0"
       max="10"

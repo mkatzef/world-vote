@@ -310,7 +310,7 @@
           <div
             id="vote_button_{{ $prompt->id }}"
             class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-              m-2 border-4 border-gray-200 button_transition"
+              mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition"
           >
             <h5
               onclick="stage_vote({{ $prompt->id }})"
@@ -394,7 +394,7 @@
             id="voter_container_{{ $tag->id }}"
             class="text-2xl font-bold tracking-tight text-gray-900
               block bg-white rounded-lg shadow-md hover:bg-gray-100
-              m-2 border-4 border-gray-200 button_transition"
+              mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition"
           >
             <table style="width:100%; table-layout:fixed">
               <tr style="height:60px">
@@ -415,7 +415,7 @@
                     href="javascript:void(0)"
                     onclick="addFilter({{ $tag->id }})">
                       <div style="width:32px; height:32px"
-                        class="hover:bg-orange-500 p-1 rounded-full">
+                        class="hover:bg-gray-200 p-1 rounded-full">
                         <img
                           id="voter_filter_icon_{{ $tag->id }}"
                           src="/filter_add.png"
@@ -544,7 +544,7 @@
               Select any tags for your vote:
             </h3>
           </div>
-          <ul class="grid gap-2 w-full md:grid-cols-1">
+          <ul class="grid w-full md:grid-cols-1">
             @foreach ($tags as $tag)
               <li>
                 <input type="checkbox" id="new-checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}" class="hidden peer">
@@ -553,7 +553,7 @@
                   peer-checked:border-orange-300 peer-checked:text-gray-600
                    tracking-tight text-gray-900
                     block bg-white rounded-lg shadow-md hover:bg-gray-100
-                    m-2 border-4 border-gray-200 button_transition">
+                    mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition">
                   <div class="block cursor-pointer">
                     <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
                   </div>
@@ -598,7 +598,7 @@
               Update your tags:
             </h3>
           </div>
-          <ul class="grid gap-2 w-full md:grid-cols-1">
+          <ul class="grid w-full md:grid-cols-1">
             @foreach ($tags as $tag)
             <li>
               <input type="checkbox" id="update-checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}" class="hidden peer">
@@ -607,7 +607,7 @@
                 peer-checked:border-orange-300 peer-checked:text-gray-600
                  tracking-tight text-gray-900
                   block bg-white rounded-lg shadow-md hover:bg-gray-100
-                  m-2 border-4 border-gray-200 button_transition">
+                  mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition">
                 <div class="block cursor-pointer">
                   <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
                 </div>
@@ -665,6 +665,9 @@
     </div>
 
   	<script>
+      function dElem (v) {
+        return document.getElementById(v);
+      }
       var activeCaptchaForm = null;  // 'new' or 'login'
       function primeForCaptcha(formType) {
         activeCaptchaForm = formType;
@@ -673,9 +676,9 @@
 
       function submitWithCaptcha(token=null) {
         if (token) {
-          document.getElementById('captcha_val_' + activeCaptchaForm).value = token;
+          dElem('captcha_val_' + activeCaptchaForm).value = token;
         }
-        document.getElementById(activeCaptchaForm + "_details_form").submit();
+        dElem(activeCaptchaForm + "_details_form").submit();
       }
 
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
@@ -721,9 +724,9 @@
 
         // disable all divs that aren't pane_mode
         for (let pane_id in pane_divs) {
-          var hammy_elem = document.getElementById("hammy_" + pane_id);
+          var hammy_elem = dElem("hammy_" + pane_id);
           if (pane_mode == pane_id) {
-            document.getElementById(pane_id).style.display = 'inline';
+            dElem(pane_id).style.display = 'inline';
             if ('on_entry' in pane_divs[pane_id]) {
               pane_divs[pane_id]['on_entry']();
             }
@@ -731,7 +734,7 @@
               hammy_elem.style.color = 'orange';
             }
           } else {
-            document.getElementById(pane_id).style.display = 'none';
+            dElem(pane_id).style.display = 'none';
             if (hammy_elem) {
               hammy_elem.style.color = 'black';
             }
@@ -772,18 +775,18 @@
         }
         stagedVoterId = tagId;
 
-        var filterContainer = document.getElementById("tag_key_container_" + tagId);
+        var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'inline';
-        var voterContainer = document.getElementById("voter_container_" + tagId);
+        var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'visible');
         paint_tag();
       }
 
       function unstageVoter(tagId) {
-        var filterContainer = document.getElementById("tag_key_container_" + tagId);
+        var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'none';
-        var voterContainer = document.getElementById("voter_container_" + tagId);
+        var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'none');
       }
@@ -804,9 +807,9 @@
         } else if (activeFilterId) {
           removeFilter(activeFilterId);
         }
-        document.getElementById("voter_filter_button_" + tagId).onclick =
+        dElem("voter_filter_button_" + tagId).onclick =
           () => {removeFilter(tagId);};
-        var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
+        var filterIcon = dElem("voter_filter_icon_" + tagId);
         filterIcon.src = "/filter_rem.png";
         filterIcon.parentNode.style['background-color'] = 'orange';
 
@@ -816,9 +819,9 @@
       }
 
       function removeFilter(tagId) {
-        document.getElementById("voter_filter_button_" + tagId).onclick =
+        dElem("voter_filter_button_" + tagId).onclick =
           () => {addFilter(tagId);};
-        var filterIcon = document.getElementById("voter_filter_icon_" + tagId);
+        var filterIcon = dElem("voter_filter_icon_" + tagId);
         filterIcon.src = "/filter_add.png";
         filterIcon.parentNode.style.removeProperty('background-color');
         activeFilterId = null;
@@ -852,18 +855,18 @@
       function optimizeLayout() {
         if (window.innerWidth < 800) {
           if (showMap) {
-            document.getElementById('pane_container').style.top = "40%";
-            document.getElementById('map').style.height = "40%";
+            dElem('pane_container').style.top = "40%";
+            dElem('map').style.height = "40%";
           } else {
-            document.getElementById('pane_container').style.top = "0%";
-            document.getElementById('map').style.height = "0%";
+            dElem('pane_container').style.top = "0%";
+            dElem('map').style.height = "0%";
           }
           logo_img.src = "/logo-w-stacked.png";
 
-          document.getElementById('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
-          document.getElementById('pane_container').style.width = "100%";
-          document.getElementById('map').style.width = "100%";
-          document.getElementById('map').style.left = "0px";
+          dElem('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
+          dElem('pane_container').style.width = "100%";
+          dElem('map').style.width = "100%";
+          dElem('map').style.left = "0px";
           title_buttons.style.display = "none";
           vert_options.style.display = "block";
           hammy.style.display = "block";
@@ -875,13 +878,13 @@
           delayedMapRefresh(550);
         } else {
           logo_img.src = "/logo-w.png";
-          document.getElementById('map').style.display = "inline";
-          document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
-          document.getElementById('pane_container').style['margin-top'] = "0px";
-          document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
-          document.getElementById('map').style.height = "";
-          document.getElementById('map').style.width = "{{ 100 - $pane_width_perc - $ad_width_perc }}%";
-          document.getElementById('map').style.left = "{{ $pane_width_perc }}%";
+          dElem('map').style.display = "inline";
+          dElem('pane_container').style.top = "{{ $title_height_px }}px";
+          dElem('pane_container').style['margin-top'] = "0px";
+          dElem('pane_container').style.width = "{{ $pane_width_perc }}%";
+          dElem('map').style.height = "";
+          dElem('map').style.width = "{{ 100 - $pane_width_perc - $ad_width_perc }}%";
+          dElem('map').style.left = "{{ $pane_width_perc }}%";
           title_buttons.style.display = "block";
           vert_options.style.display = "none";
           hammy.style.display = "none";
@@ -1194,9 +1197,9 @@
   			selected_xy = get_xy(e.lngLat, maxZoom);
   			display_clicked_cell(e.lngLat);
 
-        document.getElementById(form_prefix + "_location_button").innerText = locDoneText;
-        document.getElementById(form_prefix + '-col').value = selected_xy[0];
-        document.getElementById(form_prefix + '-row').value = selected_xy[1];
+        dElem(form_prefix + "_location_button").innerText = locDoneText;
+        dElem(form_prefix + '-col').value = selected_xy[0];
+        dElem(form_prefix + '-row').value = selected_xy[1];
   		}
 
   		function handler_hover_cell(e) {
@@ -1207,9 +1210,9 @@
       var currentClickHandler = null;
   		function set_up_select_ui(form_prefix) {
         tear_down_select_ui();  // remove any existing elements
-        button = document.getElementById(form_prefix + "_location_button");
+        button = dElem(form_prefix + "_location_button");
         if (button.innerText != locDoneText) {
-          document.getElementById(form_prefix + "_location_button").innerText = "🌎 Selecting";
+          dElem(form_prefix + "_location_button").innerText = "🌎 Selecting";
         }
   			map.setLayoutProperty('clicked_loc_layer', 'visibility', 'visible');
   			map.setLayoutProperty('hover_loc_layer', 'visibility', 'visible');
@@ -1237,13 +1240,13 @@
 
         // Set current user tags
         for (let i = 0; i < myTags.length; i++) {
-          document.getElementById("update-checkbox-" + myTags[i]).checked = true;
+          dElem("update-checkbox-" + myTags[i]).checked = true;
         }
       }
 
       function newVoteSubmit() {
-        if (document.getElementById('new-row').value == "" ||
-            document.getElementById('new-col').value == "") {
+        if (dElem('new-row').value == "" ||
+            dElem('new-col').value == "") {
           alert("Please confirm the location for your vote");
         } else {
           primeForCaptcha('new');
@@ -1259,15 +1262,15 @@
       // Note: barColors can be a different length than data - uses linear interpolation
       function displayStats(data, barColors) {
         if (! ('has_been_opened' in allPrompts[stagedVoteId])) {
-          document.getElementById('stats_mask_' + stagedVoteId).style.display = 'block';  // Initially mask all stats
+          dElem('stats_mask_' + stagedVoteId).style.display = 'block';  // Initially mask all stats
         } else {
-          document.getElementById('stats_mask_' + stagedVoteId).style.display = 'none';
+          dElem('stats_mask_' + stagedVoteId).style.display = 'none';
         }
         var n_elems = data.length;
         var n_intervals = data.length - 1;
         for (let i = 0; i < n_elems; i++) {
           var color = colorLerp(i / n_intervals, barColors);
-          var bar = document.getElementById("stats_" + stagedVoteId + "_cell_" + i);
+          var bar = dElem("stats_" + stagedVoteId + "_cell_" + i);
           bar.style['background-color'] = "rgb("+ color.join(',') +")";
           bar.style['height'] = 100*data[i] + "%";
         }
@@ -1298,16 +1301,16 @@
       }
 
       function hidePromptContent(promptId) {
-        target_div = document.getElementById("vote_button_" + promptId);
-        document.getElementById("prompt_content_" + promptId).style.display = "none";
+        target_div = dElem("vote_button_" + promptId);
+        dElem("prompt_content_" + promptId).style.display = "none";
         replaceClasses(target_div, unstagedClasses, stagedClasses);
       }
 
 
       function updateStagedColors(pId) {
         allPrompts[stagedVoteId].userPromptColors = [
-          hexToColorArr(document.getElementById('color_input_' + pId + '_option0').value),
-          hexToColorArr(document.getElementById('color_input_' + pId + '_option1').value),
+          hexToColorArr(dElem('color_input_' + pId + '_option0').value),
+          hexToColorArr(dElem('color_input_' + pId + '_option1').value),
         ];
         showPromptContent();
       }
@@ -1325,9 +1328,9 @@
 
       function showPromptContent() {
         var prompt = allPrompts[stagedVoteId];
-        document.getElementById('prompt_content_' + stagedVoteId).style.display = "block";
+        dElem('prompt_content_' + stagedVoteId).style.display = "block";
         replaceClasses(
-          document.getElementById("vote_button_" + stagedVoteId),
+          dElem("vote_button_" + stagedVoteId),
           stagedClasses,
           unstagedClasses
         );
@@ -1339,21 +1342,21 @@
         }
         //var colorSteps = JSON.parse(prompt['colors']);
         var colorSteps = [stagedColors[0], [200,200,200], stagedColors[1]];
-        document.getElementById('color_input_' + stagedVoteId + '_option0').value = colorArrToHex(stagedColors[0]);
-        document.getElementById('color_input_' + stagedVoteId + '_option1').value = colorArrToHex(stagedColors[1]);
+        dElem('color_input_' + stagedVoteId + '_option0').value = colorArrToHex(stagedColors[0]);
+        dElem('color_input_' + stagedVoteId + '_option1').value = colorArrToHex(stagedColors[1]);
 
         var shouldRevealStats = false;
         @auth
           // Slider colors
-          document.getElementById("vote_slider_bg_" + stagedVoteId).style["background-image"] =
+          dElem("vote_slider_bg_" + stagedVoteId).style["background-image"] =
             "linear-gradient(to right, "+
             "rgb(" + colorSteps[0].join(',') + ")," +
             "rgb(" + colorSteps[1].join(',') + ")," +
             "rgb(" + colorSteps[2].join(',') + "))";
 
-          slider = document.getElementById("vote_slider_" + stagedVoteId);
+          slider = dElem("vote_slider_" + stagedVoteId);
           // Visibility (note: hidden initially)
-          document.getElementById("vote_slider_bg_" + stagedVoteId).style.display = 'block';
+          dElem("vote_slider_bg_" + stagedVoteId).style.display = 'block';
           slider.style.display = 'block';
           slider.name = prompt.id;
           if (myResponses[prompt.id]) {
@@ -1367,7 +1370,7 @@
 
           var endVoteSelect = function () {
             myResponses[prompt.id] = slider.value;  // Record locally since last page load
-            document.getElementById("vote_form_" + stagedVoteId).submit();
+            dElem("vote_form_" + stagedVoteId).submit();
             setVoteStatus(true);
             revealStats();
           }
@@ -1469,7 +1472,7 @@
       }
 
       function revealStats() {
-        document.getElementById('stats_mask_' + stagedVoteId).style.display = 'none';
+        dElem('stats_mask_' + stagedVoteId).style.display = 'none';
         allPrompts[stagedVoteId].has_been_opened = true;
       }
 
