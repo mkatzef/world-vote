@@ -1,4 +1,4 @@
-@props(['promptId', 'voteValue' => '5'])
+@props(['prompt', 'voteValue' => '5'])
 
 @once
 <style>
@@ -52,12 +52,12 @@
 @endonce
 
 <div class="slidecontainer" style="position:relative">
-    <div id="vote-slider-bg" style="position:absolute;height:25px;width:100%"></div>
+    <div id="vote_slider_bg_{{ $prompt->id }}" style="position:absolute;height:25px;width:100%"></div>
     <input
       type="range"
       class="slider"
       style:"position:absolute;top:-25px"
-      id="vote-slider"
+      id="vote_slider_{{ $prompt->id }}"
       min="0"
       max="10"
       value="{{ $voteValue }}"

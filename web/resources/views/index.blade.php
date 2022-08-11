@@ -3,6 +3,7 @@
   $title_height_px = 45;
   $pane_width_perc = 25;
   $ad_width_perc = 15;
+  $chart_height_px = 60;
   $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
@@ -70,6 +71,20 @@
         -o-transition: all 0.25s ease;
         -ms-transition: all 0.25s ease;
         transition: all 0.25s ease;
+      }
+
+      input[type="color"] {
+         padding: 0;
+         margin: 0;
+         border: none;
+         box-shadow: none;
+         background: none;
+         width: 25px;
+       }
+
+      input[type="color"]::-webkit-color-swatch {
+        border: none;
+        border-radius: 10px;
       }
   	</style>
   </head>
@@ -302,6 +317,59 @@
               class="cursor-pointer mb-2 text-2xl font-bold tracking-tight text-gray-900">
               {{ $prompt->caption }} {!! $prompt->is_mapped ? "&#127757; " : "" !!}
             </h5>
+
+            <div id="prompt_content_{{ $prompt->id }}" style="width:100%; padding:5px; display:none;">
+              <table id="stats_chart_{{ $prompt->id }}"
+                style="table-layout:fixed; width:100%; height:{{ $chart_height_px }}px; border-bottom: 1px solid gray; margin-bottom:4px"
+              >
+                <tr valign=bottom>
+                  @for($i = 0; $i < $chart_n_elems; ++$i)
+                    <td style="height:{{ $chart_height_px }}px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
+                      <div id="stats_{{ $prompt->id }}_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:100%">
+                      </div>
+                    </td>
+                  @endfor
+                </tr>
+              </table>
+              <a href="javascript:void(0)" onclick="revealStats()">
+                <div id="stats_mask_{{ $prompt->id }}" style="margin-top:calc(-{{ $chart_height_px }}px - 4px); width:100%; height:calc({{ $chart_height_px }}px + 4px);
+                  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+                  border-top-left-radius:5px; border-top-right-radius:5px"
+                >
+                  Show LIVE stats
+                </div>
+              </a>
+              @auth
+                <form id="vote_form_{{ $prompt->id }}" action="/update_responses" method="POST" target="form_sink">
+                  @csrf
+                  <x-vote-slider :prompt=$prompt />
+                </form>
+                <div style="float:left; width:45%; text-align:left">
+                  <input id="color_input_{{ $prompt->id }}_option0" type="color" value="#FFFFFF"/>
+                  {{ $prompt->option0 }}
+                </div>
+                <div style="float:right; width:45%; text-align:right">
+                  {{ $prompt->option1 }}
+                  <input id="color_input_{{ $prompt->id }}_option1" type="color" value="#FFFFFF"/>
+                </div>
+              @else
+                <div style="float:left; width:35%; text-align:left">
+                  <input id="color_input_{{ $prompt->id }}_option0" type="color" value="#FFFFFF"/>
+                  <br>{{ $prompt->option0 }}
+                </div>
+                <button onclick="set_pane_mode('pane_user_type')"
+                  class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-500 rounded"
+                  style="width:25%; margin-top:10px"
+                >
+                  Vote!
+                </button>
+                <div style="float:right; width:35%; text-align:right">
+                  <input id="color_input_{{ $prompt->id }}_option1" type="color" value="#FFFFFF"/>
+                  <br>{{ $prompt->option1 }}
+                </div>
+              @endauth
+
+            </div>
           </div>
         @endforeach
       </div>
@@ -402,53 +470,6 @@
         data-callback="submitWithCaptcha"
         data-size="invisible">
       </div>
-    </div>
-
-
-    <!--
-    Stats and vote slider
-    NOTE: Initially hidden - moved to correct button as needed
-    -->
-    <div id="active_prompt_content" style="width:100%; height:90px; margin-left:10; display:none">
-      <div style="float:left; width:50%; text-align:left">
-        <input id="color_input_option0" type="color" value="#FFFFFF"/>
-        <span id="staged_option0"></span>
-      </div>
-      <div style="float:right; width:50%; text-align:right">
-        <span id="staged_option1"></span>
-        <input id="color_input_option1" type="color" value="#FFFFFF"/>
-      </div>
-      <br>
-
-      <table id="stats_chart" style="table-layout: fixed; width:100%; height:40px;">
-        <tr valign=bottom>
-          @for($i = 0; $i < $chart_n_elems; ++$i)
-            <td style="height:40px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
-              <div id="stats_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:100%">
-              </div>
-            </td>
-          @endfor
-        </tr>
-      </table>
-      <a href="javascript:void(0)" onclick="revealStats()">
-        <div id="stats_mask" style="margin-top:-40px; width:100%; height:44px;
-          -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-          border-top-left-radius:5px; border-top-right-radius:5px"
-        >
-          Show LIVE stats
-        </div>
-      </a>
-      @auth
-        <form id="vote-form" action="/update_responses" method="POST" target="form_sink">
-          @csrf
-          <x-vote-slider :promptId="1" />
-        </form>
-      @else
-        <button onclick="set_pane_mode('pane_user_type')"
-          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
-          Vote!
-        </button>
-      @endauth
     </div>
 
 
@@ -855,7 +876,6 @@
         } else {
           logo_img.src = "/logo-w.png";
           document.getElementById('map').style.display = "inline";
-          stats_chart.style.display = "block";
           document.getElementById('pane_container').style.top = "{{ $title_height_px }}px";
           document.getElementById('pane_container').style['margin-top'] = "0px";
           document.getElementById('pane_container').style.width = "{{ $pane_width_perc }}%";
@@ -1015,11 +1035,10 @@
         return Math.max(0.1, Math.min(254.9, val));
       }
 
-  		var activePromptId = null;
       var activePromptColorSteps = null;
   		function display_prompt(promptId, isMapped, colorSteps) {
         activePromptColorSteps = colorSteps;
-        activePromptId = promptId;
+        stagedVoteId = promptId;
         if (promptId) {
           map.setLayoutProperty('prompts', 'visibility', 'visible');
           paint_filtered_prompt(promptId);
@@ -1030,14 +1049,14 @@
 
       function paint_filtered_prompt() {
         // Used as a workaround so that filters can affect map and charts
-        if (!activePromptId) {
+        if (!stagedVoteId) {
           return;
         }
         const C = activePromptColorSteps;
         var filterKey = (activeFilterId ? allTags[activeFilterId].slug : 'all');
-        displayStats(JSON.parse(allPrompts[activePromptId]['count_ratios'])[filterKey], activePromptColorSteps);
-        if (allPrompts[activePromptId].is_mapped) {
-          const dataId = 'prompt-' + activePromptId + '-' + filterKey;
+        displayStats(JSON.parse(allPrompts[stagedVoteId]['count_ratios'])[filterKey], activePromptColorSteps);
+        if (allPrompts[stagedVoteId].is_mapped) {
+          const dataId = 'prompt-' + stagedVoteId + '-' + filterKey;
           map.setPaintProperty(
             'prompts',
             'fill-color',
@@ -1239,16 +1258,16 @@
 
       // Note: barColors can be a different length than data - uses linear interpolation
       function displayStats(data, barColors) {
-        if (! ('has_been_opened' in allPrompts[activePromptId])) {
-          stats_mask.style.display = 'block';  // Initially mask all stats
+        if (! ('has_been_opened' in allPrompts[stagedVoteId])) {
+          document.getElementById('stats_mask_' + stagedVoteId).style.display = 'block';  // Initially mask all stats
         } else {
-          stats_mask.style.display = 'none';
+          document.getElementById('stats_mask_' + stagedVoteId).style.display = 'none';
         }
         var n_elems = data.length;
         var n_intervals = data.length - 1;
         for (let i = 0; i < n_elems; i++) {
           var color = colorLerp(i / n_intervals, barColors);
-          var bar = document.getElementById("stats_cell_" + i);
+          var bar = document.getElementById("stats_" + stagedVoteId + "_cell_" + i);
           bar.style['background-color'] = "rgb("+ color.join(',') +")";
           bar.style['height'] = 100*data[i] + "%";
         }
@@ -1273,40 +1292,45 @@
         var voteSliderStyle = document.querySelector('[data="test"]');
         if (wasSubmitted) {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');} .slider::-moz-range-thumb {background:url('/tick.png');}";
-          //vote_status_msg.innerHTML = "Saved";
         } else {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');} .slider::-moz-range-thumb {background:url('/arrows.png');}";
-          //vote_status_msg.innerHTML = "Not saved";
         }
       }
 
       function hidePromptContent(promptId) {
         target_div = document.getElementById("vote_button_" + promptId);
-        active_prompt_content.style.display = "none";
+        document.getElementById("prompt_content_" + promptId).style.display = "none";
         replaceClasses(target_div, unstagedClasses, stagedClasses);
       }
 
 
-      function updateStagedColors() {
+      function updateStagedColors(pId) {
         allPrompts[stagedVoteId].userPromptColors = [
-          hexToColorArr(color_input_option0.value),
-          hexToColorArr(color_input_option1.value)
+          hexToColorArr(document.getElementById('color_input_' + pId + '_option0').value),
+          hexToColorArr(document.getElementById('color_input_' + pId + '_option1').value),
         ];
         showPromptContent();
       }
 
-      color_input_option0.addEventListener('change', () => {updateStagedColors();});
-      color_input_option1.addEventListener('change', () => {updateStagedColors();});
+      @foreach ($prompts as $prompt)
+        color_input_{{ $prompt->id }}_option0.addEventListener(
+          'change', () => {
+            updateStagedColors({{ $prompt->id }});
+          });
+        color_input_{{ $prompt->id }}_option1.addEventListener(
+          'change', () => {
+            updateStagedColors({{ $prompt->id }});
+          });
+      @endforeach
 
       function showPromptContent() {
         var prompt = allPrompts[stagedVoteId];
-        target_div = document.getElementById("vote_button_" + prompt.id);
-        active_prompt_content.style.display = "block";
-        target_div.appendChild(active_prompt_content);
-        replaceClasses(target_div, stagedClasses, unstagedClasses);
-
-        staged_option0.innerHTML = prompt.option0;
-        staged_option1.innerHTML = prompt.option1;
+        document.getElementById('prompt_content_' + stagedVoteId).style.display = "block";
+        replaceClasses(
+          document.getElementById("vote_button_" + stagedVoteId),
+          stagedClasses,
+          unstagedClasses
+        );
 
         if ('userPromptColors' in allPrompts[stagedVoteId]) {
           var stagedColors = allPrompts[stagedVoteId].userPromptColors;
@@ -1315,21 +1339,21 @@
         }
         //var colorSteps = JSON.parse(prompt['colors']);
         var colorSteps = [stagedColors[0], [200,200,200], stagedColors[1]];
-        color_input_option0.value = colorArrToHex(stagedColors[0]);
-        color_input_option1.value = colorArrToHex(stagedColors[1]);
+        document.getElementById('color_input_' + stagedVoteId + '_option0').value = colorArrToHex(stagedColors[0]);
+        document.getElementById('color_input_' + stagedVoteId + '_option1').value = colorArrToHex(stagedColors[1]);
 
         var shouldRevealStats = false;
         @auth
           // Slider colors
-          document.getElementById("vote-slider-bg").style["background-image"] =
+          document.getElementById("vote_slider_bg_" + stagedVoteId).style["background-image"] =
             "linear-gradient(to right, "+
             "rgb(" + colorSteps[0].join(',') + ")," +
             "rgb(" + colorSteps[1].join(',') + ")," +
             "rgb(" + colorSteps[2].join(',') + "))";
 
-          slider = document.getElementById("vote-slider");
+          slider = document.getElementById("vote_slider_" + stagedVoteId);
           // Visibility (note: hidden initially)
-          document.getElementById("vote-slider-bg").style.display = 'block';
+          document.getElementById("vote_slider_bg_" + stagedVoteId).style.display = 'block';
           slider.style.display = 'block';
           slider.name = prompt.id;
           if (myResponses[prompt.id]) {
@@ -1343,7 +1367,7 @@
 
           var endVoteSelect = function () {
             myResponses[prompt.id] = slider.value;  // Record locally since last page load
-            document.getElementById("vote-form").submit();
+            document.getElementById("vote_form_" + stagedVoteId).submit();
             setVoteStatus(true);
             revealStats();
           }
@@ -1445,7 +1469,7 @@
       }
 
       function revealStats() {
-        stats_mask.style.display = 'none';
+        document.getElementById('stats_mask_' + stagedVoteId).style.display = 'none';
         allPrompts[stagedVoteId].has_been_opened = true;
       }
 
@@ -1458,8 +1482,6 @@
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
         const myRow = {{ auth()->user()->grid_row }};
         const myCol = {{ auth()->user()->grid_col }};
-        document.getElementById("vote-slider-bg").style.display = 'none';
-        document.getElementById("vote-slider").style.display = 'none';
       @endauth
   	</script>
   </body>
