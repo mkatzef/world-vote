@@ -4,7 +4,7 @@
   $pane_width_perc = 25;
   $ad_width_perc = 15;
   $chart_height_px = 60;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded";
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-1 px-4 border border-orange-500 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
 
@@ -97,10 +97,10 @@
     -->
     <div id="title_bar"
       style="position:fixed; height:{{ $title_height_px }}px; width:calc(100% - {{ $ad_width_perc }}%);
-      background-color:#ffffff; margin-top:2px">
+      background-color:#ffffff; margin-top:2px; margin-left:2px">
       <div style="float:left;max-width:70%;">
         <a href="/">
-          <img id="logo_img" src="/logo-w.png" style="height:calc({{ $title_height_px }}px - 4px)"></img>
+          <img id="logo_img" src="/logo-w.png" style="height:{{ $title_height_px - 4 }}px"></img>
         </a>
       </div>
 
@@ -116,32 +116,35 @@
 
         <div id="title_buttons" style="display:none">
           <button
-            style="margin-left:2px; margin-right:2px"
+            id="title_bar_pane_polls"
+            style="margin:2px"
             onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
             Polls
           </button>
           <button
-            style="margin-left:2px; margin-right:2px"
+            id="title_bar_pane_about"
+            style="margin:2px"
             onclick="set_pane_mode('pane_about')" class="{{ $header_button_class }}">
             About
           </button>
           @auth
             <button
-              style="margin-left:2px; margin-right:2px"
+              id="title_bar_pane_my_details"
+              style="margin:2px"
               onclick="button_update_details()" class="{{ $header_button_class }}">
               My Details
             </button>
             <a href="/logout">
               <button
-                style="margin-left:2px; margin-right:2px"
+                style="margin:2px"
                 class="{{ $header_button_class }}">
                 Logout
               </button>
             </a>
           @else
             <button onclick="set_pane_mode('pane_user_type')"
-              style="margin-left:2px; margin-right:2px"
-              class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
+              style="margin:2px"
+              class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
               Vote!
             </button>
           @endauth
@@ -270,7 +273,7 @@
         </button>
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
           class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:right; color:black; background-color:#FF9D47;
+          style="height:100%; width:50%; float:right; color:white; background-color:#FF9D47;
             border-top-width:2px; border-left-width:2px">
             Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;"></img>
         </button>
@@ -286,8 +289,10 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
-          <p style="color:red">Under development</p>
-          Click on any of the questions below to see user responses
+          <h3 class="text-lg font-medium text-gray-900">
+            Click on a question below to see the responses!
+          </h3>
+          Last updated: <span id="mins_ago"></span> mins ago
           @auth
             <div style="width:100%; text-align:center">
               Your login code is:<br>
@@ -320,7 +325,7 @@
 
             <div id="prompt_content_{{ $prompt->id }}" style="width:100%; padding:5px; display:none;">
               <table id="stats_chart_{{ $prompt->id }}"
-                style="table-layout:fixed; width:100%; height:{{ $chart_height_px }}px; border-bottom: 1px solid gray; margin-bottom:4px"
+                style="table-layout:fixed; width:100%; height:{{ $chart_height_px }}px; border-bottom: 1px solid gray"
               >
                 <tr valign=bottom>
                   @for($i = 0; $i < $chart_n_elems; ++$i)
@@ -332,11 +337,11 @@
                 </tr>
               </table>
               <a href="javascript:void(0)" onclick="revealStats()">
-                <div id="stats_mask_{{ $prompt->id }}" style="margin-top:calc(-{{ $chart_height_px }}px - 4px); width:100%; height:calc({{ $chart_height_px }}px + 4px);
+                <div id="stats_mask_{{ $prompt->id }}" style="margin-top:-{{ $chart_height_px }}px; width:100%; height:{{ $chart_height_px }}px;
                   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-                  border-top-left-radius:5px; border-top-right-radius:5px"
+                  border-top-left-radius:5px; border-top-right-radius:5px; padding:20px"
                 >
-                  Show LIVE stats
+                  Show stats
                 </div>
               </a>
               @auth
@@ -345,16 +350,22 @@
                   <x-vote-slider :prompt=$prompt />
                 </form>
                 <div style="float:left; width:45%; text-align:left">
-                  <input id="color_input_{{ $prompt->id }}_option0" type="color" value="#FFFFFF"/>
+                  <input id="color_input_{{ $prompt->id }}_option0" type="color"
+                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                  />
                   {{ $prompt->option0 }}
                 </div>
                 <div style="float:right; width:45%; text-align:right">
                   {{ $prompt->option1 }}
-                  <input id="color_input_{{ $prompt->id }}_option1" type="color" value="#FFFFFF"/>
+                  <input id="color_input_{{ $prompt->id }}_option1" type="color"
+                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                  />
                 </div>
               @else
                 <div style="float:left; width:35%; text-align:left">
-                  <input id="color_input_{{ $prompt->id }}_option0" type="color" value="#FFFFFF"/>
+                  <input id="color_input_{{ $prompt->id }}_option0" type="color"
+                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                  />
                   <br>{{ $prompt->option0 }}
                 </div>
                 <button onclick="set_pane_mode('pane_user_type')"
@@ -364,7 +375,9 @@
                   Vote!
                 </button>
                 <div style="float:right; width:35%; text-align:right">
-                  <input id="color_input_{{ $prompt->id }}_option1" type="color" value="#FFFFFF"/>
+                  <input id="color_input_{{ $prompt->id }}_option1" type="color"
+                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                  />
                   <br>{{ $prompt->option1 }}
                 </div>
               @endauth
@@ -384,9 +397,11 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
-          Voter demographics<br>
-          See where people voted from and how they identify<br>
-          &amp; filter votes by tag
+          <h3 class="text-lg font-medium text-gray-900">
+            Voter demographics
+          </h3>
+          See where people have voted from and how they identify<br>
+          You can also filter votes tag-by-tag!
         </div>
 
         @foreach ($tags as $tag)
@@ -481,7 +496,7 @@
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
         <button onclick="set_pane_mode('pane_new_user')"
           class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-          style="width:80%; max-width:200px; margin-bottom:20px">
+          style="width:100%; max-width:200px; margin-bottom:20px">
           New vote!
         </button>
 
@@ -514,7 +529,7 @@
               type="button"
               onclick="set_pane_mode('pane_polls')"
               style="width:100%; max-width:200px"
-              class="m-1 {{ $header_button_class }}"
+              class="m-1 bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
             >
               Back
             </button>
@@ -527,8 +542,10 @@
 
     <div id="pane_new_user" class="paneElement">
       <div class="scrolling-y" style="height:100%">
-
-        Please choose your rough location on the map:<br>
+        <h3 class="mt-2 text-lg font-medium text-gray-900">
+          Please choose a place on the map for your vote
+        </h3>
+        Setting location:
         <span id="new_location_button">
           In progress...
         </span>
@@ -540,7 +557,7 @@
           <input type="number" id="new-col" name="grid_col" style="display:none">
 
           <div style="background-color:white">
-            <h3 class="mb-5 text-lg font-medium text-gray-900">
+            <h3 class="text-lg font-medium text-gray-900 mt-2">
               Select any tags for your vote:
             </h3>
           </div>
@@ -565,13 +582,14 @@
 
           <button
             type="button"
-            class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            style="width:100%; max-width:200px"
+            class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
             onclick="newVoteSubmit()"
           >
             Submit
           </button><br>
           <div style="background-color:white">
-            <input type="checkbox" name="remember_me">Remember me on this device (uses cookies)</input>
+            <input type="checkbox" name="remember_me" class="mb-2"> Remember me on this device (uses cookies)</input>
           </div>
         </form>
       </div>
@@ -584,8 +602,9 @@
     <div id="pane_my_details" class="paneElement">
       <div class="scrolling-y" style="height:100%">
         <button id="update_location_button" onclick="set_up_select_ui('update')"
-          style="width:80%"
-          class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
+          style="width:100%; max-width:200px"
+          class="mt-2 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+        >
           Update location
         </button><br>
         <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
@@ -594,7 +613,7 @@
           <input type="number" id="update-col" name="grid_col" style="display:none">
 
           <div style="background-color:white">
-            <h3 class="mb-5 text-lg font-medium text-gray-900">
+            <h3 class="text-lg font-medium text-gray-900">
               Update your tags:
             </h3>
           </div>
@@ -618,21 +637,27 @@
           </ul>
 
           <button
-            class="{{ $header_button_class }}"
+            class="mt-1 mb-1 bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
             type="button"
+            style="width:100%; max-width:200px"
             onclick="set_pane_mode('pane_polls')"
           >
             Cancel
           </button>
-          <button class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded">
+          <br>
+          <button
+            style="width:100%; max-width:200px"
+            class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          >
             Submit
           </button><br>
-          <div style="background-color:white">
+          <div style="display:inline; background-color:white; width:100%; max-width:200px; padding-bottom:15px"
+          >
             <input type="checkbox" name="remember_me"
               @auth
                 {{ request()->cookie('access_token') ? 'checked' : '' }}
               @endauth
-              >Remember me on this device (uses cookies)
+              > Remember me on this device (uses cookies)
             </input>
           </div>
         </form>
@@ -668,6 +693,10 @@
       function dElem (v) {
         return document.getElementById(v);
       }
+
+      // Updated hourly, on the hour
+      dElem('mins_ago').innerText = (new Date()).getMinutes();
+
       var activeCaptchaForm = null;  // 'new' or 'login'
       function primeForCaptcha(formType) {
         activeCaptchaForm = formType;
@@ -711,6 +740,8 @@
         'pane_my_details': {},
       };
 
+      const titleStagedClasses = ['bg-orange-400', 'text-white'];
+      const titleUnstagedClasses = ['bg-white', 'text-orange-400', 'hover:text-white'];
       function set_pane_mode(pane_mode) {
         captcha_container.style.display = "none";
         // Remove all map elements
@@ -725,6 +756,7 @@
         // disable all divs that aren't pane_mode
         for (let pane_id in pane_divs) {
           var hammy_elem = dElem("hammy_" + pane_id);
+          var title_elem = dElem("title_bar_" + pane_id);
           if (pane_mode == pane_id) {
             dElem(pane_id).style.display = 'inline';
             if ('on_entry' in pane_divs[pane_id]) {
@@ -733,11 +765,21 @@
             if (hammy_elem) {
               hammy_elem.style.color = 'orange';
             }
+            @auth
+              if (title_elem) {
+                replaceClasses(title_elem, titleStagedClasses, titleUnstagedClasses);
+              }
+            @endauth
           } else {
             dElem(pane_id).style.display = 'none';
             if (hammy_elem) {
               hammy_elem.style.color = 'black';
             }
+            @auth
+              if (title_elem) {
+                replaceClasses(title_elem, titleUnstagedClasses, titleStagedClasses);
+              }
+            @endauth
           }
         }
         optimizeLayout();
@@ -753,12 +795,12 @@
           poll_tab_vote_button.style['background-color'] = 'white';
           poll_tab_vote_button.style['color'] = 'orange';
           poll_tab_voter_button.style['background-color'] = 'orange';
-          poll_tab_voter_button.style['color'] = 'black';
+          poll_tab_voter_button.style['color'] = 'white';
         } else {
           poll_tab_votes.style.display = 'none';
           poll_tab_voters.style.display = 'flex';
           poll_tab_vote_button.style['background-color'] = 'orange';
-          poll_tab_vote_button.style['color'] = 'black';
+          poll_tab_vote_button.style['color'] = 'white';
           poll_tab_voter_button.style['background-color'] = 'white';
           poll_tab_voter_button.style['color'] = 'orange';
         }
@@ -847,7 +889,7 @@
           map_toggle_orb.style['margin-left'] = '0px';
         } else {
           map_toggle_bg.style['background-color'] = 'darkorange';
-          map_toggle_orb.style['margin-left'] = '26px';
+          map_toggle_orb.style['margin-left'] = '28px';
         }
         optimizeLayout();
       }
@@ -1443,8 +1485,8 @@
 
       var isTouchDevice = false;  // assume not touch, but change after first touch
       var stagedVoteId = null;
-      const stagedClasses = ["border-orange-500"];
-      const unstagedClasses = ["border-transparent-200"];
+      const stagedClasses = ["border-orange-300"];
+      const unstagedClasses = ["border-gray-200"];
       function stage_vote(promptId) {
         var prompt = allPrompts[promptId];
         if (prompt.id == stagedVoteId) {
