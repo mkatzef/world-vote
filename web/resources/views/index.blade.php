@@ -219,40 +219,78 @@
     <div id="pane_about" class="paneElement scrolling">
       <div class="scrolling-y" style="height:100%">
         <div
-          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+          class="block m-2 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-          <h1>About</h1>
+          <h3 class="text-lg font-medium text-gray-900">
+            About
+          </h3><hr>
+          <div class="py-2">
+            Social media likes to put us into opposing political boxes;
+            <i>people are more complex than that.</i>
+          </div>
         </div>
         <div
-          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+          class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-          Social media has a tendency to focus on the extremes.
-          Here, everything is up to you &#128512;
+          <h3 class="text-lg font-medium text-gray-900">
+            Purpose
+          </h3><hr>
+          <div class="py-2">
+            I created <span style="color:orange">myworld.vote</span> to:
+          </div>
+          <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
+            See how the world thinks
+          </div>
+          <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
+            Compare opinions on individual topics
+          </div>
+          <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
+            Make this information visible to everyone
+          </div>
         </div>
         <div
-          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+          class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-            myworld.vote lets you express yourself along with your world
-          <ul>
-            <li>Honestly</li>
-            <li>Anonymously</li>
-            <li>Securely</li>
-          </ul>
+          <h3 class="text-lg font-medium text-gray-900">
+            Promise
+          </h3><hr>
+          <div class="py-2">
+            <span style="color:orange">myworld.vote</span> lets you express yourself:
+          </div>
+          <div class="hover:bg-gray-200" style="border-radius:10px">
+            <span class="font-bold">
+              Securely<br>
+            </span>
+            Using network security standard practices
+          </div>
+          <div class="hover:bg-gray-200" style="border-radius:10px">
+            <span class="font-bold">
+              Anonymously<br>
+            </span>
+            With only the bare minimum information recorded
+          </div>
+          <div class="hover:bg-gray-200" style="border-radius:10px">
+            <span class="font-bold">
+              Honestly<br>
+            </span>
+            Without being singled out - votes are always counted in batches
+          </div>
         </div>
         <div
-          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
-        >
-        We created myworld.vote to:
-          <ul>
-            <li>Give everyone a voice</li>
-            <li>See how the world thinks</li>
-            <li>Make this information visible to everyone</li>
-          </ul>
-        </div>
-        <div
-          class="block m-1 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
+          class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
           Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u>
+        </div>
+
+        <div class="mt-4">
+          <form action="https://www.paypal.com/donate" method="post" target="_top">
+            <input type="hidden" name="business" value="YMK37RQB69REG" />
+            <input type="hidden" name="no_recurring" value="1" />
+            <input type="hidden" name="item_name" value="To keep myworld.vote active" />
+            <input type="hidden" name="currency_code" value="AUD" />
+            <input type="image" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+            <img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1" />
+          </form>
         </div>
       </div>
     </div>
@@ -266,14 +304,14 @@
         class="block rounded-t-lg border-0 shadow-md"
       >
         <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')"
-          class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:left; color:#FF9D47; background-color:white;
+          class="mb-0 bg-white text-orange-300 text-2xl font-bold tracking-tight rounded-t-lg"
+          style="height:100%; width:50%; float:left;
             border-top-width:2px; border-right-width:2px;">
             Votes
         </button>
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
-          class="mb-0 text-2xl font-bold tracking-tight rounded-t-lg"
-          style="height:100%; width:50%; float:right; color:white; background-color:#FF9D47;
+          class="mb-0 bg-orange-300 hover:bg-orange-500 text-white text-2xl font-bold tracking-tight rounded-t-lg"
+          style="height:100%; width:50%; float:right;
             border-top-width:2px; border-left-width:2px">
             Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;"></img>
         </button>
@@ -405,6 +443,42 @@
           View and filter votes based on their tags!
         </div>
 
+        <div
+          id="voter_container_all"
+          class="text-2xl font-bold tracking-tight text-gray-900
+            block bg-white rounded-lg shadow-md hover:bg-gray-100
+            mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition"
+        >
+          <div style="width:100%; height:60px">
+            <a
+              id="voter_button_all"
+              href="javascript:void(0)"
+              onclick="stageVoter('all')"
+            >
+              <div class="h-full w-full p-3">
+                All voters
+              </div>
+            </a>
+          </div>
+
+          <div id="tag_key_container_all"
+            style="width:100%; height:50px; display:none">
+            <table style="width:100%; text-align:center; margin-bottom:5px">
+              <tr>
+                <td style="width:15%" class="text-base">
+                  Min
+                </td>
+                <td style="width:70%">
+                  <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
+                </td>
+                <td style="width:15%" class="text-base">
+                  Max
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
         @foreach ($tags as $tag)
           <div
             id="voter_container_{{ $tag->id }}"
@@ -451,7 +525,7 @@
                     Min %
                   </td>
                   <td style="width:70%">
-                    <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0), rgba(255,157,71,1))"></div>
+                    <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
                   </td>
                   <td style="width:15%" class="text-base">
                     Max %
@@ -708,6 +782,25 @@
         dElem(activeCaptchaForm + "_details_form").submit();
       }
 
+      class ProjectionControl {
+        onAdd(map) {
+          this._map = map;
+          this._container = document.createElement('div');
+          this._container.className = 'mapboxgl-ctrl';
+          this._container.innerHTML = `
+          <select name="projections" id="projections_select" onchange="map.setProjection(this.options[this.selectedIndex].value)">
+            <option value="globe">Globe</option>
+            <option value="mercator">Mercator</option>
+          </select>`;
+          return this._container;
+        }
+
+        onRemove() {
+          this._container.parentNode.removeChild(this._container);
+          this._map = undefined;
+        }
+      }
+
   		mapboxgl.accessToken = 'pk.eyJ1IjoibWthdHplZmYiLCJhIjoiY2w1aTBqajB6MDNrOTNkcDRqOG8zZDRociJ9.5NEzcPb68a9KN04kSnI68Q';
 
       const map = new mapboxgl.Map({
@@ -765,7 +858,7 @@
             }
             @auth
               if (title_elem) {
-                replaceClasses(title_elem, titleStagedClasses, titleUnstagedClasses);
+                replaceClasses(title_elem, titleUnstagedClasses, titleStagedClasses);
               }
             @endauth
           } else {
@@ -775,7 +868,7 @@
             }
             @auth
               if (title_elem) {
-                replaceClasses(title_elem, titleUnstagedClasses, titleStagedClasses);
+                replaceClasses(title_elem, titleStagedClasses, titleUnstagedClasses);
               }
             @endauth
           }
@@ -783,6 +876,8 @@
         optimizeLayout();
       }
 
+      const voteVoterStagedClasses = ['bg-white', 'text-orange-300'];
+      const voteVoterUnstagedClasses = ['bg-orange-300', 'hover:bg-orange-500', 'text-white'];
       function set_pane_poll_mode(pane_poll_mode) {
         if (!mapHasLoaded) {
           return;
@@ -790,17 +885,13 @@
         if (pane_poll_mode == "votes") {
           poll_tab_votes.style.display = 'flex';
           poll_tab_voters.style.display = 'none';
-          poll_tab_vote_button.style['background-color'] = 'white';
-          poll_tab_vote_button.style['color'] = 'orange';
-          poll_tab_voter_button.style['background-color'] = 'orange';
-          poll_tab_voter_button.style['color'] = 'white';
+          replaceClasses(poll_tab_vote_button, voteVoterUnstagedClasses, voteVoterStagedClasses);
+          replaceClasses(poll_tab_voter_button, voteVoterStagedClasses, voteVoterUnstagedClasses);
         } else {
           poll_tab_votes.style.display = 'none';
           poll_tab_voters.style.display = 'flex';
-          poll_tab_vote_button.style['background-color'] = 'orange';
-          poll_tab_vote_button.style['color'] = 'white';
-          poll_tab_voter_button.style['background-color'] = 'white';
-          poll_tab_voter_button.style['color'] = 'orange';
+          replaceClasses(poll_tab_vote_button, voteVoterStagedClasses, voteVoterUnstagedClasses);
+          replaceClasses(poll_tab_voter_button, voteVoterUnstagedClasses, voteVoterStagedClasses);
         }
       }
 
@@ -818,7 +909,7 @@
         var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'inline';
         var voterContainer = dElem("voter_container_" + tagId);
-        replaceClasses(voterContainer, stagedClasses, unstagedClasses);
+        replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'visible');
         paint_tag();
       }
@@ -827,7 +918,7 @@
         var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'none';
         var voterContainer = dElem("voter_container_" + tagId);
-        replaceClasses(voterContainer, unstagedClasses, stagedClasses);
+        replaceClasses(voterContainer, stagedClasses, unstagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'none');
       }
 
@@ -1063,6 +1154,8 @@
           }
         });
 
+        map.addControl(new ProjectionControl(), 'top-right');
+
         set_pane_mode('pane_polls');
         @auth
           displayLoc();
@@ -1120,7 +1213,7 @@
       }
 
       function paint_tag() {
-        const dataId = 'tag-' + allTags[stagedVoterId].slug;
+        const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
         map.setPaintProperty(
           'tags',
           'fill-color',
@@ -1129,7 +1222,7 @@
             ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
             ["rgba",
               255,157,71,
-              ["interpolate", ["linear"], ["get", dataId], 0, 0, 1, 1]
+              ["interpolate", ["linear"], ["get", dataId], 0, 0.1, 1, 1]
             ]
           ]
         );
@@ -1343,7 +1436,7 @@
       function hidePromptContent(promptId) {
         target_div = dElem("vote_button_" + promptId);
         dElem("prompt_content_" + promptId).style.display = "none";
-        replaceClasses(target_div, unstagedClasses, stagedClasses);
+        replaceClasses(target_div, stagedClasses, unstagedClasses);
       }
 
 
@@ -1371,8 +1464,8 @@
         dElem('prompt_content_' + stagedVoteId).style.display = "block";
         replaceClasses(
           dElem("vote_button_" + stagedVoteId),
-          stagedClasses,
-          unstagedClasses
+          unstagedClasses,
+          stagedClasses
         );
 
         if ('userPromptColors' in allPrompts[stagedVoteId]) {
@@ -1461,7 +1554,7 @@
         }
       }
 
-      function replaceClasses(elem, toAdd, toRemove) {
+      function replaceClasses(elem, toRemove, toAdd) {
         removeClasses(elem, toRemove);
         addClasses(elem, toAdd);
       }

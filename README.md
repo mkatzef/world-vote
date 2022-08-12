@@ -27,12 +27,11 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 ## Next steps
 Required:  
-* Add google ads to web app  
 * Add server-side response validation
-* Optimize page load time
 * Update about info
+* Add all voter "filter"
 Optional:
-* Add color options
+* Add tag categories
 * Add location compatibility filter (cosine similarity)
 * Add user-submitted prompts
 * Add prompt categories  
