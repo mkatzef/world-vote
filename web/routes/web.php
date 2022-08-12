@@ -5,6 +5,7 @@ use App\Models\Prompt;
 use App\Models\Tag;
 use App\Models\General;
 use App\Models\User;
+use Carbon\Carbon;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -23,10 +24,17 @@ Route::get('/', function () {
     if ($value) {
       auth()->login(User::where('access_token', '=', $value)->first());
     }
+    $user_count_increment = 10;
     return view('index', [
       'tags' => Tag::all(),
       'prompts' => Prompt::all(),
-      'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue')
+      'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue'),
+      'last_updated' =>
+        Carbon::createFromFormat(
+          'Y-m-d H:i:s',
+          General::where('property', '=', 'active_tileset_id')->first()->value('last_written')
+        ),
+      'n_voters' => $user_count_increment * intdiv(User::count(), $user_count_increment),
     ]);
 });
 

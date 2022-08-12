@@ -289,13 +289,11 @@
           class="block bg-white rounded-lg shadow-md p-2
             m-2 border-4 border-gray-200"
         >
-          <h3 class="text-lg font-medium text-gray-900">
-            Click on a question below to see the responses!
-          </h3>
-          Last updated: <span id="mins_ago"></span> mins ago
           @auth
             <div style="width:100%; text-align:center">
-              Your login code is:<br>
+              <h3 class="text-lg font-medium text-gray-900">
+                Your login code is:
+              </h3>
               <button
                 onclick="code_copy_msg.innerText='Copied!';navigator.clipboard.writeText('{{ auth()->user()->access_token }}')"
                 class="hover:bg-white rounded-lg shadow-m hover:bg-gray-100">
@@ -307,8 +305,12 @@
               <p id="code_copy_msg"></p>
             </div>
           @else
-            <br>Create an anonymous account to cast your own vote
+            <h3 class="text-lg font-medium text-gray-900">
+              Click on a question below to see the responses!
+            </h3>
           @endauth
+          <b>{{ $n_voters }}</b>+ votes so far!
+          <br>Last updated: {{ $last_updated->diffForHumans() }}
         </div>
 
         @foreach ($prompts as $prompt)
@@ -400,8 +402,7 @@
           <h3 class="text-lg font-medium text-gray-900">
             Voter demographics
           </h3>
-          See where people have voted from and how they identify<br>
-          You can also filter votes tag-by-tag!
+          View and filter votes based on their tags!
         </div>
 
         @foreach ($tags as $tag)
@@ -693,9 +694,6 @@
       function dElem (v) {
         return document.getElementById(v);
       }
-
-      // Updated hourly, on the hour
-      dElem('mins_ago').innerText = (new Date()).getMinutes();
 
       var activeCaptchaForm = null;  // 'new' or 'login'
       function primeForCaptcha(formType) {
