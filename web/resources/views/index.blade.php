@@ -479,12 +479,23 @@
           </div>
         </div>
 
+        @foreach ($tag_types as $tag_type)
+          <div>
+            <h3 class="text-lg font-medium text-gray-900 mt-2">
+              {{ $tag_type->name }}
+            </h3>
+            <div id='voter-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
+            </div>
+          </div>
+        @endforeach
+
         @foreach ($tags as $tag)
+        <div id="voter-checkbox-{{ $tag->slug }}" class="mb-2 mt-1 ml-2 mr-2">
           <div
             id="voter_container_{{ $tag->id }}"
             class="text-2xl font-bold tracking-tight text-gray-900
               block bg-white rounded-lg shadow-md hover:bg-gray-100
-              mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition"
+              border-4 border-gray-200 button_transition"
           >
             <table style="width:100%; table-layout:fixed">
               <tr style="height:60px">
@@ -534,6 +545,7 @@
               </table>
             </div>
           </div>
+        </div>
         @endforeach
       </div>
     </div><!-- Cosmetic -->
@@ -620,9 +632,8 @@
     <div id="pane_new_user" class="paneElement">
       <div class="scrolling-y" style="height:100%">
         <h3 class="mt-2 text-lg font-medium text-gray-900">
-          Please choose a place on the map for your vote
+          Choose a location for your vote
         </h3>
-        Setting location:
         <span id="new_location_button">
           In progress...
         </span>
@@ -635,13 +646,16 @@
 
           <div style="background-color:white">
             <h3 class="text-lg font-medium text-gray-900 mt-2">
-              Select any tags for your vote:
+              Choose any categories that fit you
             </h3>
           </div>
           @foreach ($tag_types as $tag_type)
-            <div>
-              {{ $tag_type->name }}:
-              <select id='new-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
+            <div class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
+              m-2 border-4 border-gray-200">
+              <h3 class="cursor-pointer text-2xl font-bold tracking-tight text-gray-900">
+                {{ $tag_type->name }}
+              </h3>
+              <select style="text-align:center" id='new-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
                 <!-- Options get entered here dynamically based on categories -->
                 <option value="empty">Prefer not to say</option>
               </select>
@@ -689,9 +703,12 @@
             </h3>
           </div>
           @foreach ($tag_types as $tag_type)
-            <div>
-              {{ $tag_type->name }}:
-              <select id='update-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
+            <div class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
+              m-2 border-4 border-gray-200">
+              <h3 class="cursor-pointer text-2xl font-bold tracking-tight text-gray-900">
+                {{ $tag_type->name }}
+              </h3>
+              <select style="text-align:center" id='update-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
                 <!-- Options get entered here dynamically based on categories -->
                 <option value="empty">Prefer not to say</option>
               </select>
@@ -1623,7 +1640,7 @@
         const myCol = {{ auth()->user()->grid_col }};
       @endauth
 
-      const tag_poses = ['new', 'update'];
+      const tag_poses = ['new', 'update', 'voter'];
       for (let tag_i = 0; tag_i < tag_poses.length; tag_i++) {
         var tag_pos = tag_poses[tag_i];
         for (let tag_id in allTags) {
