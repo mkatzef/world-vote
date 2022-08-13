@@ -1,7 +1,7 @@
 #!/bin/bash
 out_dir="./slow-"`./get_tmpdir.sh`
 min_zoom="0"
-max_zoom="4"
+max_zoom="3"
 out_file="tiles-comb.mbtiles"
 
 if [ -f "access_token.txt" ]; then
