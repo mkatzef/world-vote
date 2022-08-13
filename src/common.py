@@ -22,7 +22,7 @@ def n_cells_xy(zoom):
     return tuple(map(lambda x: int(round(x / step_size)), DISPLAY_SIZE_DEGS))
 
 
-MAX_ZOOM = 4
+MAX_ZOOM = 3
 MAX_COLS, MAX_ROWS = n_cells_xy(MAX_ZOOM)
 
 

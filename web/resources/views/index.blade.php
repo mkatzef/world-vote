@@ -1238,9 +1238,9 @@
         );
       }
 
-  		const maxZoom = 4;
+  		const maxZoom = 3;
   		const maxStepDeg = 15;
-  		const zSteps = [0, 1, 2, 3, 4].map((i) => { return maxStepDeg / Math.pow(2, i) });
+  		const zSteps = [0, 1, 2, 3, 3].map((i) => { return maxStepDeg / Math.pow(2, i) });
   		const oLng = -180;
   		const oLat = 90;
   		function get_xy(lngLat, zoom) {
