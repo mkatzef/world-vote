@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Prompt;
 use App\Models\Tag;
+use App\Models\TagType;
 use App\Models\General;
 use App\Models\User;
 use Carbon\Carbon;
@@ -27,6 +28,7 @@ Route::get('/', function () {
     $user_count_increment = 10;
     return view('index', [
       'tags' => Tag::all(),
+      'tag_types' => TagType::all(),
       'prompts' => Prompt::all(),
       'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue'),
       'last_updated' =>

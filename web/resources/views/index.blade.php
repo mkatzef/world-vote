@@ -638,24 +638,18 @@
               Select any tags for your vote:
             </h3>
           </div>
-          <ul class="grid w-full md:grid-cols-1">
-            @foreach ($tags as $tag)
-              <li>
-                <input type="checkbox" id="new-checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}" class="hidden peer">
-                <label for="new-checkbox-{{ $tag->slug }}"
-                  class="
-                  peer-checked:border-orange-300 peer-checked:text-gray-600
-                   tracking-tight text-gray-900
-                    block bg-white rounded-lg shadow-md hover:bg-gray-100
-                    mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition">
-                  <div class="block cursor-pointer">
-                    <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
-                  </div>
-                </label>
-              </li>
-
-            @endforeach
-          </ul>
+          @foreach ($tag_types as $tag_type)
+            <div>
+              {{ $tag_type->name }}:
+              <select id='new-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
+                <!-- Options get entered here dynamically based on categories -->
+                <option value="empty">Prefer not to say</option>
+              </select>
+            </div>
+          @endforeach
+          @foreach ($tags as $tag)
+            <option id="new-checkbox-{{ $tag->slug }}" value="{{ $tag->slug }}">{{ $tag->name }}</option>
+          @endforeach
 
           <button
             type="button"
@@ -694,24 +688,18 @@
               Update your tags:
             </h3>
           </div>
-          <ul class="grid w-full md:grid-cols-1">
-            @foreach ($tags as $tag)
-            <li>
-              <input type="checkbox" id="update-checkbox-{{ $tag->slug }}" name="{{ $tag->slug }}" class="hidden peer">
-              <label for="update-checkbox-{{ $tag->slug }}"
-                class="
-                peer-checked:border-orange-300 peer-checked:text-gray-600
-                 tracking-tight text-gray-900
-                  block bg-white rounded-lg shadow-md hover:bg-gray-100
-                  mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition">
-                <div class="block cursor-pointer">
-                  <div class="text-2xl font-bold p-2">{{ $tag->name }}</div>
-                </div>
-              </label>
-            </li>
-
-            @endforeach
-          </ul>
+          @foreach ($tag_types as $tag_type)
+            <div>
+              {{ $tag_type->name }}:
+              <select id='update-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
+                <!-- Options get entered here dynamically based on categories -->
+                <option value="empty">Prefer not to say</option>
+              </select>
+            </div>
+          @endforeach
+          @foreach ($tags as $tag)
+            <option id="update-checkbox-{{ $tag->slug }}" value="{{ $tag->slug }}">{{ $tag->name }}</option>
+          @endforeach
 
           <button
             class="mt-1 mb-1 bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
@@ -794,8 +782,8 @@
           this._container.className = 'mapboxgl-ctrl';
           this._container.innerHTML = `
           <select name="projections" id="projections_select" onchange="map.setProjection(this.options[this.selectedIndex].value)">
-            <option value="globe">Globe</option>
-            <option value="mercator">Mercator</option>
+            <option value="globe">3D - Globe</option>
+            <option value="mercator">2D - Mercator</option>
           </select>`;
           return this._container;
         }
@@ -1376,9 +1364,17 @@
       function button_update_details() {
         set_pane_mode('pane_my_details');
 
-        // Set current user tags
+        // Set current user tags using user slugs
         for (let i = 0; i < myTags.length; i++) {
-          dElem("update-checkbox-" + myTags[i]).checked = true;
+          for (let j in allTags) {
+            var tagOption = allTags[j];
+            if (myTags[i] == tagOption.slug) {
+              var myTag_i = tagOption;
+              var optionToSet = "update-folder-" + allTagTypes[myTag_i.tag_type].slug;
+              dElem(optionToSet).value = myTag_i.slug;
+              break;
+            }
+          }
         }
       }
 
@@ -1616,6 +1612,8 @@
 
       const allPromptsRaw = {{ Js::from($prompts) }};
       const allPrompts = allPromptsRaw.reduce((a, v) => ({ ...a, [v.id]: v}), {});
+      const tagTypesArr = {{ Js::from($tag_types) }};
+      const allTagTypes = tagTypesArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const tagsArr = {{ Js::from($tags) }};
       const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       @auth
@@ -1624,6 +1622,16 @@
         const myRow = {{ auth()->user()->grid_row }};
         const myCol = {{ auth()->user()->grid_col }};
       @endauth
+
+      const tag_poses = ['new', 'update'];
+      for (let tag_i = 0; tag_i < tag_poses.length; tag_i++) {
+        var tag_pos = tag_poses[tag_i];
+        for (let tag_id in allTags) {
+          var parent_name = tag_pos + '-folder-' + allTagTypes[allTags[tag_id].tag_type].slug;
+          var child_name = tag_pos + '-checkbox-' + allTags[tag_id].slug;
+          dElem(parent_name).appendChild(dElem(child_name));
+        }
+      }
   	</script>
   </body>
 

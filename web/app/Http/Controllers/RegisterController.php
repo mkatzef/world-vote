@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 
 use App\Models\User;
 use App\Models\Tag;
+use App\Models\TagType;
 use App\Models\Prompt;
 use Illuminate\Http\Request;
 use Cookie;
@@ -27,9 +28,10 @@ class RegisterController extends Controller
     $attributes['access_token'] = $this->uniqid();
 
     $tags = [];
-    foreach (Tag::all() as $t) {
-       if (request()->has($t->slug)) {
-         array_push($tags, $t->slug);
+    foreach (TagType::all() as $tt) {
+       if (request()->has($tt->slug) &&
+        Tag::where('slug', '=', request()[$tt->slug])->exists()) {
+         array_push($tags, request()[$tt->slug]);
        }
     }
     $attributes['tags'] = json_encode($tags);
@@ -76,9 +78,10 @@ class RegisterController extends Controller
     }
 
     $tags = [];
-    foreach (Tag::all() as $t) {
-       if (request()->has($t->slug)) {
-         array_push($tags, $t->slug);
+    foreach (TagType::all() as $tt) {
+       if (request()->has($tt->slug) &&
+        Tag::where('slug', '=', request()[$tt->slug])->exists()) {
+         array_push($tags, request()[$tt->slug]);
        }
     }
     $updates['tags'] = json_encode($tags);
