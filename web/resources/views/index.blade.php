@@ -539,14 +539,16 @@
     </div><!-- Cosmetic -->
 
       <div id="ad_container1" style="display:none; position:absolute; height:50px; bottom:0px; width:100%; background:white">
+        <style>
+          .ad_container1_class { display:block; height:50px; }
+          @media(min-width: 800px) { .ad_container1_class { display:none; } }
+        </style>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
              crossorigin="anonymous"></script>
         <!-- horizontal_full -->
-        <ins class="adsbygoogle"
-             style="display:block"
+        <ins class="adsbygoogle ad_container1_class"
              data-ad-client="ca-pub-2181179435401368"
              data-ad-slot="3263472216"
-             data-ad-format="auto"
              data-full-width-responsive="true"></ins>
         <script>
              (adsbygoogle = window.adsbygoogle || []).push({});
@@ -749,12 +751,15 @@
     <div id="map" class="main_transition"></div>
 
     <div id="ad_container2"
-      style="position:fixed; top:0px; bottom:0px; right:0px; width:{{ $ad_width_perc }}%">
+        style="position:fixed; top:0px; bottom:0px; right:0px; width:{{ $ad_width_perc }}%">
+      <style>
+        .ad_container2_class { display:block; width:{{ $ad_width_perc }}%; height:100%; }
+        @media(max-width: 800px) { .ad_container2_class { display:none; } }
+      </style>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
            crossorigin="anonymous"></script>
       <!-- vertical_fullheight -->
-      <ins class="adsbygoogle"
-           style="display:block; height:100%"
+      <ins class="adsbygoogle ad_container2_class"
            data-ad-client="ca-pub-2181179435401368"
            data-ad-slot="2831926051"
            data-ad-format="auto"
