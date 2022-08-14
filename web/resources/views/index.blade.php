@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 @php
   $title_height_px = 45;
-  $pane_width_perc = 25;
-  $ad_width_perc = 15;
+  $pane_width_perc = 30;
+  $ad_width_perc = 0;
+  $ad_height_px = 0;
   $chart_height_px = 60;
   $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-1 px-4 border border-orange-500 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
@@ -18,9 +19,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
-     crossorigin="anonymous"></script>
-
   	<link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
   	<style>
@@ -136,14 +134,14 @@
             </button>
             <a href="/logout">
               <button
-                style="margin:2px"
+                style="margin:2px 10px 2px 2px"
                 class="{{ $header_button_class }}">
                 Logout
               </button>
             </a>
           @else
             <button onclick="set_pane_mode('pane_user_type')"
-              style="margin:2px"
+              style="margin:2px 10px 2px 2px"
               class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
               Vote!
             </button>
@@ -321,11 +319,11 @@
       <div
         id="poll_tab_votes"
         class="scrolling-y"
-        style="height:calc(100% - 100px); display:flex; flex-direction:column;
+        style="height:calc(100% - 50px - {{ $ad_height_px }}px); display:flex; flex-direction:column;
           background-color:white; border-top-right-radius:5px">
         <div
           class="block bg-white rounded-lg shadow-md p-2
-            m-2 border-4 border-gray-200"
+            m-2 border-2 border-gray-200"
         >
           @auth
             <div style="width:100%; text-align:center">
@@ -355,7 +353,7 @@
           <div
             id="vote_button_{{ $prompt->id }}"
             class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-              mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition"
+              mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
           >
             <h5
               onclick="stage_vote({{ $prompt->id }})"
@@ -430,24 +428,24 @@
       <div
         id="poll_tab_voters"
         class="scrolling-y"
-        style="height:calc(100% - 100px); display:flex; flex-direction:column;
+        style="height:calc(100% - 50px - {{ $ad_height_px }}px); display:flex; flex-direction:column;
           display:none; background-color:white; border-top-left-radius:5px">
 
         <div
           class="block bg-white rounded-lg shadow-md p-2
-            m-2 border-4 border-gray-200"
+            m-2 border-2 border-gray-200"
         >
           <h3 class="text-lg font-medium text-gray-900">
             Voter demographics
           </h3>
-          View and filter votes based on their tags!
+          View and filter votes based on user info!
         </div>
 
         <div
           id="voter_container_all"
           class="text-2xl font-bold tracking-tight text-gray-900
             block bg-white rounded-lg shadow-md hover:bg-gray-100
-            mb-1 mt-1 ml-2 mr-2 border-4 border-gray-200 button_transition"
+            mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
         >
           <div style="width:100%; height:60px">
             <a
@@ -480,12 +478,14 @@
         </div>
 
         @foreach ($tag_types as $tag_type)
-          <div>
-            <h3 class="text-lg font-medium text-gray-900 mt-2">
+          <div
+            id='voter-folder-{{ $tag_type->slug }}'
+            name='{{ $tag_type->slug }}'
+            class="p-4 m-2 text-2xl font-bold tracking-tight text-gray-900
+              block bg-white rounded-lg shadow-md hover:bg-gray-100
+              border-2 border-gray-200 button_transition"
+            >
               {{ $tag_type->name }}
-            </h3>
-            <div id='voter-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
-            </div>
           </div>
         @endforeach
 
@@ -495,7 +495,7 @@
             id="voter_container_{{ $tag->id }}"
             class="text-2xl font-bold tracking-tight text-gray-900
               block bg-white rounded-lg shadow-md hover:bg-gray-100
-              border-4 border-gray-200 button_transition"
+              border-2 border-gray-200 button_transition"
           >
             <table style="width:100%; table-layout:fixed">
               <tr style="height:60px">
@@ -549,23 +549,6 @@
         @endforeach
       </div>
     </div><!-- Cosmetic -->
-
-      <div id="ad_container1" style="display:none; position:absolute; height:50px; bottom:0px; width:100%; background:white">
-        <style>
-          .ad_container1_class { display:block; height:50px; }
-          @media(min-width: 800px) { .ad_container1_class { display:none; } }
-        </style>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
-             crossorigin="anonymous"></script>
-        <!-- horizontal_full -->
-        <ins class="adsbygoogle ad_container1_class"
-             data-ad-client="ca-pub-2181179435401368"
-             data-ad-slot="3263472216"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-      </div>
 
       <div id="captcha_container"
         style="display:none"
@@ -646,12 +629,12 @@
 
           <div style="background-color:white">
             <h3 class="text-lg font-medium text-gray-900 mt-2">
-              Choose any categories that fit you
+              Tell us about yourself
             </h3>
           </div>
           @foreach ($tag_types as $tag_type)
             <div class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-              m-2 border-4 border-gray-200">
+              m-2 border-2 border-gray-200">
               <h3 class="cursor-pointer text-2xl font-bold tracking-tight text-gray-900">
                 {{ $tag_type->name }}
               </h3>
@@ -699,12 +682,12 @@
 
           <div style="background-color:white">
             <h3 class="text-lg font-medium text-gray-900">
-              Update your tags:
+              Update your info
             </h3>
           </div>
           @foreach ($tag_types as $tag_type)
             <div class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-              m-2 border-4 border-gray-200">
+              m-2 border-2 border-gray-200">
               <h3 class="cursor-pointer text-2xl font-bold tracking-tight text-gray-900">
                 {{ $tag_type->name }}
               </h3>
@@ -754,25 +737,6 @@
       MAP
     -->
     <div id="map" class="main_transition"></div>
-
-    <div id="ad_container2"
-        style="position:fixed; top:0px; bottom:0px; right:0px; width:{{ $ad_width_perc }}%">
-      <style>
-        .ad_container2_class { display:block; width:{{ $ad_width_perc }}%; height:100%; }
-        @media(max-width: 800px) { .ad_container2_class { display:none; } }
-      </style>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2181179435401368"
-           crossorigin="anonymous"></script>
-      <!-- vertical_fullheight -->
-      <ins class="adsbygoogle ad_container2_class"
-           data-ad-client="ca-pub-2181179435401368"
-           data-ad-slot="2831926051"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>
-           (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    </div>
 
   	<script>
       function dElem (v) {
@@ -1011,10 +975,8 @@
           title_buttons.style.display = "none";
           vert_options.style.display = "block";
           hammy.style.display = "block";
-          ad_container1.style.display = "block";
-          ad_container2.style.display = "none";
-          poll_tab_votes.style.height = "calc(100% - 100px)";
-          poll_tab_voters.style.height = "calc(100% - 100px)";
+          poll_tab_votes.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
+          poll_tab_voters.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
           title_bar.style.width = "100%";
           delayedMapRefresh(550);
         } else {
@@ -1029,8 +991,6 @@
           title_buttons.style.display = "block";
           vert_options.style.display = "none";
           hammy.style.display = "none";
-          ad_container1.style.display = "none";
-          ad_container2.style.display = "block";
           poll_tab_votes.style.height = "calc(100% - 50px)";
           poll_tab_voters.style.height = "calc(100% - 50px)";
           title_bar.style.width = "calc(100% - {{ $ad_width_perc }}%)";

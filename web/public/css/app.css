@@ -559,6 +559,9 @@ video {
 .m-1 {
   margin: 0.25rem;
 }
+.m-4 {
+  margin: 1rem;
+}
 .mx-1 {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -655,8 +658,8 @@ video {
 .border-0 {
   border-width: 0px;
 }
-.border-4 {
-  border-width: 4px;
+.border-2 {
+  border-width: 2px;
 }
 .border-orange-300 {
   --tw-border-opacity: 1;
@@ -695,6 +698,9 @@ video {
 }
 .p-3 {
   padding: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
 }
 .p-1 {
   padding: 0.25rem;
