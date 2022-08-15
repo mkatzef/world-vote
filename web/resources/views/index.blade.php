@@ -305,13 +305,16 @@
           class="mb-0 bg-white text-orange-300 text-2xl font-bold tracking-tight rounded-t-lg"
           style="height:100%; width:50%; float:left;
             border-top-width:2px; border-right-width:2px;">
+            <span id="votes_indicator" style="visibility:hidden">•</span>
             Votes
+            <span style="visibility:hidden">•</span>
         </button>
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
           class="mb-0 bg-orange-300 hover:bg-orange-500 text-white text-2xl font-bold tracking-tight rounded-t-lg"
           style="height:100%; width:50%; float:right;
             border-top-width:2px; border-left-width:2px">
-            Voters <img id="filters_msg" src="/filter.png" style="display:none; width:20px; height:20px;"></img>
+            <span id="voters_indicator" style="visibility:hidden">•</span>
+            Voters <img id="filters_msg" src="/filter.png" style="display:inline; visibility:hidden; width:20px; height:20px;"></img>
         </button>
       </div>
 
@@ -477,6 +480,7 @@
           </div>
         </div>
 
+        @auth
         <div
           id="voter_container_comp"
           class="text-2xl font-bold tracking-tight text-gray-900
@@ -503,7 +507,7 @@
                   Min
                 </td>
                 <td style="width:70%">
-                  <div style="width:100%; height:30px; background:linear-gradient(to right, #ff0000, #00ff00)"></div>
+                  <div id="comp_color_scale" style="width:100%; height:30px"></div>
                 </td>
                 <td style="width:15%" class="text-base">
                   Max
@@ -512,6 +516,7 @@
             </table>
           </div>
         </div>
+        @endauth
 
         @foreach ($tag_types as $tag_type)
           <div
@@ -910,18 +915,23 @@
         if (tagId == stagedVoterId) {
           stagedVoterId = null;
           unstageVoter(tagId);
+          voters_indicator.style.visibility = 'hidden';
           return;
         } else if (stagedVoterId != null) {
           unstageVoter(stagedVoterId);
         }
         stagedVoterId = tagId;
 
+        if (tagId == "comp") {  // auth?
+          comp_color_scale.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
+        }
         var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'inline';
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'visible');
         paint_tag();
+        voters_indicator.style.visibility = 'visible';
       }
 
       function unstageVoter(tagId) {
@@ -935,9 +945,9 @@
       var activeFilterId = null;
       function refreshFilterMsg() {
         if (activeFilterId == null) {
-          filters_msg.style.display = 'none';
+          filters_msg.style.visibility = 'hidden';
         } else {
-          filters_msg.style.display = 'inline';
+          filters_msg.style.visibility = 'visible';
         }
       }
 
@@ -1249,9 +1259,7 @@
           ["interpolate",
             ["linear"],
             cosine_sim,
-            -1, "rgb(255,0,0)",
-            1, "rgb(0,255,0)"
-          ]
+          ].concat(compColorSteps.flat())
         ];
 
         return ret;
@@ -1644,11 +1652,13 @@
           stagedVoteId = null;
           hidePromptContent(prompt.id);
           display_prompt(null);
+          votes_indicator.style.visibility = 'hidden';
           return;
         } else if (stagedVoteId) {
           hidePromptContent(stagedVoteId);
         }
         stagedVoteId = prompt.id;
+        votes_indicator.style.visibility = 'visible';
         showPromptContent();
       }
 
@@ -1680,6 +1690,12 @@
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
         const myRow = {{ auth()->user()->grid_row }};
         const myCol = {{ auth()->user()->grid_col }};
+
+        const compColorSteps = [
+          [-1, "rgba(255,0,0,0.9)"],
+          [0, "rgba(200,200,200,0.5)"],
+          [1, "rgba(0,255,0,0.9)"]
+        ];
       @endauth
 
       const tag_poses = ['new', 'update', 'voter'];
