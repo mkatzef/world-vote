@@ -477,6 +477,42 @@
           </div>
         </div>
 
+        <div
+          id="voter_container_comp"
+          class="text-2xl font-bold tracking-tight text-gray-900
+            block bg-white rounded-lg shadow-md hover:bg-gray-100
+            mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
+        >
+          <div style="width:100%; height:60px">
+            <a
+              id="voter_button_comp"
+              href="javascript:void(0)"
+              onclick="stageVoter('comp')"
+            >
+              <div class="h-full w-full p-3">
+                Compatibility
+              </div>
+            </a>
+          </div>
+
+          <div id="tag_key_container_comp"
+            style="width:100%; height:50px; display:none">
+            <table style="width:100%; text-align:center; margin-bottom:5px">
+              <tr>
+                <td style="width:15%" class="text-base">
+                  Min
+                </td>
+                <td style="width:70%">
+                  <div style="width:100%; height:30px; background:linear-gradient(to right, #ff0000, #00ff00)"></div>
+                </td>
+                <td style="width:15%" class="text-base">
+                  Max
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
         @foreach ($tag_types as $tag_type)
           <div
             id='voter-folder-{{ $tag_type->slug }}'
@@ -1182,20 +1218,66 @@
         }
       }
 
-      function paint_tag() {
-        const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
-        map.setPaintProperty(
-          'tags',
-          'fill-color',
-          [
-            "case",
-            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
-            ["rgba",
-              255,157,71,
-              ["interpolate", ["linear"], ["get", dataId], 0, 0.1, 1, 1]
-            ]
+      function getSimilarityFillExpression(compResponses) {
+        // compResponses: {pId : response_val}
+        var minSources = ["min"];
+        var a_b = ["+"];
+        var a_len_2 = ["+"];
+        var b_len_2 = ["+"];
+        for (let pId in compResponses) {
+          if (!allPrompts[pId].is_mapped) {
+            continue;
+          }
+          var a_val = compResponses[pId] - 5;  // [-5, 5]
+          var b_src = 'prompt-' + pId + '-all';
+          var b_val = ["-", ["get", b_src], 0.5];  // [-0.5, 0.5]
+          minSources.push(["get", b_src]);
+          a_b.push(["*", a_val, b_val]);
+          a_len_2.push(a_val * a_val);
+          b_len_2.push(["^", b_val, 2]);
+        }
+        var cosine_sim = ["/",  // a.b / |a||b|
+          a_b,  // a.b
+          ["*",  // |a||b|
+            ["sqrt", a_len_2],  // |a|
+            ["sqrt", b_len_2]  // |b|
           ]
-        );
+        ];
+        var ret = [
+          "case",
+          ["==", minSources, -1], 'rgba(0,0,0,0)',
+          ["interpolate",
+            ["linear"],
+            cosine_sim,
+            -1, "rgb(255,0,0)",
+            1, "rgb(0,255,0)"
+          ]
+        ];
+
+        return ret;
+      }
+
+      function paint_tag() {
+        if (stagedVoterId == "comp") {
+          map.setPaintProperty(
+            'tags',
+            'fill-color',
+            getSimilarityFillExpression(myResponses)
+          );
+        } else {
+          const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
+          map.setPaintProperty(
+            'tags',
+            'fill-color', [
+              "case",
+              ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+              ["rgba",
+                255,157,71,
+                ["interpolate", ["linear"], ["get", dataId], 0, 0.1, 1, 1]
+              ]
+            ]
+          );
+        }
       }
 
   		const maxZoom = 3;
@@ -1470,8 +1552,8 @@
           dElem("vote_slider_bg_" + stagedVoteId).style.display = 'block';
           slider.style.display = 'block';
           slider.name = prompt.id;
-          if (myResponses[prompt.id]) {
-            slider.value = myResponses[prompt.id];
+          if (prompt.id in myResponses) {
+            slider.value = "" + myResponses[prompt.id];
             setVoteStatus(true);
             shouldRevealStats = true;
           } else {
@@ -1480,7 +1562,7 @@
           }
 
           var endVoteSelect = function () {
-            myResponses[prompt.id] = slider.value;  // Record locally since last page load
+            myResponses[prompt.id] = slider.value - 0;  // Record locally since last page load
             dElem("vote_form_" + stagedVoteId).submit();
             setVoteStatus(true);
             revealStats();
