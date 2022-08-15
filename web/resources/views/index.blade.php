@@ -444,90 +444,121 @@
           View and filter votes based on user info!
         </div>
 
-        <div
-          id="voter_container_all"
-          class="text-2xl font-bold tracking-tight text-gray-900
-            block bg-white rounded-lg shadow-md hover:bg-gray-100
-            mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
-        >
-          <div style="width:100%; height:60px">
-            <a
-              id="voter_button_all"
-              href="javascript:void(0)"
-              onclick="stageVoter('all')"
+        <div>
+          <a id="voter-folder-button-general"
+            href="javascript:void(0)"
+            onclick="openVoterFolder('general')"
+          >
+            <x-folder-handle slug="general" name="General" />
+          </a>
+          <div
+            id='voter-folder-general'
+            class="button_transition"
+            style="display:inline"
             >
-              <div class="h-full w-full p-3">
-                All voters
-              </div>
-            </a>
-          </div>
 
-          <div id="tag_key_container_all"
-            style="width:100%; height:50px; display:none">
-            <table style="width:100%; text-align:center; margin-bottom:5px">
-              <tr>
-                <td style="width:15%" class="text-base">
-                  Min
-                </td>
-                <td style="width:70%">
-                  <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
-                </td>
-                <td style="width:15%" class="text-base">
-                  Max
-                </td>
-              </tr>
-            </table>
+            <div
+              id="voter_container_all"
+              class="text-2xl font-bold tracking-tight text-gray-900
+                block bg-white rounded-lg shadow-md hover:bg-gray-100
+                mb-2 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
+            >
+              <div style="width:100%; height:85px">
+                <a
+                  id="voter_button_all"
+                  href="javascript:void(0)"
+                  onclick="stageVoter('all')"
+                >
+                  <div class="h-full w-full p-3">
+                    All voters
+                    <p class="text-sm font-medium">The popular places people have voted from</p>
+                  </div>
+                </a>
+              </div>
+
+              <div id="tag_key_container_all"
+                style="width:100%; height:50px; display:none">
+                <table style="width:100%; text-align:center; margin-bottom:5px">
+                  <tr>
+                    <td style="width:15%" class="text-base">
+                      Min
+                    </td>
+                    <td style="width:70%">
+                      <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
+                    </td>
+                    <td style="width:15%" class="text-base">
+                      Max
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div
+              id="voter_container_comp"
+              class="text-2xl font-bold tracking-tight text-gray-900
+                block rounded-lg shadow-md
+                mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition
+                @auth
+                  bg-white hover:bg-gray-100
+                @else
+                  bg-gray-400
+                @endauth
+                "
+            >
+              <div style="width:100%; height:85px">
+                <a
+                  id="voter_button_comp"
+                  href="javascript:void(0)"
+                  @auth
+                    onclick="stageVoter('comp')"
+                  @else
+                    onclick="set_pane_mode('pane_user_type')"
+                  @endauth
+                >
+                  <div class="h-full w-full p-3">
+                    Compatibility
+                    <p class="text-sm font-medium">How well your votes match up with averages across the world</p>
+                  </div>
+                </a>
+              </div>
+
+              <div id="tag_key_container_comp"
+                style="width:100%; height:50px; display:none">
+                <table style="width:100%; text-align:center; margin-bottom:5px">
+                  <tr>
+                    <td style="width:15%" class="text-base">
+                      Min
+                    </td>
+                    <td style="width:70%">
+                      <div id="comp_color_scale" style="width:100%; height:30px"></div>
+                    </td>
+                    <td style="width:15%" class="text-base">
+                      Max
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
           </div>
         </div>
-
-        @auth
-        <div
-          id="voter_container_comp"
-          class="text-2xl font-bold tracking-tight text-gray-900
-            block bg-white rounded-lg shadow-md hover:bg-gray-100
-            mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
-        >
-          <div style="width:100%; height:60px">
-            <a
-              id="voter_button_comp"
-              href="javascript:void(0)"
-              onclick="stageVoter('comp')"
-            >
-              <div class="h-full w-full p-3">
-                Compatibility
-              </div>
-            </a>
-          </div>
-
-          <div id="tag_key_container_comp"
-            style="width:100%; height:50px; display:none">
-            <table style="width:100%; text-align:center; margin-bottom:5px">
-              <tr>
-                <td style="width:15%" class="text-base">
-                  Min
-                </td>
-                <td style="width:70%">
-                  <div id="comp_color_scale" style="width:100%; height:30px"></div>
-                </td>
-                <td style="width:15%" class="text-base">
-                  Max
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-        @endauth
 
         @foreach ($tag_types as $tag_type)
+        <div>
+          <a id="voter-folder-button-{{ $tag_type->slug }}"
+            href="javascript:void(0)"
+            onclick="openVoterFolder('{{ $tag_type->slug }}')"
+          >
+            <x-folder-handle :slug='$tag_type->slug' :name='$tag_type->name' />
+          </a>
           <div
             id='voter-folder-{{ $tag_type->slug }}'
-            name='{{ $tag_type->slug }}'
-            class="p-4 m-2 text-2xl font-bold tracking-tight text-gray-900
-              block bg-white rounded-lg shadow-md hover:bg-gray-100
-              border-2 border-gray-200 button_transition"
+            class="button_transition"
+            style="display:none"
             >
-              {{ $tag_type->name }}
           </div>
+        </div>
         @endforeach
 
         @foreach ($tags as $tag)
@@ -803,7 +834,12 @@
           this._container = document.createElement('div');
           this._container.className = 'mapboxgl-ctrl';
           this._container.innerHTML = `
-          <select name="projections" id="projections_select" onchange="map.setProjection(this.options[this.selectedIndex].value)">
+          <select
+            name="projections"
+            id="projections_select"
+            onchange="map.setProjection(this.options[this.selectedIndex].value)"
+            class="rounded"
+          >
             <option value="globe">3D - Globe</option>
             <option value="mercator">2D - Mercator</option>
           </select>`;
@@ -913,9 +949,7 @@
       var stagedVoterId = null;
       function stageVoter(tagId) {
         if (tagId == stagedVoterId) {
-          stagedVoterId = null;
           unstageVoter(tagId);
-          voters_indicator.style.visibility = 'hidden';
           return;
         } else if (stagedVoterId != null) {
           unstageVoter(stagedVoterId);
@@ -930,16 +964,18 @@
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'visible');
-        paint_tag();
         voters_indicator.style.visibility = 'visible';
+        paint_tag();
       }
 
       function unstageVoter(tagId) {
+        voters_indicator.style.visibility = 'hidden';
         var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'none';
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
         map.setLayoutProperty('tags', 'visibility', 'none');
+        stagedVoterId = null;
       }
 
       var activeFilterId = null;
@@ -1265,8 +1301,14 @@
         return ret;
       }
 
+      const MIN_VOTES_FOR_COMPAT = 2;
       function paint_tag() {
         if (stagedVoterId == "comp") {
+          if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
+            unstageVoter("comp");
+            alert("Please vote on at least " + MIN_VOTES_FOR_COMPAT + " topics first");
+            return;
+          }
           map.setPaintProperty(
             'tags',
             'fill-color',
@@ -1707,6 +1749,29 @@
           dElem(parent_name).appendChild(dElem(child_name));
         }
       }
+
+      function openVoterFolder(typeSlug) {
+        var folderButton = dElem("voter-folder-button-" + typeSlug);
+        var folderIcon = dElem("folder-icon-" + typeSlug);
+        var folderContainer = dElem("voter-folder-" + typeSlug);
+
+        folderButton.onclick = () => {closeVoterFolder(typeSlug);};
+        folderIcon.innerText = "v";
+        folderContainer.style.display = "inline";
+      }
+
+      openVoterFolder('general');
+
+      function closeVoterFolder(typeSlug) {
+        var folderButton = dElem("voter-folder-button-" + typeSlug);
+        var folderIcon = dElem("folder-icon-" + typeSlug);
+        var folderContainer = dElem("voter-folder-" + typeSlug);
+
+        folderButton.onclick = () => {openVoterFolder(typeSlug);};
+        folderIcon.innerText = ">";
+        folderContainer.style.display = "none";
+      }
+
   	</script>
   </body>
 
