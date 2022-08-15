@@ -1264,9 +1264,9 @@
         }
       }
 
-      function getSimilarityFillExpression(compResponses) {
+      function getCompatFillExpression(compResponses) {
         // compResponses: {pId : response_val}
-        var minSources = ["min"];
+        var maxSources = ["max"];
         var a_b = ["+"];
         var a_len_2 = ["+"];
         var b_len_2 = ["+"];
@@ -1276,11 +1276,25 @@
           }
           var a_val = compResponses[pId] - 5;  // [-5, 5]
           var b_src = 'prompt-' + pId + '-all';
-          var b_val = ["-", ["get", b_src], 0.5];  // [-0.5, 0.5]
-          minSources.push(["get", b_src]);
-          a_b.push(["*", a_val, b_val]);
-          a_len_2.push(a_val * a_val);
-          b_len_2.push(["^", b_val, 2]);
+          var b_val_raw = ["get", b_src];
+          var b_val_invalid = ["==", b_val_raw, -1];
+          var b_val = ["-", b_val_raw, 0.5];  // [-0.5, 0.5]
+          maxSources.push(b_val_raw);
+          a_b.push(
+            ["case",
+              b_val_invalid, 0,
+              ["*", a_val, b_val]
+            ]);
+          a_len_2.push(
+            ["case",
+              b_val_invalid, 0,
+              a_val * a_val
+            ]);
+          b_len_2.push(
+            ["case",
+              b_val_invalid, 0,
+              ["^", b_val, 2]
+            ]);
         }
         var cosine_sim = ["/",  // a.b / |a||b|
           a_b,  // a.b
@@ -1291,7 +1305,8 @@
         ];
         var ret = [
           "case",
-          ["==", minSources, -1], 'rgba(0,0,0,0)',
+          ["==", maxSources, -1], 'rgba(0,0,0,0)',  // none are present in cell
+          ["==", ["min", a_len_2, b_len_2], 0], 'rgba(0,0,0,0)',
           ["interpolate",
             ["linear"],
             cosine_sim,
@@ -1312,7 +1327,7 @@
           map.setPaintProperty(
             'tags',
             'fill-color',
-            getSimilarityFillExpression(myResponses)
+            getCompatFillExpression(myResponses)
           );
         } else {
           const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
