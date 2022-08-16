@@ -71,6 +71,15 @@
         transition: all 0.25s ease;
       }
 
+      .folder_transition {
+        overflow-y: hidden;
+        -webkit-transition: all 0.35s ease;
+        -moz-transition: all 0.35s ease;
+        -o-transition: all 0.35s ease;
+        -ms-transition: all 0.35s ease;
+        transition: all 0.35s ease;
+      }
+
       input[type="color"] {
          padding: 0;
          margin: 0;
@@ -453,9 +462,9 @@
           </a>
           <div
             id='voter-folder-general'
-            class="button_transition"
-            style="display:inline"
-            >
+            class="folder_transition"
+            style="max-height:801px"
+          >
 
             <div
               id="voter_container_all"
@@ -554,8 +563,8 @@
           </a>
           <div
             id='voter-folder-{{ $tag_type->slug }}'
-            class="button_transition"
-            style="display:none"
+            class="folder_transition"
+            style="max-height:0px"
             >
           </div>
         </div>
@@ -1772,7 +1781,7 @@
 
         folderButton.onclick = () => {closeVoterFolder(typeSlug);};
         folderIcon.innerText = "v";
-        folderContainer.style.display = "inline";
+        folderContainer.style['max-height'] = "801px";  // auto
       }
 
       openVoterFolder('general');
@@ -1784,7 +1793,7 @@
 
         folderButton.onclick = () => {openVoterFolder(typeSlug);};
         folderIcon.innerText = ">";
-        folderContainer.style.display = "none";
+        folderContainer.style['max-height'] = "0px";
       }
 
   	</script>
