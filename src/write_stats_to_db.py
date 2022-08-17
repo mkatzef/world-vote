@@ -27,7 +27,7 @@ def format_counts(c):
         if divisor == 0:
             divisor = 1
         ret[tag_slug] = list(prompt_tag_counts / divisor)
-    return json.dumps(ret)
+    return json.dumps(compress_for_json(ret, 2))
 
 sql = "UPDATE prompts SET count_ratios = '%s' WHERE id = %s"
 for p_id, counts in counts_raw.items():

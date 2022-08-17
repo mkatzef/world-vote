@@ -40,3 +40,7 @@ def get_base_data(zoom, sums, counts, tag_key):
 def save_base_data(out_path, zoom, sums, counts, tag_key):
     contents = get_base_data(zoom, sums, counts, tag_key)
     np.save(out_path, contents)
+
+
+def compress_for_json(output, decimal_places):
+    return json.loads(json.dumps(output), parse_float=lambda x: round(float(x), decimal_places))

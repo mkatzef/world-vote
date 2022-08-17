@@ -1,0 +1,3 @@
+[submodule "src/countries"]
+	path = src/countries
+	url = https://github.com/che0/countries.git

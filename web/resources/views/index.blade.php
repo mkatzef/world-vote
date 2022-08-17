@@ -311,7 +311,7 @@
         class="block rounded-t-lg border-0 shadow-md"
       >
         <button id="poll_tab_vote_button" onclick="set_pane_poll_mode('votes')"
-          class="mb-0 bg-white text-orange-300 text-2xl font-bold tracking-tight rounded-t-lg"
+          class="mb-0 bg-white text-orange-300 text-xl font-semibold tracking-tight rounded-t-lg"
           style="height:100%; width:50%; float:left;
             border-top-width:2px; border-right-width:2px;">
             <span id="votes_indicator" style="visibility:hidden">•</span>
@@ -319,7 +319,7 @@
             <span style="visibility:hidden">•</span>
         </button>
         <button id="poll_tab_voter_button" onclick="set_pane_poll_mode('voters')"
-          class="mb-0 bg-orange-300 hover:bg-orange-500 text-white text-2xl font-bold tracking-tight rounded-t-lg"
+          class="mb-0 bg-orange-300 hover:bg-orange-500 text-white text-xl font-semibold tracking-tight rounded-t-lg"
           style="height:100%; width:50%; float:right;
             border-top-width:2px; border-left-width:2px">
             <span id="voters_indicator" style="visibility:hidden">•</span>
@@ -369,8 +369,8 @@
           >
             <h5
               onclick="stage_vote({{ $prompt->id }})"
-              class="cursor-pointer mb-2 text-2xl font-bold tracking-tight text-gray-900">
-              {{ $prompt->caption }} {!! $prompt->is_mapped ? "&#127757; " : "" !!}
+              class="cursor-pointer mb-2 text-xl font-semibold tracking-tight text-gray-900">
+              {{ $prompt->caption }}
             </h5>
 
             <div id="prompt_content_{{ $prompt->id }}" style="width:100%; padding:5px; display:none;">
@@ -468,7 +468,7 @@
 
             <div
               id="voter_container_all"
-              class="text-2xl font-bold tracking-tight text-gray-900
+              class="text-xl font-semibold tracking-tight text-gray-900
                 block bg-white rounded-lg shadow-md hover:bg-gray-100
                 mb-2 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
             >
@@ -505,7 +505,7 @@
 
             <div
               id="voter_container_comp"
-              class="text-2xl font-bold tracking-tight text-gray-900
+              class="text-xl font-semibold tracking-tight text-gray-900
                 block rounded-lg shadow-md
                 mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition
                 @auth
@@ -574,7 +574,7 @@
         <div id="voter-checkbox-{{ $tag->slug }}" class="mb-2 mt-1 ml-2 mr-2">
           <div
             id="voter_container_{{ $tag->id }}"
-            class="text-2xl font-bold tracking-tight text-gray-900
+            class="text-xl font-semibold tracking-tight text-gray-900
               block bg-white rounded-lg shadow-md hover:bg-gray-100
               border-2 border-gray-200 button_transition"
           >
@@ -716,7 +716,7 @@
           @foreach ($tag_types as $tag_type)
             <div class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
               m-2 border-2 border-gray-200">
-              <h3 class="cursor-pointer text-2xl font-bold tracking-tight text-gray-900">
+              <h3 class="cursor-pointer text-xl font-semibold tracking-tight text-gray-900">
                 {{ $tag_type->name }}
               </h3>
               <select style="text-align:center" id='new-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>
@@ -769,7 +769,7 @@
           @foreach ($tag_types as $tag_type)
             <div class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
               m-2 border-2 border-gray-200">
-              <h3 class="cursor-pointer text-2xl font-bold tracking-tight text-gray-900">
+              <h3 class="cursor-pointer text-xl font-semibold tracking-tight text-gray-900">
                 {{ $tag_type->name }}
               </h3>
               <select style="text-align:center" id='update-folder-{{ $tag_type->slug }}' name='{{ $tag_type->slug }}'>

@@ -17,6 +17,8 @@ web_uploads/*
 *__pycache__*
 *out_dir.state
 *profiler.php
+src/loc_data/*
+src/countries/*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

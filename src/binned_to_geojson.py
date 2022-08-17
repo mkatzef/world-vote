@@ -82,7 +82,7 @@ def write_cells(in_dir, out_dir, compress_json_floats=False):
         # As per https://stackoverflow.com/a/29066406, python's json dump
         # doesn't have float formatting but its LOAD does
         if compress_json_floats:
-            output = json.loads(json.dumps(output), parse_float=lambda x: round(float(x), 3))
+            output = compress_for_json(output, 3)
 
         out_path = os.path.join(zoom_path, 'cells.json')
         with open(out_path, 'w') as outfile:

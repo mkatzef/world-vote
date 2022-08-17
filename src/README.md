@@ -49,4 +49,15 @@ Run the following once per time period (updated):
 * Generate mbtiles for each zoom level
 * Combine mbtiles for each zoom level
 * Upload combined mbtiles to mapbox-defined ID
-* Delete 
+* Delete
+
+
+# Location data
+If you need to use geocoding (required in loc_parser.py), the following need to be installed:
+* `gdal` - use homebrew or apt  
+* `pip install gdal`, for the python interface  
+* `git clone https://github.com/che0/countries.git`  
+
+Then:
+* Download `TM_WORLD_BORDERS-0.3.zip` from [Thematic Mapping](https://thematicmapping.org/downloads/world_borders.php)
+* Extract it and place contents inside of `./loc_data/TM_WORLD_BORDERS-0.3`
