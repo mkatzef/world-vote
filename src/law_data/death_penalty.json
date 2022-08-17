@@ -1,0 +1,1589 @@
+[
+  {
+    "country": "Afghanistan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 2",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Albania",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Algeria",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 9",
+    "awaiting2021": "Yes - 1,000+"
+  },
+  {
+    "country": "Andorra",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Angola",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Antigua and Barbuda",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Argentina",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Armenia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Australia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Austria",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Azerbaijan",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Bahamas",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Bahrain",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 26+"
+  },
+  {
+    "country": "Bangladesh",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 5",
+    "deathSen2021": "Yes - 181+",
+    "awaiting2021": "Yes - 1,800+"
+  },
+  {
+    "country": "Barbados",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 6"
+  },
+  {
+    "country": "Belarus",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 1+",
+    "deathSen2021": "Yes - 1",
+    "awaiting2021": "Yes - 1"
+  },
+  {
+    "country": "Belgium",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Belize",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Benin",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Bhutan",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Bolivia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Bosnia and Herzegovina",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Botswana",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 3",
+    "deathSen2021": "Yes - 6",
+    "awaiting2021": "Yes - 6"
+  },
+  {
+    "country": "Brazil",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Brunei",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "undisclosed"
+  },
+  {
+    "country": "Bulgaria",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Burkina Faso",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Burundi",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Cambodia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Cameroon",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 4+",
+    "awaiting2021": "Yes - 250+"
+  },
+  {
+    "country": "Canada",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Cape Verde",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Central African Republic",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Chad",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Chile",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "China",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 1,000s+",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Colombia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Comoros",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Cook Islands",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Costa Rica",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Croatia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Cuba",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Cyprus",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Czech Republic",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Denmark",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Djibouti",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Dominica",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Dominican Republic",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "DR Congo",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 81+",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Ecuador",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Egypt",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 83+",
+    "deathSen2021": "Yes - 356+",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "El Salvador",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Equatorial Guinea",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Eritrea",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Estonia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Eswatini",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 1"
+  },
+  {
+    "country": "Ethiopia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Fiji",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Finland",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "France",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Gabon",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Gambia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 3",
+    "awaiting2021": "Yes - 3"
+  },
+  {
+    "country": "Georgia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Germany",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Ghana",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 7",
+    "awaiting2021": "Yes - 165"
+  },
+  {
+    "country": "Greece",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Grenada",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 1"
+  },
+  {
+    "country": "Guatemala",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Guinea",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Guinea-Bissau",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Guyana",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 4",
+    "awaiting2021": "Yes - 27"
+  },
+  {
+    "country": "Haiti",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Honduras",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Hungary",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Iceland",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "India",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 144",
+    "awaiting2021": "Yes - 488"
+  },
+  {
+    "country": "Indonesia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 114+",
+    "awaiting2021": "Yes - 569+"
+  },
+  {
+    "country": "Iran",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 314+",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Iraq",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 17+",
+    "deathSen2021": "Yes - 91+",
+    "awaiting2021": "Yes - 8,000+"
+  },
+  {
+    "country": "Ireland",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Israel",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Italy",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Ivory Coast",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Jamaica",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Japan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 3",
+    "deathSen2021": "Yes - 3",
+    "awaiting2021": "Yes - 117"
+  },
+  {
+    "country": "Jordan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 11+",
+    "awaiting2021": "Yes - 112+"
+  },
+  {
+    "country": "Kazakhstan",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-",
+    "otherNotes": "Death penalty abolished 29 Dec. 2021. "
+  },
+  {
+    "country": "Kenya",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 14",
+    "awaiting2021": "Yes - 601"
+  },
+  {
+    "country": "Kiribati",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Kuwait",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 5",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Kyrgyzstan",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Laos",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Latvia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Lebanon",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 12",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Lesotho",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Liberia",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 16+"
+  },
+  {
+    "country": "Libya",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Liechtenstein",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Lithuania",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Luxembourg",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Madagascar",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Malawi",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 11+",
+    "awaiting2021": "Yes - 37+"
+  },
+  {
+    "country": "Malaysia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 14+",
+    "awaiting2021": "Yes - 1,359"
+  },
+  {
+    "country": "Maldives",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 1",
+    "awaiting2021": "Yes - 19"
+  },
+  {
+    "country": "Mali",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 48+",
+    "awaiting2021": "Yes - 48+"
+  },
+  {
+    "country": "Malta",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Marshall Islands",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Mauritania",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 60",
+    "awaiting2021": "Yes - 183"
+  },
+  {
+    "country": "Mauritius",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Mexico",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Micronesia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Moldova",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Monaco",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Mongolia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Montenegro",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Morocco",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 1",
+    "awaiting2021": "Yes - 82"
+  },
+  {
+    "country": "Mozambique",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Myanmar",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 86+",
+    "awaiting2021": "Yes - 86+"
+  },
+  {
+    "country": "Namibia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Nauru",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Nepal",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Netherlands",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "New Zealand",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Nicaragua",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Niger",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 4"
+  },
+  {
+    "country": "Nigeria",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 56+",
+    "awaiting2021": "Yes - 3,036+"
+  },
+  {
+    "country": "Niue",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "North Korea",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Undisclosed",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "North Macedonia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Norway",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Oman",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Undisclosed",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Pakistan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 129+",
+    "awaiting2021": "Yes - 3,800+"
+  },
+  {
+    "country": "Palau",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Palestine",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 21+",
+    "awaiting2021": "Yes - 215+"
+  },
+  {
+    "country": "Panama",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Papua New Guinea",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-",
+    "otherNotes": "Abolished on 20 Jan. 2022"
+  },
+  {
+    "country": "Paraguay",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Peru",
+    "status": "Extreme only",
+    "notes": "Only for the worst crimes, such as war crimes",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Philippines",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Poland",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Portugal",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Qatar",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Republic of the Congo",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Romania",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Russia",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Rwanda",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Saint Kitts and Nevis",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Saint Lucia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Saint Vincent and the Grenadines",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 1"
+  },
+  {
+    "country": "Samoa",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "San Marino",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Sao Tome and Principe",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Saudi Arabia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 65",
+    "deathSen2021": "Yes - 8+",
+    "awaiting2021": "Yes - 32+"
+  },
+  {
+    "country": "Senegal",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Serbia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Seychelles",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Sierra Leone",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 23",
+    "awaiting2021": "Yes - 117",
+    "otherNotes": "Death penalty abolished by 2021 law. Existing death sentences will likely be commuted. "
+  },
+  {
+    "country": "Singapore",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 10",
+    "awaiting2021": "Yes - 50+"
+  },
+  {
+    "country": "Slovakia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Slovenia",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Solomon Islands",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Somalia",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 21+",
+    "deathSen2021": "Yes - 27+",
+    "awaiting2021": "Yes - 6+"
+  },
+  {
+    "country": "South Africa",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "South Korea",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "Yes - 59"
+  },
+  {
+    "country": "South Sudan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 9+",
+    "deathSen2021": "Yes - 10+",
+    "awaiting2021": "Yes - 334+"
+  },
+  {
+    "country": "Spain",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Sri Lanka",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 8+",
+    "awaiting2021": "Yes - 1,000+"
+  },
+  {
+    "country": "Sudan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 7+",
+    "awaiting2021": "Yes - 95+"
+  },
+  {
+    "country": "Suriname",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Sweden",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Switzerland",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Syria",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 24",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Taiwan",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 2",
+    "awaiting2021": "Yes - 45"
+  },
+  {
+    "country": "Tajikistan",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Tanzania",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Yes - 480+"
+  },
+  {
+    "country": "Thailand",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Undisclosed",
+    "awaiting2021": "Yes - 158"
+  },
+  {
+    "country": "Timor-Leste",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Togo",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Tonga",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "None",
+    "awaiting2021": "None"
+  },
+  {
+    "country": "Trinidad and Tobago",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 3",
+    "awaiting2021": "Yes - 45"
+  },
+  {
+    "country": "Tunisia",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 3",
+    "awaiting2021": "Yes - 89"
+  },
+  {
+    "country": "Turkey",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Turkmenistan",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Tuvalu",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Uganda",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 2+",
+    "awaiting2021": "Yes - 135+"
+  },
+  {
+    "country": "Ukraine",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "United Arab Emirates",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 1+",
+    "deathSen2021": "Yes - 9+",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "United Kingdom",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "United States",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 11",
+    "deathSen2021": "Yes - 18",
+    "awaiting2021": "Yes - 2,382"
+  },
+  {
+    "country": "Uruguay",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Uzbekistan",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Vanuatu",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Vatican City",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Venezuela",
+    "status": "Abolished",
+    "notes": "Death penalty abolished or prohibited",
+    "ex2021": "-",
+    "deathSen2021": "-",
+    "awaiting2021": "-"
+  },
+  {
+    "country": "Vietnam",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Undisclosed",
+    "deathSen2021": "Yes - 119+",
+    "awaiting2021": "Yes - 1,200+"
+  },
+  {
+    "country": "Yemen",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "Yes - 14+",
+    "deathSen2021": "Yes - 298+",
+    "awaiting2021": "Undisclosed"
+  },
+  {
+    "country": "Zambia",
+    "status": "Suspended",
+    "notes": "Legal, but no executions in at least 10 years",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 9+",
+    "awaiting2021": "Yes - 257+"
+  },
+  {
+    "country": "Zimbabwe",
+    "status": "Legal",
+    "notes": "Death penalty remains legal",
+    "ex2021": "None",
+    "deathSen2021": "Yes - 1",
+    "awaiting2021": "Yes - 66"
+  }
+]

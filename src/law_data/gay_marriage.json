@@ -1,0 +1,132 @@
+[
+  {
+    "country": "Germany",
+    "legalizeYear": 2017,
+    "pop2022": "83369.8430"
+  },
+  {
+    "country": "Australia",
+    "legalizeYear": 2017,
+    "pop2022": "26177.4130"
+  },
+  {
+    "country": "Finland",
+    "legalizeYear": 2017,
+    "pop2022": "5540.7450"
+  },
+  {
+    "country": "Malta",
+    "legalizeYear": 2017,
+    "pop2022": "533.2860"
+  },
+  {
+    "country": "Bermuda",
+    "legalizeYear": 2017,
+    "pop2022": "64.1840"
+  },
+  {
+    "country": "Colombia",
+    "legalizeYear": 2016,
+    "pop2022": "51874.0240"
+  },
+  {
+    "country": "United States",
+    "legalizeYear": 2015,
+    "pop2022": "338289.8570"
+  },
+  {
+    "country": "Ireland",
+    "legalizeYear": 2015,
+    "pop2022": "5023.1090"
+  },
+  {
+    "country": "Luxembourg",
+    "legalizeYear": 2015,
+    "pop2022": "647.5990"
+  },
+  {
+    "country": "Greenland",
+    "legalizeYear": 2015,
+    "pop2022": "56.4660"
+  },
+  {
+    "country": "United Kingdom",
+    "legalizeYear": 2014,
+    "pop2022": "67508.9360"
+  },
+  {
+    "country": "Brazil",
+    "legalizeYear": 2013,
+    "pop2022": "215313.4980"
+  },
+  {
+    "country": "France",
+    "legalizeYear": 2013,
+    "pop2022": "64626.6280"
+  },
+  {
+    "country": "New Zealand",
+    "legalizeYear": 2013,
+    "pop2022": "5185.2880"
+  },
+  {
+    "country": "Uruguay",
+    "legalizeYear": 2013,
+    "pop2022": "3422.7940"
+  },
+  {
+    "country": "Denmark",
+    "legalizeYear": 2012,
+    "pop2022": "5882.2610"
+  },
+  {
+    "country": "Argentina",
+    "legalizeYear": 2010,
+    "pop2022": "45510.3180"
+  },
+  {
+    "country": "Portugal",
+    "legalizeYear": 2010,
+    "pop2022": "10270.8650"
+  },
+  {
+    "country": "Iceland",
+    "legalizeYear": 2010,
+    "pop2022": "372.8990"
+  },
+  {
+    "country": "Sweden",
+    "legalizeYear": 2009,
+    "pop2022": "10549.3470"
+  },
+  {
+    "country": "Norway",
+    "legalizeYear": 2008,
+    "pop2022": "5434.3190"
+  },
+  {
+    "country": "South Africa",
+    "legalizeYear": 2006,
+    "pop2022": "59893.8850"
+  },
+  {
+    "country": "Spain",
+    "legalizeYear": 2005,
+    "pop2022": "47558.6300"
+  },
+  {
+    "country": "Canada",
+    "legalizeYear": 2005,
+    "pop2022": "38454.3270"
+  },
+  {
+    "country": "Belgium",
+    "legalizeYear": 2003,
+    "pop2022": "11655.9300"
+  },
+  {
+    "country": "Netherlands",
+    "legalizeYear": 2001,
+    "pop2022": "17564.0140"
+  }
+]

@@ -3,18 +3,11 @@ import matplotlib.pyplot as plt
 import os
 
 from common import *
-import countries.countries as countries
 import sys
 
 
 LOC_DATA_DIR = "./loc_data"
-cc = countries.CountryChecker(
-    os.path.join(LOC_DATA_DIR, 'TM_WORLD_BORDERS-0.3', 'TM_WORLD_BORDERS-0.3.shp')
-)
-
 o_lng, o_lat = ORIGIN_COORD
-def get_z_step(z):
-    return BASE_STEP_DEG / 2 ** z
 
 
 def flip(ll):
@@ -22,7 +15,7 @@ def flip(ll):
 
 
 def get_country_from_latlngt(latlng):
-    c = cc.getCountry(countries.Point(*latlng))
+    c = COUNTRY_CHECKER.getCountry(countries.Point(*latlng))
     if c is not None:
         return c.shape.GetField('NAME')
 
@@ -32,7 +25,7 @@ def get_country_from_lnglat(lnglat):
 
 
 def get_xy(lnglat, zoom):
-    z_step = get_z_step(zoom)
+    z_step = get_step_size_deg(zoom)
     col = (lnglat[0] - o_lng) // z_step
     row = (o_lat - lnglat[1]) // z_step
     return col, row
@@ -142,11 +135,11 @@ def get_all_country_cells(row_range, col_range, z_step):
     for row in row_range:
         if init_row is None:
             init_row = row
-        cell_center_lat = (row + 0.5) * z_step
-        print("%02d %%" % (100*(row - init_row) / n_rows))
+        cell_center_lat = o_lat - (row + 0.5) * z_step
+        print("%3d%%" % (100*(row - init_row) / n_rows))
         for col in col_range:
             cell = (row, col)
-            cell_center_lng = (col + 0.5) * z_step
+            cell_center_lng = o_lng + (col + 0.5) * z_step
             lnglat = (cell_center_lng, cell_center_lat)
             country = get_country_from_lnglat(lnglat)
             if country is None:
@@ -163,8 +156,10 @@ def collect_in_parallel(out_dir="./loc_parts", n_workers=None, worker_index=None
     if n_workers is None or worker_index is None:
         n_workers, worker_index = map(int, sys.argv[-2:])  # worker_index 0-indexed
 
-    z_step = get_z_step(zoom)
+    z_step = get_step_size_deg(zoom)
     n_cols, n_rows = n_cells_xy(zoom)
+    print(n_cols, n_rows)
+
     rpw = int(np.ceil(n_rows / n_workers))  # rows per worker
     start_row = worker_index*rpw
     end_row = min((worker_index+1)*rpw, n_rows)
@@ -174,9 +169,34 @@ def collect_in_parallel(out_dir="./loc_parts", n_workers=None, worker_index=None
     np.save(out_name, np.array(country_cells, dtype=object))
 
 
-def load_from_parallel(in_dir="./loc_parts"):
-    pass
+def merge_country_cells(src, dst):
+    for k, v in src.items():
+        if k in dst:
+            dst[k] += v
+        else:
+            dst[k] = v
+    return dst
+
+
+def load_from_disk(in_dir="./loc_parts"):
+    country_cells = {}
+    for filename in next(os.walk(in_dir))[2]:
+        if not filename.endswith('.npy'):
+            print("Skipping non npy file:", filename)
+            continue
+        filepath = os.path.join(in_dir, filename)
+        new_country_cells = np.load(filepath, allow_pickle=True).tolist()
+
+        country_cells = merge_country_cells(new_country_cells, country_cells)
+    return country_cells
 
 
 if __name__ == "__main__":
-    collect_in_parallel()
+    import countries.countries as countries
+    COUNTRY_CHECKER = countries.CountryChecker(
+        os.path.join(LOC_DATA_DIR, 'TM_WORLD_BORDERS-0.3', 'TM_WORLD_BORDERS-0.3.shp')
+    )
+
+    #collect_in_parallel()
+    d = load_from_disk()
+    print(sorted(list(d.keys())))

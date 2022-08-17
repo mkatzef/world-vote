@@ -1,0 +1,271 @@
+[
+  {
+    "State": "Alabama",
+    "legalWeedStatus": "Fully Illegal"
+  },
+  {
+    "State": "Alaska",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Arizona",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Arkansas",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "California",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Colorado",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Connecticut",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Delaware",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Florida",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Georgia",
+    "legalWeedStatus": "Mixed"
+  },
+  {
+    "State": "Hawaii",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Idaho",
+    "legalWeedStatus": "Fully Illegal"
+  },
+  {
+    "State": "Illinois",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Indiana",
+    "legalWeedStatus": "Mixed"
+  },
+  {
+    "State": "Iowa",
+    "legalWeedStatus": "Mixed"
+  },
+  {
+    "State": "Kansas",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Kentucky",
+    "legalWeedStatus": "Mixed"
+  },
+  {
+    "State": "Louisiana",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Maine",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Maryland",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Massachusetts",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Michigan",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Minnesota",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Mississippi",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Missouri",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Montana",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Nebraska",
+    "legalWeedStatus": "Mixed",
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Nevada",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "New Hampshire",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "New Jersey",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "New Mexico",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "New York",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "North Carolina",
+    "legalWeedStatus": "Mixed",
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "North Dakota",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Ohio",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Oklahoma",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Oregon",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Pennsylvania",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Rhode Island",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "South Carolina",
+    "legalWeedStatus": "Fully Illegal"
+  },
+  {
+    "State": "South Dakota",
+    "legalWeedStatus": "Fully Illegal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Tennessee",
+    "legalWeedStatus": "Fully Illegal"
+  },
+  {
+    "State": "Texas",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Utah",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Vermont",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Virginia",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "Washington",
+    "legalWeedStatus": "Fully Legal",
+    "medicinalWeedStatus": true,
+    "decriminalizedWeedStatus": true
+  },
+  {
+    "State": "West Virginia",
+    "legalWeedStatus": "Mixed",
+    "medicinalWeedStatus": true
+  },
+  {
+    "State": "Wisconsin",
+    "legalWeedStatus": "Mixed"
+  },
+  {
+    "State": "Wyoming",
+    "legalWeedStatus": "Fully Illegal"
+  }
+]

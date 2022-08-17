@@ -14,7 +14,6 @@ import os
 import sys
 
 from common import *
-from db_common import DB_CNX
 
 
 class BaseData:
@@ -68,6 +67,7 @@ def main(out_dir, tags, mapped_prompts, counted_prompts, users):
 
 
 if __name__ == "__main__":
+    from db_common import DB_CNX
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--tags', type=str, nargs='*', default=[], help='tag slugs')
     parser.add_argument('--mapped_prompts', type=str, nargs='*', default=[], help='prompts being mapped')
