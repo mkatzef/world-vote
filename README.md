@@ -28,18 +28,16 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 ## Next steps
 Required:  
 * Add server-side response validation
-* Add reminder to copy login code
-* Revise prompts
-* Add initial data
-* Reduce text size in polls
-* Schedule EC2 instance only when updating
-* Obfuscate/minify code
 
 Optional:
 * Animate hammy
 * Add user-submitted prompts
 * Add prompt categories  
 * Add prompt search  
+* Add initial data
+* Add reminder to copy login code
+* Schedule EC2 instance only when updating
+* Obfuscate/minify code
 
 
 ## Useful tools

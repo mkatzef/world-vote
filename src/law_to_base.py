@@ -140,7 +140,13 @@ def get_weed_data(info, country_names):
         if country not in country_names:
             continue
         level = desc['recreationalUsage']
-        ret[country] = 3 if "illegal" not in level.lower() else 8
+        m = 0
+        lf = level.lower()
+        if "illegal" in lf:
+            m = 10
+        elif "partial" in lf:
+            m = 5
+        ret[country] = m
 
     return ret
 
@@ -178,7 +184,7 @@ if __name__ == "__main__":
 
     data_map = {
         "abortion": {
-            "promptId": 4,
+            "promptId": 1,
             "option0": "yes",
             "option1": "no",
             "data_source": get_abortion_data,
@@ -190,7 +196,7 @@ if __name__ == "__main__":
             "data_source": get_death_penalty_data,
         },
         "gay_marriage": {
-            "promptId": 8,
+            "promptId": 2,
             "option0": "yes",
             "option1": "no",
             "data_source": get_gay_marriage_data,
