@@ -10,7 +10,7 @@ import os
 from common import *
 
 
-def add_a_to_b_using_keys(dict_a, key_a, dict_b, key_b, missing_only=False):
+def add_a_to_b_using_keys(dict_a, key_a, dict_b, key_b):
     b_layer_lookup = dict([(k, i) for i, k in enumerate(key_b)])
 
     for a_layer_i, a_layer_key in enumerate(key_a):
@@ -21,17 +21,8 @@ def add_a_to_b_using_keys(dict_a, key_a, dict_b, key_b, missing_only=False):
 
         b_layer_i = b_layer_lookup[a_layer_key]
 
-        if missing_only:
-            missing_inds = (dict_b['res_counts'][:, :, b_layer_i] < THRESHOLD_COUNT)
-            for dlabel in ['res_sums', 'res_counts']:
-                dict_b[dlabel][:, :, b_layer_i] = np.where(
-                    missing_inds,
-                    dict_a[dlabel][:, :, a_layer_i],  # rely on a only for missing places in b
-                    dict_b[dlabel][:, :, b_layer_i]
-                )
-        else:
-            for dlabel in ['res_sums', 'res_counts']:
-                dict_b[dlabel][:, :, b_layer_i] += dict_a[dlabel][:, :, a_layer_i]
+        for dlabel in ['res_sums', 'res_counts']:
+            dict_b[dlabel][:, :, b_layer_i] += dict_a[dlabel][:, :, a_layer_i]
 
     return dict_b
 
@@ -86,7 +77,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Adds base files from dir A to B')
     parser.add_argument('--in_dir', type=str, required=True, help='where base A can be found')
     parser.add_argument('--out_dir', type=str, required=True, help='where base B can be found')
-    parser.add_argument('--missing_only', action="store_true", help='if set, only copies a to b in cells that have low counts')
     args = parser.parse_args()
 
     in_dir = args.in_dir
@@ -94,4 +84,4 @@ if __name__ == "__main__":
     out_dir = args.out_dir
     assert os.path.exists(out_dir), "out_dir must exist" + str(out_dir)
 
-    main(in_dir, out_dir, args.missing_only)
+    main(in_dir, out_dir)

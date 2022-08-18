@@ -11,7 +11,7 @@ import os
 from common import *
 
 
-def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir):
+def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir, preproc_dir=None):
     # For each channel, we have a high res array
     base_data = np.load(os.path.join(base_dir, stat_filename), allow_pickle=True).tolist()
     properties = base_data['properties']
@@ -26,18 +26,28 @@ def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir):
 
     print("max zoom:", max_zoom)
     for zoom in range(max_zoom, -1, -1):
-        pathname = os.path.join(out_dir, "z%02d" % zoom)
+        zoom_dir_name = "z%02d" % zoom
+        pathname = os.path.join(out_dir, zoom_dir_name)
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         if zoom < max_zoom:
             sums = block_reduce(sums, block_size=(2, 2, 1), func=np.sum)
             counts = block_reduce(counts, block_size=(2, 2, 1), func=np.sum)
 
-        kept_indices = counts >= THRESHOLD_COUNT
+        filled_indices = counts >= THRESHOLD_COUNT
+        empty_indices = counts < THRESHOLD_COUNT
+
+        filler_vals = sentinel_val
+        if preproc_dir is not None:
+            preproc_path = os.path.join(preproc_dir, zoom_dir_name, stat_filename)
+            if os.path.exists(preproc_path):
+                preproc_data = np.load(preproc_path, allow_pickle=True).tolist()
+                filler_vals = preproc_data['prompt_data']
+
         # Sums
-        filtered_data = np.where(kept_indices, sums, sentinel_val)  # hide low-volume data for privacy
+        filtered_data = np.where(filled_indices, sums, filler_vals)  # hide low-volume data for privacy
         # Means
-        filtered_data[kept_indices] /= counts[kept_indices]  # Guaranteed to avoid divide by 0
+        filtered_data[filled_indices] /= counts[filled_indices]  # Guaranteed to avoid divide by 0
 
         outname = os.path.join(pathname, stat_filename)
         tmp_obj = np.array({
@@ -52,6 +62,8 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
     # TODO: tags can be processed similarly.
     # Need to divide tag layers by their corresponding all layer to get frequency
     # Min/max scale each layer of frequency
+    # If preproc_dir is given and it has a relevant stat_filename, use its data
+    #   as FALLBACK.
 
     base_data = np.load(os.path.join(base_dir, stat_filename), allow_pickle=True).tolist()
     properties = base_data['properties']
@@ -70,16 +82,16 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
             counts = block_reduce(counts, block_size=(2, 2, 1), func=np.sum)
 
         # Ignore cells that have too few votes
-        kept_indices = counts >= THRESHOLD_COUNT
-        filtered_counts = np.where(kept_indices, counts, sentinel_val).astype(float)
+        filled_indices = counts >= THRESHOLD_COUNT
+        filtered_counts = np.where(filled_indices, counts, sentinel_val).astype(float)
         # Perform 0 ('all') last
         for i in list(range(1, len(tag_key))) + [0]:
-            if np.sum(kept_indices[:, :, i]) == 0:
+            if np.sum(filled_indices[:, :, i]) == 0:
                 continue
             # Calculate the ratio of responses with each tag
-            layer_data = filtered_counts[:, :, i][kept_indices[:, :, i]]
+            layer_data = filtered_counts[:, :, i][filled_indices[:, :, i]]
             if i > 0:
-                layer_data /= filtered_counts[:, :, 0][kept_indices[:, :, i]]
+                layer_data /= filtered_counts[:, :, 0][filled_indices[:, :, i]]
 
             # Min/max scale each layer
             amin = np.amin(layer_data)
@@ -89,13 +101,13 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
             else:
                 layer_data -= amin
                 layer_data /= amax - amin
-            filtered_counts[:, :, i][kept_indices[:, :, i]] = layer_data
+            filtered_counts[:, :, i][filled_indices[:, :, i]] = layer_data
 
         outname = os.path.join(pathname, '_tag_counts.npy')
         np.save(outname, filtered_counts)
 
 
-def bin_stats_to_zooms(base_dir, out_dir):
+def bin_stats_to_zooms(base_dir, out_dir, preproc_dir=None):
     max_response_prompt = (0, None)
     for stat_filename in next(os.walk(base_dir))[2]:
         print("File:", stat_filename, end=', ')
@@ -103,7 +115,7 @@ def bin_stats_to_zooms(base_dir, out_dir):
             print("Skipping '_' or non .npy file:", stat_filename)
             continue
 
-        n_responses = bin_stats_to_zooms_single(base_dir, stat_filename, out_dir)
+        n_responses = bin_stats_to_zooms_single(base_dir, stat_filename, out_dir, preproc_dir=preproc_dir)
         if n_responses > max_response_prompt[0]:
             max_response_prompt = (n_responses, stat_filename)
 
@@ -111,14 +123,15 @@ def bin_stats_to_zooms(base_dir, out_dir):
     bin_tags_to_zooms_single(base_dir, max_response_prompt[1], out_dir)
 
 
-def main(in_dir, out_dir):
-    bin_stats_to_zooms(base_dir=in_dir, out_dir=out_dir)
+def main(in_dir, out_dir, preproc_dir=None):
+    bin_stats_to_zooms(base_dir=in_dir, out_dir=out_dir, preproc_dir=preproc_dir)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--in_dir', type=str, nargs='?', default='./out', help='where numpy "base" files can be found')
     parser.add_argument('--out_dir', type=str, nargs='?', default='./out', help='where binned files are to be saved')
+    parser.add_argument('--preproc_dir', type=str, nargs='?', default='', help='binned numpy base files to be included without further processing')
     args = parser.parse_args()
 
     in_dir = args.in_dir
@@ -129,4 +142,10 @@ if __name__ == "__main__":
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-    main(in_dir, out_dir)
+    preproc_dir = args.preproc_dir
+    if preproc_dir == '':
+        preproc_dir = None
+    else:
+        assert os.path.exists(preproc_dir), 'Given preproc dir does not exist: ' + str(preproc_dir)
+
+    main(in_dir, out_dir, preproc_dir)

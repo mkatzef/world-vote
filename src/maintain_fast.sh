@@ -1,7 +1,7 @@
 #!/bin/bash
 slow_dir="./slow-"`./get_outdir.sh`
 out_dir="./out-fast"
-extra_bases_dir="./law_base"
+law_dir="./out_law"
 min_zoom="0"
 max_zoom="3"
 out_file="tiles-comb.mbtiles"
@@ -24,14 +24,13 @@ mkdir -p $out_dir
 echo "Collecting base data FAST DELTA from database"
 python3 db_to_base.py --out_dir $out_dir --user_src="`python3 get_user_src.py fast`"
 
-echo "Filling in missing data with law data"
-python3 add_base_a_to_b.py --in_dir $extra_bases_dir --out_dir $out_dir --missing_only
-
 echo "Adding slow dir $slow_dir to fast dir $out_dir"
 python3 add_base_a_to_b.py --in_dir $slow_dir --out_dir $out_dir
 
 echo "Converting base data into geojson"
-python3 base_to_binned.py --in_dir $out_dir --out_dir $out_dir
+python3 base_to_binned.py --in_dir $out_dir --out_dir $out_dir --preproc_dir $law_dir
+
+echo "Converting binned data to geojson"
 python3 binned_to_geojson.py --in_dir $out_dir --out_dir $out_dir
 
 echo "Generating tiles for zooms [$min_zoom, $max_zoom]"

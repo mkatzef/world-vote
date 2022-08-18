@@ -17,11 +17,9 @@ from common import *
 from db_to_base import BaseData
 import loc_parser
 
-law_data_dir = "./law_data"
-
 
 def load_law_json(filename):
-    with open(os.path.join(law_data_dir, filename), 'r') as infile:
+    with open(os.path.join(LAW_DATA_DIR, filename), 'r') as infile:
         return json.load(infile)
 
 
@@ -151,7 +149,7 @@ def get_weed_data(info, country_names):
     return ret
 
 
-def write_law_base(out_dir, p_id, country_votes, country_cells, cell_count=THRESHOLD_COUNT):
+def write_law_base(out_dir, p_id, country_votes, country_cells):
     """
     Writes base data to the given directory
     """
@@ -163,12 +161,22 @@ def write_law_base(out_dir, p_id, country_votes, country_cells, cell_count=THRES
     for country, vote in country_votes.items():
         for grid_row, grid_col in country_cells[country]:
             bd.sums[grid_row, grid_col, tag_inds] = vote
-            bd.counts[grid_row, grid_col, tag_inds] = cell_count
+            bd.counts[grid_row, grid_col, tag_inds] = 1
 
-    bd.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))
+    bd.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))  # divides by 10 so file on disk has vote1, count=1
 
 
 if __name__ == "__main__":
+    args = "data_dir, out_dir"
+    if len(sys.argv) < 2:
+        print("Args: " + str(args))
+        sys.exit()
+
+    LAW_DATA_DIR, LAW_OUT_DIR = sys.argv[-2:]
+    assert os.path.exists(LAW_DATA_DIR), "Law data dir not found: " + str(LAW_DATA_DIR)
+    print("Reading law json from", LAW_DATA_DIR)
+    print("Writing law base to", LAW_OUT_DIR)
+
     country_cells = dict([(k.lower(), v) for k, v in loc_parser.load_from_disk().items()])
     country_names = set(country_cells.keys())
 
@@ -215,7 +223,6 @@ if __name__ == "__main__":
         },
     }
 
-    out_dir = "./law_base"
     for k, v in data_map.items():
         country_votes = v["data_source"](v, country_names)
-        write_law_base(out_dir, v["promptId"], country_votes, country_cells)
+        write_law_base(LAW_OUT_DIR, v["promptId"], country_votes, country_cells)
