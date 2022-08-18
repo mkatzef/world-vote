@@ -27,9 +27,11 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 ## Next steps
 Required:  
+* Increase tolerance
 * Add server-side response validation
 
 Optional:
+* Add a favicon
 * Animate hammy
 * Add user-submitted prompts
 * Add prompt categories  
