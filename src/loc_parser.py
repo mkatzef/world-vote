@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
 from common import *
@@ -185,6 +184,7 @@ def load_from_disk(in_dir="./loc_parts"):
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
     import countries.countries as countries
     COUNTRY_CHECKER = countries.CountryChecker(
         os.path.join(LOC_DATA_DIR, 'TM_WORLD_BORDERS-0.3', 'TM_WORLD_BORDERS-0.3.shp')
