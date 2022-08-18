@@ -160,8 +160,8 @@ def write_law_base(out_dir, p_id, country_votes, country_cells):
 
     for country, vote in country_votes.items():
         for grid_row, grid_col in country_cells[country]:
-            bd.sums[grid_row, grid_col, tag_inds] = vote
-            bd.counts[grid_row, grid_col, tag_inds] = 1
+            bd.sums[grid_row, grid_col, tag_inds] = vote * THRESHOLD_COUNT
+            bd.counts[grid_row, grid_col, tag_inds] = THRESHOLD_COUNT
 
     bd.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))  # divides by 10 so file on disk has vote1, count=1
 

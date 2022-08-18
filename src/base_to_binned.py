@@ -42,10 +42,13 @@ def bin_stats_to_zooms_single(base_dir, stat_filename, out_dir, preproc_dir=None
             preproc_path = os.path.join(preproc_dir, zoom_dir_name, stat_filename)
             if os.path.exists(preproc_path):
                 preproc_data = np.load(preproc_path, allow_pickle=True).tolist()
-                filler_vals = preproc_data['prompt_data']
+                filler_vals = preproc_data['prompt_data'][:, :, 0]
 
         # Sums
-        filtered_data = np.where(filled_indices, sums, filler_vals)  # hide low-volume data for privacy
+        filtered_data = np.empty(sums.shape)
+        # Treat "all" data differently to individual tags
+        filtered_data[:, :, 0] = np.where(filled_indices[:, :, 0], sums[:, :, 0], filler_vals)  # hide low-volume data for privacy
+        filtered_data[:, :, 1:] = np.where(filled_indices[:, :, 1:], sums[:, :, 1:], sentinel_val)  # hide low-volume data for privacy
         # Means
         filtered_data[filled_indices] /= counts[filled_indices]  # Guaranteed to avoid divide by 0
 

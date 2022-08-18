@@ -22,7 +22,7 @@ echo "Converting base data into geojson"
 python3 base_to_binned.py --in_dir $out_dir --out_dir $out_dir --preproc_dir $law_dir
 python3 binned_to_geojson.py --in_dir $out_dir --out_dir $out_dir
 
-echo "Generating tiles for zooms [$1, $2]"
+echo "Generating tiles for zooms [$min_zoom, $max_zoom]"
 for i in `seq $min_zoom $max_zoom`; do
   tippecanoe -z$i -Z$i -o $out_dir/z0$i/tiles.mbtiles $out_dir/z0$i/cells.json --force
 done
