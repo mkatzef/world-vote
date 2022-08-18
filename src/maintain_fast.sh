@@ -1,6 +1,7 @@
 #!/bin/bash
 slow_dir="./slow-"`./get_outdir.sh`
 out_dir="./out-fast"
+extra_bases_dir="./law_base"
 min_zoom="0"
 max_zoom="3"
 out_file="tiles-comb.mbtiles"
@@ -22,6 +23,9 @@ mkdir -p $out_dir
 
 echo "Collecting base data FAST DELTA from database"
 python3 db_to_base.py --out_dir $out_dir --user_src="`python3 get_user_src.py fast`"
+
+echo "Filling in missing data with law data"
+python3 add_base_a_to_b.py --in_dir $extra_bases_dir --out_dir $out_dir --missing_only
 
 echo "Adding slow dir $slow_dir to fast dir $out_dir"
 python3 add_base_a_to_b.py --in_dir $slow_dir --out_dir $out_dir
