@@ -96,7 +96,7 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
 
 
 def bin_stats_to_zooms(base_dir, out_dir):
-    max_response_prompt = (0, '')
+    max_response_prompt = (0, None)
     for stat_filename in next(os.walk(base_dir))[2]:
         print("File:", stat_filename, end=', ')
         if not stat_filename.endswith('.npy') or stat_filename.startswith('_'):

@@ -24,13 +24,6 @@ def get_country_from_lnglat(lnglat):
     return get_country_from_latlngt(flip(lnglat))
 
 
-def get_xy(lnglat, zoom):
-    z_step = get_step_size_deg(zoom)
-    col = (lnglat[0] - o_lng) // z_step
-    row = (o_lat - lnglat[1]) // z_step
-    return col, row
-
-
 def get_cell_set(lonlats, zoom=MAX_ZOOM):
     """
     Returns a list of all the cells that the given lonlats occupy

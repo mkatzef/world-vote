@@ -1,271 +1,1381 @@
 [
   {
-    "State": "Alabama",
-    "legalWeedStatus": "Fully Illegal"
+    "country": "China",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1425887.3370"
   },
   {
-    "State": "Alaska",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "India",
+    "recreationalUsage": "Illegal, but exception is made for the use of bhang.",
+    "medicalUsage": "Illegal",
+    "note": "Albeit illegal, usage is prevalent and some government-owned shops sell cannabis in the form of bhang. States have their own laws regarding cannabis, locally known as ganja.",
+    "pop2022": "1417173.1730"
   },
   {
-    "State": "Arizona",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "United States",
+    "recreationalUsage": "Legalized in 11 states, 2 territories, and the District of Columbia – but illegal at federal level. Decriminalized in another 15 states and 1 territory.",
+    "medicalUsage": "Legalized in 33 states, 4 territories, and the District of Columbia – but illegal at federal level.",
+    "note": "Cannabis remains a Schedule I drug at federal level, prohibiting even its medical use. The Rohrabacher–Farr amendment prevents federal enforcement in states that have legalized medical, however. No such protections exist regarding recreational, but the federal government has so far generally not intervened. Recognized Indian reservations are allowed to legalize for either use under a policy announced in 2014.",
+    "pop2022": "338289.8570"
   },
   {
-    "State": "Arkansas",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Indonesia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Banned in 1927. Minimum sentence of 4 years in prison (additional fines may apply) if caught in possession. However, if the user is underage, they may instead be sentenced to rehabilitation.",
+    "pop2022": "275501.3390"
   },
   {
-    "State": "California",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Pakistan",
+    "recreationalUsage": "Illegal, but often unenforced (particularly in some tribal regions)",
+    "medicalUsage": "Illegal",
+    "note": "Prohibited, but the smoking of hashish in Peshawar and the northern parts of Pakistan tends to be tolerated. One may be sent to jail for up to six months if found with charas in other parts of the country.",
+    "pop2022": "235824.8620"
   },
   {
-    "State": "Colorado",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Nigeria",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "218541.2120"
   },
   {
-    "State": "Connecticut",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Brazil",
+    "recreationalUsage": "Illegal (educational measures for small amounts and private use)",
+    "medicalUsage": "Sativex",
+    "note": "Possession of any illegal drug entails a warning, community service, and education on the effects of drug use. Possession of large amounts, as well as sale, transportation, and cultivation, are considered drug trafficking.",
+    "pop2022": "215313.4980"
   },
   {
-    "State": "Delaware",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Bangladesh",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Illegal",
+    "note": "Sale banned in 1989, but laws are rarely enforced and cannabis is openly sold in many parts of the country.",
+    "pop2022": "171186.3720"
   },
   {
-    "State": "Florida",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Russia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession of up to 6 g of cannabis (or 2 g of hashish) is an administrative offense, punishable by a fine of RUB 5,000 or detention of up to 15 days. Possession of larger amounts is a criminal offense. Foreign nationals and stateless individuals who violate the law are subject to deportation regardless of the amount.",
+    "pop2022": "144713.3140"
   },
   {
-    "State": "Georgia",
-    "legalWeedStatus": "Mixed"
+    "country": "Mexico",
+    "recreationalUsage": "De facto legal for personal use, regarding both possession and cultivation.",
+    "medicalUsage": "Legal for medical use, THC content below 1%.",
+    "note": "Possession of 5 g decriminalized since 2009. In 2015 the Supreme Court voted 4-1 that prohibiting people from growing the drug for consumption was unconstitutional as it violated the human right to the free development of one's personality. In 2018 the Supreme Court reaffirmed the ruling, effectively making the law prohibiting cannabis unenforceable and requiring the legislature to act to formally legalize.",
+    "pop2022": "127504.1250"
   },
   {
-    "State": "Hawaii",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Japan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Restricted in 1948. Use and possession are punishable by up to 5 years imprisonment and a fine. Cultivation, sale, and transport are punishable by 7–10 years imprisonment and a fine.",
+    "pop2022": "123951.6920"
   },
   {
-    "State": "Idaho",
-    "legalWeedStatus": "Fully Illegal"
+    "country": "Ethiopia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Despite being the spiritual homeland of the Rastafari movement, possession of cannabis can result in up to six months imprisonment.",
+    "pop2022": "123379.9240"
   },
   {
-    "State": "Illinois",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Philippines",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal but may be allowed with special permit",
+    "note": "Medical use of cannabis is possible with a special permit from the Food and Drugs Authority for use by individuals with serious or terminal illness.",
+    "pop2022": "115559.0090"
   },
   {
-    "State": "Indiana",
-    "legalWeedStatus": "Mixed"
+    "country": "Egypt",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Illegal",
+    "note": "Illegal since 1925 but use is widespread. Convictions for personal use are rare. Formerly a plant of high status with several documented medicinal uses in ancient times.",
+    "pop2022": "110990.1030"
   },
   {
-    "State": "Iowa",
-    "legalWeedStatus": "Mixed"
+    "country": "DR Congo",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "99010.2120"
   },
   {
-    "State": "Kansas",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Vietnam",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "98186.8560"
   },
   {
-    "State": "Kentucky",
-    "legalWeedStatus": "Mixed"
+    "country": "Iran",
+    "recreationalUsage": "Illegal, but not strictly enforced",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "88550.5700"
   },
   {
-    "State": "Louisiana",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Turkey",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Cannabis-derived pharmaceuticals",
+    "note": "Medical cultivation legal in nineteen provinces. With permission, this can also be conducted in other provinces as well. Consuming any drug is illegal and requires juridical process. Possessing, purchasing, or receiving any illegal drug is punishable by 1–2 years of prison, treatment, or probation. Sale and supply is punishable by a prison term of 5–10 years, and production or trafficking by a minimum term of 10 years.",
+    "pop2022": "85341.2410"
   },
   {
-    "State": "Maine",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Germany",
+    "recreationalUsage": "Illegal, but occasionally tolerated. Under federal law, prosecution is optional for possession of \"small amounts\".",
+    "medicalUsage": "Legal",
+    "note": "Recreational possession illegal, but criminal charges are sometimes dropped. Consumption itself considered legal self-harm, but driver's licenses are almost always suspended, regardless of whether a car was used under the influence. Since early 2017, medicinal use is legal for seriously ill patients who have consulted with a doctor and have absolutely no therapeutic alternative.",
+    "pop2022": "83369.8430"
   },
   {
-    "State": "Maryland",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Thailand",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Legal",
+    "note": "Criminalized in 1935. Possession, cultivation, and transport (import/export) of up to 10 kg of cannabis may result in a maximum sentence of 5 years in prison or a fine. Medical use was made legal in 2018.",
+    "pop2022": "71697.0300"
   },
   {
-    "State": "Massachusetts",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "United Kingdom",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal for cases of severe epilepsy, vomiting or nausea caused by chemotherapy, or multiple sclerosis when prescribed by a registered specialist doctor.",
+    "note": "Banned in 1928, made a Class B drug under the Misuse of Drugs Act 1971.",
+    "pop2022": "67508.9360"
   },
   {
-    "State": "Michigan",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Tanzania",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "65497.7480"
   },
   {
-    "State": "Minnesota",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "France",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Some cannabis-derived drugs.",
+    "note": "Possession entails a 200€ fine since November 2018. Medical use of some cannabinoid drugs legalized in 2013.",
+    "pop2022": "64626.6280"
   },
   {
-    "State": "Mississippi",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "South Africa",
+    "recreationalUsage": "Legal for possession and cultivation but not for sale.",
+    "medicalUsage": "Use is legal, but no system for the dispensing of medicinal cannabis exists.",
+    "note": "Private use and cultivation decriminalized since 2018.",
+    "pop2022": "59893.8850"
   },
   {
-    "State": "Missouri",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Italy",
+    "recreationalUsage": "Decriminalized; allowed for religious usage, legal below 0.6% THC",
+    "medicalUsage": "Legal",
+    "note": "Possession of small amounts for personal use is a misdemeanor subject to fines and the suspension of documents (passports or driver's licenses). Sale and cultivation punishable by imprisonment, even if in small amounts and for exclusive personal use. Licensed cultivation for medicinal and industrial use strictly regulated.",
+    "pop2022": "59037.4740"
   },
   {
-    "State": "Montana",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Myanmar",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "54179.3060"
   },
   {
-    "State": "Nebraska",
-    "legalWeedStatus": "Mixed",
-    "decriminalizedWeedStatus": true
+    "country": "Kenya",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "54027.4870"
   },
   {
-    "State": "Nevada",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Colombia",
+    "recreationalUsage": "Decriminalized up to 22 g or cultivation of 20 plants for personal use",
+    "medicalUsage": "Legal",
+    "note": "Decriminalized up to 22 g for personal consumption. Individuals carrying greater amounts, or cultivating up to 20 plants, cannot be prosecuted if the drug is for personal use.",
+    "pop2022": "51874.0240"
   },
   {
-    "State": "New Hampshire",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "South Korea",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal, but access limited to Epidiolex, Marinol and Sativex as of now due to the policy implemented by the Ministry of Food and Drug Safety",
+    "note": "Medical use of cannabis was legalized in November 2018. The plant itself, however, remains unavailable due to the policy made by the Ministry of Food and Drug Safety.",
+    "pop2022": "51815.8100"
   },
   {
-    "State": "New Jersey",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Spain",
+    "recreationalUsage": "Use and possession in private areas allowed. Public consumption can result in a fine from 601 to 30000 €. Cultivation for personal use allowed in private areas including Cannabis Social Clubs.",
+    "medicalUsage": "Limited cannabis-derived pharmaceuticals",
+    "note": "Sale and importation punishable by jail time. All actions related to cannabis apart from sale or trade aren't considered criminal offenses, but misdemeanors punishable by a fine. Legalized in Catalonia in 2017, but that law was challenged by the state and declared unconstitutional. Cultivation allowed in private areas if the plants cannot be seen from the street or other public spaces.",
+    "pop2022": "47558.6300"
   },
   {
-    "State": "New Mexico",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Uganda",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "47249.5850"
   },
   {
-    "State": "New York",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Sudan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "46874.2040"
   },
   {
-    "State": "North Carolina",
-    "legalWeedStatus": "Mixed",
-    "decriminalizedWeedStatus": true
+    "country": "Argentina",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Legal",
+    "note": "Decriminalized for small amounts and private consumption, as ruled by the Supreme Court in 2009. Medicinal cannabis legal nationally since 21 September 2017.",
+    "pop2022": "45510.3180"
   },
   {
-    "State": "North Dakota",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Algeria",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "44903.2250"
   },
   {
-    "State": "Ohio",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Iraq",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "44496.1220"
   },
   {
-    "State": "Oklahoma",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Afghanistan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Production banned by King Zahir Shah in 1973.",
+    "pop2022": "41128.7710"
   },
   {
-    "State": "Oregon",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Poland",
+    "recreationalUsage": "Illegal, but sometimes not enforced for small amounts, legal below 0.2% THC",
+    "medicalUsage": "Legal",
+    "note": "Since 2011, prosecutors can choose not to prosecute possession of small quantities of cannabis for personal use if it is a first offense or if the person is drug dependent. Possession of large quantities of drugs can result in up to 10 years in prison.",
+    "pop2022": "39857.1450"
   },
   {
-    "State": "Pennsylvania",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Ukraine",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession of up to 5 g or cultivation of 10 plants is an administrative (rather than a criminal) offense, but detention of up to 15 days is still possible.",
+    "pop2022": "39701.7390"
   },
   {
-    "State": "Rhode Island",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Canada",
+    "recreationalUsage": "Legal",
+    "medicalUsage": "Legal",
+    "note": "Legal for medicinal purposes since 2001 and for recreational purposes since October 17, 2018. Age and regulations of consumption vary by province.",
+    "pop2022": "38454.3270"
   },
   {
-    "State": "South Carolina",
-    "legalWeedStatus": "Fully Illegal"
+    "country": "Morocco",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Illegal",
+    "note": "All drugs banned since 1974, but cannabis is partially tolerated. Morocco is still among the world's top producers of hashish.",
+    "pop2022": "37457.9710"
   },
   {
-    "State": "South Dakota",
-    "legalWeedStatus": "Fully Illegal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Saudi Arabia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Use and possession for personal use of any kind of recreational drugs is punishable by imprisonment if caught. Imprisonment for personal use can entail jail time of six months or more. Dealing and smuggling high amounts of drugs usually result in harsher prison time or even execution, although recently executions have been rare. Foreigners who use drugs might be deported.",
+    "pop2022": "36408.8200"
   },
   {
-    "State": "Tennessee",
-    "legalWeedStatus": "Fully Illegal"
+    "country": "Angola",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "35588.9870"
   },
   {
-    "State": "Texas",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Uzbekistan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Opiates, cannabis and other plants containing psychotropic substances are illegal.",
+    "pop2022": "34627.6520"
   },
   {
-    "State": "Utah",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Peru",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Legal",
+    "note": "Possession of up to 8 g is not punished. Cultivation, production, and sale are punished with 8–15 years in prison.",
+    "pop2022": "34049.5880"
   },
   {
-    "State": "Vermont",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Malaysia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Mandatory death penalty for convicted drug traffickers, legally defined as individuals possessing more than 200 g (7 oz) of cannabis.",
+    "pop2022": "33938.2210"
   },
   {
-    "State": "Virginia",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Yemen",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "33696.6140"
   },
   {
-    "State": "Washington",
-    "legalWeedStatus": "Fully Legal",
-    "medicinalWeedStatus": true,
-    "decriminalizedWeedStatus": true
+    "country": "Ghana",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "33475.8700"
   },
   {
-    "State": "West Virginia",
-    "legalWeedStatus": "Mixed",
-    "medicinalWeedStatus": true
+    "country": "Mozambique",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "32969.5180"
   },
   {
-    "State": "Wisconsin",
-    "legalWeedStatus": "Mixed"
+    "country": "Nepal",
+    "recreationalUsage": "Illegal (legal during Maha Shivaratri)",
+    "medicalUsage": "Illegal",
+    "note": "All cannabis licenses canceled in 1973. Despite being illegal, cannabis is cheap and widely available in Nepal, and the police have little to no interest in cannabis-related issues.",
+    "pop2022": "30547.5800"
   },
   {
-    "State": "Wyoming",
-    "legalWeedStatus": "Fully Illegal"
+    "country": "Madagascar",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "29611.7140"
+  },
+  {
+    "country": "Venezuela",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession of up to 20 g of marijuana or 5 g of genetically modified marijuana for commercial purposes is punishable by 1–2 years in prison at judge's discretion. If deemed to be for personal consumption, the user is subject to security measures involving rehabilitation and detoxification procedures.",
+    "pop2022": "28301.6960"
+  },
+  {
+    "country": "Ivory Coast",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "28160.5420"
+  },
+  {
+    "country": "Cameroon",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "27914.5360"
+  },
+  {
+    "country": "Niger",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "26207.9770"
+  },
+  {
+    "country": "Australia",
+    "recreationalUsage": "Decriminalized for personal use in the Northern Territory, and South Australia. Legal for personal use and cultivation, but not for purchasing, in the Australian Capital Territory from January 2020",
+    "medicalUsage": "Legal at federal level and in all states. Qualifying conditions and other details vary by state.",
+    "note": "",
+    "pop2022": "26177.4130"
+  },
+  {
+    "country": "North Korea",
+    "recreationalUsage": "Unknown",
+    "medicalUsage": "Unknown",
+    "note": "There are conflicting reports on the legal status of cannabis in North Korea. Multiple reports from defectors and tourists claim there is no law regarding the possession of cannabis (as a result, it is not classified as a drug) in North Korea or if there is, it is mostly unenforced. However, other reports claim that cannabis is illegal.",
+    "pop2022": "26069.4160"
+  },
+  {
+    "country": "Taiwan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis is a schedule 2 narcotic in the ROC, and possession can result in up to 3 years imprisonment.",
+    "pop2022": "23893.3940"
+  },
+  {
+    "country": "Burkina Faso",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "22673.7620"
+  },
+  {
+    "country": "Mali",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "22593.5900"
+  },
+  {
+    "country": "Syria",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Reportedly punished by life imprisonment under Bashar al-Assad's government policies. As a result of civil war, people living in areas controlled by Kurdish separatists have begun growing cannabis as a way of making money to fight poverty.",
+    "pop2022": "22125.2490"
+  },
+  {
+    "country": "Sri Lanka",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legalized by amendment made in colonial law by 1980s and through the Ayurveda Act.",
+    "note": "The sale of cannabis is decriminalized for traditional medicine vendors and it is commonly used in Ayurvedic traditional medicines.",
+    "pop2022": "21832.1430"
+  },
+  {
+    "country": "Malawi",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Illegal but widely used and cultivated; Malawian cannabis is famed internationally for its quality. Chamba is grown mainly in central and northern regions like Mzuzu.",
+    "pop2022": "20405.3170"
+  },
+  {
+    "country": "Zambia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "20017.6750"
+  },
+  {
+    "country": "Romania",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Cannabis-derived drugs less than 0.2% THC can be prescribed",
+    "note": "Small quantities punishable by a large fine for first offenders or 6 months to 2 years in prison if the person has been convicted before. Possession of large amounts or trafficking is punishable by 2–7 years of jail time. Decriminalization proposed. Limited medical use approved in 2013.",
+    "pop2022": "19659.2670"
+  },
+  {
+    "country": "Chile",
+    "recreationalUsage": "Decriminalized for possession and cultivation",
+    "medicalUsage": "Legal",
+    "note": "Private personal use and recreational cultivation decriminalized. Medicinal cultivation legal with the authorization of The Chilean Agriculture Service (SAG) and sale of medication allowed on prescription in pharmacies.",
+    "pop2022": "19603.7330"
+  },
+  {
+    "country": "Kazakhstan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "19397.9980"
+  },
+  {
+    "country": "Ecuador",
+    "recreationalUsage": "Decriminalized up to 10 g",
+    "medicalUsage": "Legal",
+    "note": "Possession of small amounts decriminalized. Possession of under 10 g is considered personal use and not punished.",
+    "pop2022": 18001
+  },
+  {
+    "country": "Guatemala",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "In 2016 a constitutional commission rejected proposals to legalize medicinal or recreational use of cannabis.",
+    "pop2022": "17843.9080"
+  },
+  {
+    "country": "Chad",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "17723.3150"
+  },
+  {
+    "country": "Somalia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "17597.5110"
+  },
+  {
+    "country": "Netherlands",
+    "recreationalUsage": "Illegal – but use and sale is tolerated in licensed coffeeshops. Possession of up to 5 g is decriminalized. Cultivation of up to 5 plants is unenforced for non-commercial use (unless grown in a professional setup).",
+    "medicalUsage": "Legal",
+    "note": "Personal possession decriminalized and sale allowed only in certain licensed coffeeshops in the continental Netherlands. Cultivation often tolerated but growers can still have their plants and equipment confiscated and face eviction or cancellation of their mortgage for one single plant. Zero tolerance policy in the Caribbean Netherlands.",
+    "pop2022": "17564.0140"
+  },
+  {
+    "country": "Senegal",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "17316.4490"
+  },
+  {
+    "country": "Cambodia",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Illegal",
+    "note": "Illegal, but this prohibition is lax and enforced opportunistically. \"Happy\" restaurants in cities publicly offer food cooked with marijuana, or as a side garnish.",
+    "pop2022": "16767.8420"
+  },
+  {
+    "country": "Zimbabwe",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal",
+    "note": "",
+    "pop2022": "16320.5370"
+  },
+  {
+    "country": "Guinea",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "13859.3410"
+  },
+  {
+    "country": "Rwanda",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "13776.6980"
+  },
+  {
+    "country": "Benin",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "13352.8640"
+  },
+  {
+    "country": "Burundi",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "12889.5760"
+  },
+  {
+    "country": "Tunisia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Banned in 1953. Using or possessing entails 1–5 years of imprisonment + 1000-3000 dinars (around 500$-1500$).",
+    "pop2022": "12356.1170"
+  },
+  {
+    "country": "Bolivia",
+    "recreationalUsage": "Decriminalized up to 50 g",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "12224.1100"
+  },
+  {
+    "country": "Belgium",
+    "recreationalUsage": "Decriminalized up to 3 g or cultivation of one plant",
+    "medicalUsage": "Cannabis-derived drugs",
+    "note": "Up to 3 g legal for adults since 2003.",
+    "pop2022": "11655.9300"
+  },
+  {
+    "country": "Haiti",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "11584.9960"
+  },
+  {
+    "country": "Jordan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "11285.8690"
+  },
+  {
+    "country": "Dominican Republic",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "11228.8210"
+  },
+  {
+    "country": "Cuba",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "11212.1910"
+  },
+  {
+    "country": "South Sudan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "10913.1640"
+  },
+  {
+    "country": "Sweden",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "All cannabis-related activity illegal. The national police runs a \"disturb and annoy\" program aimed at users supported by the national \"zero tolerance\" policy.",
+    "pop2022": "10549.3470"
+  },
+  {
+    "country": "Czech Republic",
+    "recreationalUsage": "Decriminalized up to 10 g or cultivation of 5 plants",
+    "medicalUsage": "Legal",
+    "note": "Possession of up to 10 g or cultivation of up to 5 plants is an infraction subject to a minor fine – mostly not enforced. Popular destination for smokers. Medicinal use legal and regulated since 2013.",
+    "pop2022": "10493.9860"
+  },
+  {
+    "country": "Honduras",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "The possession, sale, transportation, and cultivation of cannabis is illegal in Honduras.",
+    "pop2022": "10432.8600"
+  },
+  {
+    "country": "Greece",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal",
+    "note": "",
+    "pop2022": "10384.9710"
+  },
+  {
+    "country": "Azerbaijan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "10358.0740"
+  },
+  {
+    "country": "Portugal",
+    "recreationalUsage": "Decriminalized up to 25 g of herb or 5 g of hashish",
+    "medicalUsage": "Legal",
+    "note": "In 2001, Portugal became the first country in the world to decriminalize the use of all drugs.",
+    "pop2022": "10270.8650"
+  },
+  {
+    "country": "Papua New Guinea",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "10142.6190"
+  },
+  {
+    "country": "Hungary",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "There is no distinction in Hungarian law between illicit drugs according to dangers. Heroin use has the same legal consequences as cannabis use.",
+    "pop2022": "9967.3080"
+  },
+  {
+    "country": "Tajikistan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "9952.7870"
+  },
+  {
+    "country": "Belarus",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "9534.9540"
+  },
+  {
+    "country": "United Arab Emirates",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Even the smallest amounts of the drug can lead to a mandatory 4-year prison sentence.",
+    "pop2022": "9441.1290"
+  },
+  {
+    "country": "Israel",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Legal",
+    "note": "As of April 2019, public possession of small amounts is a non-criminal offense punished by escalating fines. A third offense can result in criminal charges, however. Possession in the privacy of one's home is not punished.",
+    "pop2022": "9038.3090"
+  },
+  {
+    "country": "Austria",
+    "recreationalUsage": "Possession for personal use decriminalized as of January 2016.",
+    "medicalUsage": "Cannabis-derived drugs",
+    "note": "",
+    "pop2022": "8939.6170"
+  },
+  {
+    "country": "Togo",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "8848.6990"
+  },
+  {
+    "country": "Switzerland",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Legal",
+    "note": "Since 2012, possession of 10 g or less is decriminalized to a fine.",
+    "pop2022": "8740.4720"
+  },
+  {
+    "country": "Sierra Leone",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis banned in 1920.",
+    "pop2022": "8605.7180"
+  },
+  {
+    "country": "Laos",
+    "recreationalUsage": "Illegal but often unenforced",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "7529.4750"
+  },
+  {
+    "country": "Hong Kong",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession, sale, transportation, and cultivation illegal under the Dangerous Drug Ordinance. (Chapter 134 of the Law of Hong Kong)",
+    "pop2022": "7488.8650"
+  },
+  {
+    "country": "Serbia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession punishable by fine or imprisonment of up to 3 years. Sale and transportation punishable by imprisonment of 3–12 years. Cultivation punishable by imprisonment from 6 months to 5 years. Higher penalties for organized crime.",
+    "pop2022": "7221.3650"
+  },
+  {
+    "country": "Nicaragua",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "6948.3920"
+  },
+  {
+    "country": "Libya",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "6812.3410"
+  },
+  {
+    "country": "Bulgaria",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis is classified as a class A (High-risk) drug, together with heroin, cocaine, amphetamines, and MDMA (ecstasy). Until 2004, a loosely defined \"personal dose\" existed.",
+    "pop2022": "6781.9530"
+  },
+  {
+    "country": "Paraguay",
+    "recreationalUsage": "Decriminalized up to 10 g",
+    "medicalUsage": "Illegal",
+    "note": "Possession of up to 10 g not punished.",
+    "pop2022": "6780.7440"
+  },
+  {
+    "country": "Kyrgyzstan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "6630.6230"
+  },
+  {
+    "country": "Turkmenistan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "6430.7700"
+  },
+  {
+    "country": "El Salvador",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "6336.3920"
+  },
+  {
+    "country": "Singapore",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Banned in 1870. Cannabis is a Class A drug under the Misuse of Drugs Act, making it illegal to cultivate, sell, or possess. Those who are caught with 500g of cannabis or more are considered drug traffickers and are punished with a possible death penalty.",
+    "pop2022": "5975.6890"
+  },
+  {
+    "country": "Republic of the Congo",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "5970.4240"
+  },
+  {
+    "country": "Denmark",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal (4-year pilot program beginning in January 2018)",
+    "note": "As with all drugs, cannabis-related offenses are punishable by a fine or imprisonment for up to 2 years. Freetown Christiania, a self-declared autonomous community in Copenhagen, is known for its cannabis trade.",
+    "pop2022": "5882.2610"
+  },
+  {
+    "country": "Slovakia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession of small amounts punishable by up to 8 years in prison. In April 2012, The Wall Street Journal reported that Robert Fico, the incoming Slovak prime minister, might push for partial legalization of cannabis possession, and has argued for the legalization of possession of up to three doses of cannabis for personal use.",
+    "pop2022": "5643.4530"
+  },
+  {
+    "country": "Central African Republic",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "5579.1440"
+  },
+  {
+    "country": "Finland",
+    "recreationalUsage": "Illegal but sometimes not enforced",
+    "medicalUsage": "Legal under license.",
+    "note": "Personal use is generally not prosecuted in court but subject to summary fine. Medicinal cannabis possible under a special license since 2006; in 2014, 223 licenses were issued.",
+    "pop2022": "5540.7450"
+  },
+  {
+    "country": "Lebanon",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Hashish banned in 1926; cannabis cultivation banned in 1992. Possession is illegal. However, large amounts are grown within the country and personal use, as long as not in public, is not a major issue.",
+    "pop2022": "5489.7390"
+  },
+  {
+    "country": "Norway",
+    "recreationalUsage": "Currently illegal (in process of decriminalization)",
+    "medicalUsage": "Legal",
+    "note": "Personal use of up to 15 g punished with a fine and a criminal record in the case of first-time offenders; larger amounts and second offenses are punished more harshly. Minors are routinely compelled to consent to regular supervised drug testing under threat of prosecution. In March 2018, the government created a working group tasked with decriminalizing drug use and mandating police to impose forced medical treatment of addicts instead of fines and imprisonment.",
+    "pop2022": "5434.3190"
+  },
+  {
+    "country": "Liberia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "5302.6810"
+  },
+  {
+    "country": "New Zealand",
+    "recreationalUsage": "Illegal (Legalization referendum to be held in 2020)",
+    "medicalUsage": "Legal",
+    "note": "Banned in 1927. Possession over 28 g is presumed for supply. Medical use was legalized in December 2018, and a binding referendum on recreational use is to be held during the 2020 general election.",
+    "pop2022": "5185.2880"
+  },
+  {
+    "country": "Costa Rica",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Illegal",
+    "note": "Decriminalization de facto implemented since police officers do not detain people carrying enough for only personal consumption, yet no amount has been defined as a minimum for possession. Use of cannabis is widespread throughout the country.",
+    "pop2022": "5180.8290"
+  },
+  {
+    "country": "Ireland",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal as part of 5-year pilot program enacted in June 2019",
+    "note": "The National Drugs Strategy of 2009–2016 did not favor decriminalizing cannabis. A new strategy was planned for 2017. Cannabis-derived medicines may be licensed since 2014. A review of policy on medicinal cannabis was announced in November 2016, and a private member's bill to legalize it passed second stage in the Dáil in December 2016.",
+    "pop2022": "5023.1090"
+  },
+  {
+    "country": "Mauritania",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "4736.1390"
+  },
+  {
+    "country": "Oman",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "4576.2980"
+  },
+  {
+    "country": "Panama",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "4408.5810"
+  },
+  {
+    "country": "Kuwait",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "4268.8730"
+  },
+  {
+    "country": "Croatia",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Legal",
+    "note": "Possession of small amounts considered a misdemeanor which leads to fine. Medicinal cannabis legal for patients with illnesses such as cancer, multiple sclerosis, or AIDS.",
+    "pop2022": "4030.3580"
+  },
+  {
+    "country": "Georgia",
+    "recreationalUsage": "Legal for possession and consumption but not for sale, per a July 2018 ruling by the Constitutional Court of Georgia.",
+    "medicalUsage": "Use is legal, but no system for the dispensing of cannabis exists.",
+    "note": "",
+    "pop2022": "3744.3850"
+  },
+  {
+    "country": "Eritrea",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "3684.0320"
+  },
+  {
+    "country": "Uruguay",
+    "recreationalUsage": "Legal, but buying prohibited for foreigners. Cultivation allowed up to six plants.",
+    "medicalUsage": "Legal for all uses.",
+    "note": "Legal since late 2013. Buyers must be eighteen or older, residents of Uruguay, and must register with the authorities. Authorities grow the cannabis that can be sold legally.",
+    "pop2022": "3422.7940"
+  },
+  {
+    "country": "Mongolia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "3398.3660"
+  },
+  {
+    "country": "Moldova",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "3272.9960"
+  },
+  {
+    "country": "Bosnia and Herzegovina",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "In 2016, the Ministry of Civil Affairs formed a task force to explore the legalization of cannabis and cannabinoids for medicinal purposes.",
+    "pop2022": "3233.5260"
+  },
+  {
+    "country": "Albania",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Prohibited but plants highly availabile throughout the country and law often unenforced.",
+    "pop2022": "2842.3210"
+  },
+  {
+    "country": "Jamaica",
+    "recreationalUsage": "Decriminalized up to 2 oz or cultivation of 5 plants. Legal for Rastafari.",
+    "medicalUsage": "Legal",
+    "note": "Decriminalized since 2015, and in 2018 the first medical cannabis dispensary opened.",
+    "pop2022": "2827.3770"
+  },
+  {
+    "country": "Armenia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "2780.4690"
+  },
+  {
+    "country": "Lithuania",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal",
+    "note": "A bill to legalize medical use of cannabis was passed by the Seimas on 11 October 2018.",
+    "pop2022": "2750.0550"
+  },
+  {
+    "country": "Gambia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "2705.9920"
+  },
+  {
+    "country": "Qatar",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "2695.1220"
+  },
+  {
+    "country": "Botswana",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis (or dagga) is illegal.",
+    "pop2022": "2630.2960"
+  },
+  {
+    "country": "Namibia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis is illegal; in 2007 the government proposed but declined a 20-year jail sentence for any drug possession.",
+    "pop2022": "2567.0120"
+  },
+  {
+    "country": "Gabon",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "2388.9920"
+  },
+  {
+    "country": "Lesotho",
+    "recreationalUsage": "Illegal but tolerated",
+    "medicalUsage": "Illegal",
+    "note": "Licensed cultivation allowed for export to other countries. Also widely grown for illicit purposes.",
+    "pop2022": "2305.8250"
+  },
+  {
+    "country": "Slovenia",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Cannabis-based drugs",
+    "note": "Cannabis-based drugs are legal for medicinal use, but not cannabis itself. Possession of any drug for personal use is decriminalized.",
+    "pop2022": "2119.8440"
+  },
+  {
+    "country": "Guinea-Bissau",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "2105.5660"
+  },
+  {
+    "country": "Latvia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession of up to 1 g can result in a €280 fine; for second offenses within a year period, criminal charges are applied. Larger quantities can be punished with up to 15 years in prison.",
+    "pop2022": "1850.6510"
+  },
+  {
+    "country": "Equatorial Guinea",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1674.9080"
+  },
+  {
+    "country": "Trinidad and Tobago",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Banned in 1925.",
+    "pop2022": "1531.0440"
+  },
+  {
+    "country": "Bahrain",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1472.2330"
+  },
+  {
+    "country": "Timor-Leste",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1341.2960"
+  },
+  {
+    "country": "Estonia",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "With a special permit",
+    "note": "Up to 7.5 g is considered an amount for personal use, and is punished with a fine. Large amounts and distribution are criminal offenses punishable with a custodial sentence of up to 5 years.",
+    "pop2022": "1326.0620"
+  },
+  {
+    "country": "Mauritius",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1299.4690"
+  },
+  {
+    "country": "Cyprus",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal",
+    "note": "Class B substance – life imprisonment is possible for use and maximum 8 years for possession (at the maximum 2 years for the first offense for under 25-year-olds).",
+    "pop2022": "1251.4880"
+  },
+  {
+    "country": "Eswatini",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1201.6700"
+  },
+  {
+    "country": "Djibouti",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "1120.8490"
+  },
+  {
+    "country": "Fiji",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "929.7660"
+  },
+  {
+    "country": "Comoros",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis was legal during the Comorian historical period between January 1975 and May 1978, when president Ali Soilih legalized cannabis consumption among other measures.",
+    "pop2022": "836.7740"
+  },
+  {
+    "country": "Guyana",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Possession of 15 g or over can result in charges of drug trafficking.",
+    "pop2022": "808.7260"
+  },
+  {
+    "country": "Bhutan",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Illegal, but plants grow prolifically and have multiple traditional uses, such as feeding pigs and producing textiles.",
+    "pop2022": "782.4550"
+  },
+  {
+    "country": "Solomon Islands",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "illegal",
+    "note": "",
+    "pop2022": "724.2730"
+  },
+  {
+    "country": "Macau",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "695.1680"
+  },
+  {
+    "country": "Luxembourg",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Legal",
+    "note": "Transportation and consumption are illegal. Decriminalized since 2001, with prison penalty replaced by a monetary fine ranging from €250 to €2,500.",
+    "pop2022": "647.5990"
+  },
+  {
+    "country": "Montenegro",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "627.0820"
+  },
+  {
+    "country": "Suriname",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Cannabis was banned in Suriname in the early 20th century, having been popularized there by Asian immigrants.",
+    "pop2022": "618.0400"
+  },
+  {
+    "country": "Cape Verde",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "593.1490"
+  },
+  {
+    "country": "Malta",
+    "recreationalUsage": "Decriminalized up to 3.5 g",
+    "medicalUsage": "Legal",
+    "note": "As of 2015, simple possession is decriminalized, but remains an arrestable offense for the police purpose of collecting intelligence about drug trafficking. Cultivation for personal use will no longer be punishable by a mandatory prison sentence or suspended sentence.",
+    "pop2022": "533.2860"
+  },
+  {
+    "country": "Maldives",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "523.7870"
+  },
+  {
+    "country": "Brunei",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "449.0020"
+  },
+  {
+    "country": "Bahamas",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "409.9840"
+  },
+  {
+    "country": "Belize",
+    "recreationalUsage": "Decriminalized up to 10 g",
+    "medicalUsage": "Illegal",
+    "note": "Possession prohibited, but use is common and largely tolerated. Laws decriminalizing possession of up to 10 g \"in the works\".",
+    "pop2022": "405.2720"
+  },
+  {
+    "country": "Iceland",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Banned in 1969. Possession of small amounts is subject to arrest and fine but no threat of jail time.",
+    "pop2022": "372.8990"
+  },
+  {
+    "country": "Vanuatu",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal",
+    "note": "",
+    "pop2022": "326.7400"
+  },
+  {
+    "country": "Barbados",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "281.6350"
+  },
+  {
+    "country": "Sao Tome and Principe",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "227.3800"
+  },
+  {
+    "country": "Samoa",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "222.3820"
+  },
+  {
+    "country": "Saint Lucia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "179.8570"
+  },
+  {
+    "country": "Kiribati",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "131.2320"
+  },
+  {
+    "country": "Grenada",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "125.4380"
+  },
+  {
+    "country": "Micronesia",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "114.1640"
+  },
+  {
+    "country": "Seychelles",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "107.1180"
+  },
+  {
+    "country": "Tonga",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "106.8580"
+  },
+  {
+    "country": "Saint Vincent and the Grenadines",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "103.9480"
+  },
+  {
+    "country": "Antigua and Barbuda",
+    "recreationalUsage": "Decriminalized",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "93.7630"
+  },
+  {
+    "country": "Andorra",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "79.8240"
+  },
+  {
+    "country": "Dominica",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "Class B drug to cultivate, sell, or possess.",
+    "pop2022": "72.7370"
+  },
+  {
+    "country": "Bermuda",
+    "recreationalUsage": "Decriminalized up to 7 g",
+    "medicalUsage": "Legal",
+    "note": "In November 2016, the Supreme Court of Bermuda ruled in favor of allowing the medical use of cannabis. As of July 2018, two doctors have been licensed to prescribe the drug.",
+    "pop2022": "64.1840"
+  },
+  {
+    "country": "Greenland",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "56.4660"
+  },
+  {
+    "country": "Saint Kitts and Nevis",
+    "recreationalUsage": "Decriminalized up to 15 g",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "47.6570"
+  },
+  {
+    "country": "Marshall Islands",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "41.5690"
+  },
+  {
+    "country": "Liechtenstein",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "39.3270"
+  },
+  {
+    "country": "Monaco",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "36.4690"
+  },
+  {
+    "country": "San Marino",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Legal",
+    "note": "",
+    "pop2022": "33.6600"
+  },
+  {
+    "country": "Palau",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "18.0550"
+  },
+  {
+    "country": "Tuvalu",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "11.3120"
+  },
+  {
+    "country": "Vatican City",
+    "recreationalUsage": "Illegal",
+    "medicalUsage": "Illegal",
+    "note": "",
+    "pop2022": "0.5100"
   }
 ]

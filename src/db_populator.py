@@ -83,10 +83,12 @@ def get_hotspot_sql_parts(row_dist, col_dist, tag_profile, response_profile):
         },
     ]
 
+CT_lnglat = (18.423300, -33.918861)
+CT_col_row = get_xy(CT_lnglat, MAX_ZOOM)
+
 hotspots = [
     # (n_users, ((row,std), (col,std), tag_profile, response_profile))
-    (1000, [(MAX_ROWS/2, 10), (MAX_COLS / 2, 15), (('s_m', 0.7), ('s_f', 0.3)), ((1,(5,3)), (2,(7,2)))]),
-    (100, [(MAX_ROWS/3, 4), (2* MAX_COLS / 3, 4), (('s_m', 0.7), ('s_f', 0.3)), ((1,(5,3)), (2,(7,2)))]),
+    (100, [(CT_col_row[1], 2), (CT_col_row[0], 2), (('s_m', 0.7), ('s_f', 0.3)), ((8,(5,1)), (9,(5,1)))]),
 ]
 
 
@@ -101,8 +103,9 @@ if __name__ == "__main__":
     all_prompts = list([e[0] for e in cursor])
     N_PROMPTS = len(all_prompts)
 
-    sql_parts = get_hotspot_sql_parts(*hotspots[0])
-    add_n_users(5, cursor, start_token=1, sql_parts=sql_parts)
+    for hs_count, hs_info in hotspots:
+        sql_parts = get_hotspot_sql_parts(*hs_info)
+        add_n_users(hs_count, cursor, start_token=1, sql_parts=sql_parts)
 
     DB_CNX.commit()
     cursor.close()

@@ -1,26 +1,38 @@
 [
   {
     "country": "Colombia",
-    "pop2022": "51874.0240"
+    "status": "activeLegal"
   },
   {
     "country": "Canada",
-    "pop2022": "38454.3270"
+    "status": "activeLegal"
   },
   {
     "country": "Australia",
-    "pop2022": "26177.4130"
+    "status": "activeLegal"
   },
   {
     "country": "Netherlands",
-    "pop2022": "17564.0140"
+    "status": "activeLegal"
   },
   {
     "country": "Belgium",
-    "pop2022": "11655.9300"
+    "status": "activeLegal"
   },
   {
     "country": "Luxembourg",
-    "pop2022": "647.5990"
+    "status": "activeLegal"
+  },
+  {
+    "country": "New Zealand",
+    "status": "activeLegal"
+  },
+  {
+    "country": "United States",
+    "status": "passiveLegal"
+  },
+  {
+    "country": "Russia",
+    "status": "illegal"
   }
 ]

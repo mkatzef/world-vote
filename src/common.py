@@ -1,4 +1,5 @@
 import numpy as np
+import json
 
 BASE_STEP_DEG = 15
 DISPLAY_SIZE_DEGS = (360, 180)
@@ -44,3 +45,10 @@ def save_base_data(out_path, zoom, sums, counts, tag_key):
 
 def compress_for_json(output, decimal_places):
     return json.loads(json.dumps(output), parse_float=lambda x: round(float(x), decimal_places))
+
+
+def get_xy(lnglat, zoom):
+    z_step = get_step_size_deg(zoom)
+    col = (lnglat[0] - ORIGIN_COORD[0]) // z_step
+    row = (ORIGIN_COORD[1] - lnglat[1]) // z_step
+    return col, row
