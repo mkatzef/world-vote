@@ -1,5 +1,6 @@
 #!/bin/bash
 out_dir="./out"
+extra_bases_dir="./law_base"
 min_zoom="0"
 max_zoom="3"
 out_file="tiles-comb.mbtiles"
@@ -19,6 +20,9 @@ mkdir -p $out_dir
 
 echo "Collecting base data from database"
 python3 db_to_base.py --out_dir $out_dir
+
+echo "Filling in missing data with law data"
+python3 add_base_a_to_b.py --in_dir $extra_bases_dir --out_dir $out_dir --missing_only
 
 echo "Converting base data into geojson"
 python3 base_to_binned.py --in_dir $out_dir --out_dir $out_dir
