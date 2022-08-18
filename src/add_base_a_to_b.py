@@ -27,7 +27,7 @@ def add_a_to_b_using_keys(dict_a, key_a, dict_b, key_b):
     return dict_b
 
 
-def main(in_dir, out_dir, missing_only):
+def main(in_dir, out_dir):
     src_files = next(os.walk(in_dir))[2]
     dst_files = set(next(os.walk(out_dir))[2])
 
