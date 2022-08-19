@@ -507,8 +507,9 @@
               </div>
             </div>
 
+          @foreach(['comp_vote', 'comp_law'] as $comp_type)
             <div
-              id="voter_container_comp"
+              id="voter_container_{{ $comp_type }}"
               class="text-xl font-semibold tracking-tight text-gray-900
                 block rounded-lg shadow-md
                 mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition
@@ -521,22 +522,22 @@
             >
               <div style="width:100%; height:85px">
                 <a
-                  id="voter_button_comp"
+                  id="voter_button_{{ $comp_type }}"
                   href="javascript:void(0)"
                   @auth
-                    onclick="stageVoter('comp')"
+                    onclick="stageVoter('{{ $comp_type }}')"
                   @else
                     onclick="set_pane_mode('pane_user_type')"
                   @endauth
                 >
                   <div class="h-full w-full p-3">
-                    Compatibility
-                    <p class="text-sm font-medium">How well your votes match up with averages across the world</p>
+                    {{ $comp_type == 'comp_vote' ? 'Vote' : 'Law' }} Compatibility
+                    <p class="text-sm font-medium">How well your votes match up with {{ $comp_type == 'comp_vote' ? 'votes' : 'laws' }} across the world</p>
                   </div>
                 </a>
               </div>
 
-              <div id="tag_key_container_comp"
+              <div id="tag_key_container_{{ $comp_type }}"
                 style="width:100%; height:50px; display:none">
                 <table style="width:100%; text-align:center; margin-bottom:5px">
                   <tr>
@@ -544,7 +545,7 @@
                       Min
                     </td>
                     <td style="width:70%">
-                      <div id="comp_color_scale" style="width:100%; height:30px"></div>
+                      <div id="color_scale_{{ $comp_type }}" style="width:100%; height:30px"></div>
                     </td>
                     <td style="width:15%" class="text-base">
                       Max
@@ -553,6 +554,8 @@
                 </table>
               </div>
             </div>
+          @endforeach
+
 
           </div>
         </div>
@@ -975,14 +978,17 @@
         }
         stagedVoterId = tagId;
 
-        if (tagId == "comp") {  // auth?
-          comp_color_scale.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
+        if (tagId == "comp_vote") {  // auth?
+          color_scale_comp_vote.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
+        } else if (tagId == "comp_law") {  // auth?
+          color_scale_comp_law.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
         }
         var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'inline';
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
-        map.setLayoutProperty('tags', 'visibility', 'visible');
+        map.setLayoutProperty('tags_vote', 'visibility', 'visible');
+        map.setLayoutProperty('tags_law', 'visibility', 'visible');
         voters_indicator.style.visibility = 'visible';
         paint_tag();
       }
@@ -993,7 +999,8 @@
         filterContainer.style.display = 'none';
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
-        map.setLayoutProperty('tags', 'visibility', 'none');
+        map.setLayoutProperty('tags_vote', 'visibility', 'none');
+        map.setLayoutProperty('tags_law', 'visibility', 'none');
         stagedVoterId = null;
       }
 
@@ -1231,10 +1238,21 @@
         });
 
         map.addLayer({
-          'id': 'tags',
+          'id': 'tags_vote',
           'type': 'fill',
           'source': 'vote-data',
           'source-layer': 'cells',
+          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
+          'layout': {
+            'visibility': 'none'
+          }
+        });
+
+        map.addLayer({
+          'id': 'tags_law',
+          'type': 'fill',
+          'source': 'law-data',
+          'source-layer': 'laws',
           'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
           'layout': {
             'visibility': 'none'
@@ -1272,7 +1290,7 @@
   		}
 
       function paint_filtered_prompt() {
-        if (lawDataIsVisible) {
+        if (lawDataIsVisible && lawPromptIds.includes(stagedVoteId)) {
           map.setLayoutProperty('laws', 'visibility', 'visible');
         } else {
           map.setLayoutProperty('laws', 'visibility', 'none');
@@ -1301,7 +1319,7 @@
             ]
           );
 
-          if (stagedVoteId in lawPromptIds) {
+          if (lawPromptIds.includes(stagedVoteId)) {
             const dataId = 'prompt-' + stagedVoteId + '-all';
             map.setPaintProperty(
               'laws',
@@ -1323,14 +1341,14 @@
         }
       }
 
-      function getCompatFillExpression(compResponses) {
+      function getCompatFillExpression(compResponses, srcLookup=null) {
         // compResponses: {pId : response_val}
         var maxSources = ["max"];
         var a_b = ["+"];
         var a_len_2 = ["+"];
         var b_len_2 = ["+"];
         for (let pId in compResponses) {
-          if (!allPrompts[pId].is_mapped) {
+          if (srcLookup != null && !srcLookup(pId)) {
             continue;
           }
           var a_val = compResponses[pId] - 5;  // [-5, 5]
@@ -1377,21 +1395,35 @@
 
       const MIN_VOTES_FOR_COMPAT = 2;
       function paint_tag() {
-        if (stagedVoterId == "comp") {
+        if (stagedVoterId == "comp_vote") {
+          map.setLayoutProperty('tags_law', 'visibility', 'none');
           if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
-            unstageVoter("comp");
+            unstageVoter("comp_vote");
             alert("Please vote on at least " + MIN_VOTES_FOR_COMPAT + " topics first");
             return;
           }
           map.setPaintProperty(
-            'tags',
+            'tags_vote',
             'fill-color',
-            getCompatFillExpression(myResponses)
+            getCompatFillExpression(myResponses, srcLookup=(pId) => {return allPrompts[pId].is_mapped})
+          );
+        } else if (stagedVoterId == "comp_law") {
+          map.setLayoutProperty('tags_vote', 'visibility', 'none');
+          if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
+            unstageVoter("comp_law");
+            alert("Please vote on at least " + MIN_VOTES_FOR_COMPAT + " topics first");
+            return;
+          }
+          map.setPaintProperty(
+            'tags_law',
+            'fill-color',
+            getCompatFillExpression(myResponses, srcLookup=(pId) => {return lawPromptIds.includes(pId-0)})
           );
         } else {
+          map.setLayoutProperty('tags_law', 'visibility', 'none');
           const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
           map.setPaintProperty(
-            'tags',
+            'tags_vote',
             'fill-color', [
               "case",
               ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
