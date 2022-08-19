@@ -403,6 +403,9 @@
                   @csrf
                   <x-vote-slider :prompt=$prompt />
                 </form>
+                <div id="vote_status_msg_{{ $prompt->id }}" style="width:100%">
+                  Slide to vote
+                </div>
                 <div style="float:left; width:45%; text-align:left">
                   <input id="color_input_{{ $prompt->id }}_option0" type="color"
                     style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
@@ -654,26 +657,23 @@
     <div id="pane_user_type" class="paneElement">
       <div style="display:flex; flex-direction:column; height:100%; width:100%;
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
+        New users:
         <button onclick="set_pane_mode('pane_new_user')"
           class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-          style="width:100%; max-width:200px; margin-bottom:20px">
-          New vote!
+          style="width:100%; max-width:200px">
+          Register!
         </button>
 
+        <hr style="width:100%; max-width:200px; margin:20px 0px 20px 0px">
 
-        <div style="background-color:white">
-          <h1>OR</h1>
-        </div>
-
-        <div style="width:100%; max-width:200px; margin-top:20px">
+        <div style="width:100%; max-width:200px">
+          Returning users:
           <form id="login_details_form" action="/login" method="POST"> <!--target="form_sink">-->
             @csrf
             <input type="text" id="captcha_val_login" name="g-recaptcha-response" style="display:none">
-            <div style="background-color:white">
-              <label for="utoken">Login code:</label><br>
-            </div>
             <input
               id="access_token"
+              placeholder="Login code"
               name="access_token"
               class="m-1 shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             >
@@ -1228,10 +1228,10 @@
 
         map.addLayer({
           'id': 'laws',
-          'type': 'fill',
+          'type': 'line',
           'source': 'law-data',
           'source-layer': 'laws',
-          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
+          'paint': {'line-width': 1.5},
           'layout': {
             'visibility': 'none'
           }
@@ -1323,7 +1323,7 @@
             const dataId = 'prompt-' + stagedVoteId + '-all';
             map.setPaintProperty(
               'laws',
-              'fill-color',
+              'line-color',
               [
                 "case",
                 ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
@@ -1642,10 +1642,13 @@
 
       function setVoteStatus(wasSubmitted=false) {
         var voteSliderStyle = document.querySelector('[data="test"]');
+        var vsm = dElem("vote_status_msg_" + stagedVoteId);
         if (wasSubmitted) {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');} .slider::-moz-range-thumb {background:url('/tick.png');}";
+          vsm.innerHTML = "Submitted!";
         } else {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');} .slider::-moz-range-thumb {background:url('/arrows.png');}";
+          vsm.innerHTML = "Slide to vote";
         }
       }
 
