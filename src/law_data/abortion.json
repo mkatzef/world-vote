@@ -1,5 +1,10 @@
 [
   {
+    "country": "China",
+    "legality": "No restriction",
+    "pop2022": "x"
+  },
+  {
     "country": "Afghanistan",
     "legality": "To save a woman's life",
     "pop2022": "41128.7710"
