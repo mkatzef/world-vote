@@ -32,7 +32,7 @@ Route::get('/', function () {
       'tag_types' => TagType::all(),
       'prompts' => Prompt::all(),
       'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue'),
-      'law_tileset_id' => $law_data->value('pvalue'),
+      'law_tileset_id' => $law_data['pvalue'],
       'law_prompt_ids' => $law_data['extra'],
       'last_updated' =>
         Carbon::createFromFormat(

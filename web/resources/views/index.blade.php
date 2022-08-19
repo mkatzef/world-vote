@@ -1223,7 +1223,7 @@
           'id': 'laws',
           'type': 'fill',
           'source': 'law-data',
-          'source-layer': 'cells',
+          'source-layer': 'laws',
           'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
           'layout': {
             'visibility': 'none'
@@ -1263,7 +1263,7 @@
         activePromptColorSteps = colorSteps;
         stagedVoteId = promptId;
         if (promptId) {
-          map.setLayoutProperty('prompts', 'visibility', 'none');
+          map.setLayoutProperty('prompts', 'visibility', 'visible');
           paint_filtered_prompt(promptId);
         } else {
           map.setLayoutProperty('prompts', 'visibility', 'none');
