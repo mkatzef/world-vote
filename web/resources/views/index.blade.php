@@ -358,7 +358,11 @@
             </h3>
           @endauth
           <b>{{ $n_voters }}</b>+ votes so far!
-          <br>Last updated: {{ $last_updated->diffForHumans() }}
+
+          <div style="background-color:white">
+            <input type="checkbox" id="law_checkbox" onchange="toggleLawData()" class="mb-2" checked> Show law data</input>
+          </div>
+          Last updated: {{ $last_updated->diffForHumans() }}
         </div>
 
         @foreach ($prompts as $prompt)
@@ -824,6 +828,12 @@
         return document.getElementById(v);
       }
 
+      var lawDataIsVisible = true;
+      function toggleLawData() {
+        lawDataIsVisible = !lawDataIsVisible;
+        paint_filtered_prompt();
+      }
+
       var activeCaptchaForm = null;  // 'new' or 'login'
       function primeForCaptcha(formType) {
         activeCaptchaForm = formType;
@@ -1120,6 +1130,11 @@
 					'url': "mapbox://{{ $tileset_id }}"
 				});
 
+        map.addSource('law-data', {
+					'type': 'vector',
+					'url': "mapbox://{{ $law_tileset_id }}"
+				});
+
   			map.addSource('clicked_loc', {
 					'type': 'geojson',
 					'data': {
@@ -1205,6 +1220,17 @@
         });
 
         map.addLayer({
+          'id': 'laws',
+          'type': 'fill',
+          'source': 'law-data',
+          'source-layer': 'cells',
+          'paint': {'fill-outline-color': 'rgba(0,0,0,0)'},
+          'layout': {
+            'visibility': 'none'
+          }
+        });
+
+        map.addLayer({
           'id': 'tags',
           'type': 'fill',
           'source': 'vote-data',
@@ -1237,14 +1263,20 @@
         activePromptColorSteps = colorSteps;
         stagedVoteId = promptId;
         if (promptId) {
-          map.setLayoutProperty('prompts', 'visibility', 'visible');
+          map.setLayoutProperty('prompts', 'visibility', 'none');
           paint_filtered_prompt(promptId);
         } else {
           map.setLayoutProperty('prompts', 'visibility', 'none');
+          map.setLayoutProperty('laws', 'visibility', 'none');
         }
   		}
 
       function paint_filtered_prompt() {
+        if (lawDataIsVisible) {
+          map.setLayoutProperty('laws', 'visibility', 'visible');
+        } else {
+          map.setLayoutProperty('laws', 'visibility', 'none');
+        }
         // Used as a workaround so that filters can affect map and charts
         if (!stagedVoteId) {
           return;
@@ -1268,6 +1300,24 @@
               ]
             ]
           );
+
+          if (stagedVoteId in lawPromptIds) {
+            const dataId = 'prompt-' + stagedVoteId + '-all';
+            map.setPaintProperty(
+              'laws',
+              'fill-color',
+              [
+                "case",
+                ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+                ["rgba",
+                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+                  0.5  // opacity
+                ]
+              ]
+            );
+          }
         } else {
           map.setLayoutProperty('prompts', 'visibility', 'none');
         }
@@ -1751,6 +1801,7 @@
       const allTagTypes = tagTypesArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const tagsArr = {{ Js::from($tags) }};
       const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
+      const lawPromptIds = {{ $law_prompt_ids }};
       @auth
         var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});

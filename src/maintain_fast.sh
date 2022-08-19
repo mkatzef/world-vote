@@ -28,7 +28,7 @@ echo "Adding slow dir $slow_dir to fast dir $out_dir"
 python3 add_base_a_to_b.py --in_dir $slow_dir --out_dir $out_dir
 
 echo "Converting base data into geojson"
-python3 base_to_binned.py --in_dir $out_dir --out_dir $out_dir --preproc_dir $law_dir
+python3 base_to_binned.py --in_dir $out_dir --out_dir $out_dir
 
 echo "Converting binned data to geojson"
 python3 binned_to_geojson.py --in_dir $out_dir --out_dir $out_dir

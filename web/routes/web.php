@@ -26,11 +26,14 @@ Route::get('/', function () {
       auth()->login(User::where('access_token', '=', $value)->first());
     }
     $user_count_increment = 10;
+    $law_data = General::where('property', '=', 'law_tileset_id')->first();
     return view('index', [
       'tags' => Tag::all(),
       'tag_types' => TagType::all(),
       'prompts' => Prompt::all(),
       'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue'),
+      'law_tileset_id' => $law_data->value('pvalue'),
+      'law_prompt_ids' => $law_data['extra'],
       'last_updated' =>
         Carbon::createFromFormat(
           'Y-m-d H:i:s',
