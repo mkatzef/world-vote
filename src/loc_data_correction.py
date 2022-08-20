@@ -58,7 +58,7 @@ def add_n_users(n, cursor, start_token=0, sql_parts=None):
 
 def get_default_sql_parts():
     return [
-        {'db_key': 'access_token', 'format_spec': '%s', 'rng_gen': lambda c: str(c)},
+        {'db_key': 'access_token', 'format_spec': '%s', 'rng_gen': lambda c: "pLaceHolder" + str(c)},
         {'db_key': 'grid_row', 'format_spec': '%s', 'rng_gen': lambda c: str(random.randint(0, MAX_ROWS - 1))},
         {'db_key': 'grid_col', 'format_spec': '%s', 'rng_gen': lambda c: str(random.randint(0, MAX_COLS - 1))},
         {'db_key': 'tags', 'format_spec': '%s', 'rng_gen': lambda c: get_rnd_tags(3 / N_PROMPTS)},
@@ -173,17 +173,61 @@ hotspots = [
 if __name__ == "__main__":
     cursor = DB_CNX.cursor()
 
-    cursor.execute("SELECT slug FROM tags")
-    all_tags = list([e[0] for e in cursor])
-    N_TAGS = len(all_tags)
+    c_col_range = [155, 180]
+    c_row_range = [60, 80]
 
-    cursor.execute("SELECT id FROM prompts")
-    all_prompts = list([e[0] for e in cursor])
-    N_PROMPTS = len(all_prompts)
+    min_id = 0
+    max_id = 456
 
-    for hs_count, hs_info in hotspots:
-        sql_parts = get_hotspot_sql_parts(*hs_info)
-        add_n_users(hs_count, cursor, start_token=1, sql_parts=sql_parts)
+    kept_cells = [
+      (169, 66),
+      (170, 66),
+      (172, 68),
+      (173, 68),
+      (174, 68),
+      (175, 67),
+      (175, 66),
+      (176, 66),
+      (176, 65),
+      (174, 70),
+      (173, 70),
+      (169, 66),
+      (170, 66),
+      (177, 62),
+      (157, 64),
+      (157, 65),
+      (158, 66),
+      (157, 66)
+    ]
+
+    n_kept_cells = len(kept_cells)
+
+    cursor.execute("SELECT id, access_token FROM users")
+    changes = []
+    """for u_obj in cursor:
+        u_id, grid_row, grid_col = map(int, u_obj)
+        if not (min_id <= u_id <= max_id):
+            continue
+
+        if c_col_range[0] <= grid_col <= c_col_range[1]:
+            if c_row_range[0] <= grid_row <= c_row_range[1]:
+                dst = kept_cells[random.randint(0, n_kept_cells-1)]
+                changes.append((u_id, dst))
+    """
+    tc = 0
+    cc = 0
+    for u_obj in cursor:
+        u_id = int(u_obj[0])
+        access_token = u_obj[1]
+        if not (min_id <= u_id <= max_id):
+            continue
+
+        changes.append((u_id, "pLaceHolder" + str(access_token)))
+
+    print(len(changes), changes[:5])
+    for change_id, change_at in changes:
+        cursor.execute("UPDATE users SET access_token='%s' WHERE id=%d" % (change_at, change_id))
+
 
     DB_CNX.commit()
     cursor.close()

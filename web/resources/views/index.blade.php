@@ -1499,7 +1499,10 @@
       @endauth
 
   		function display_clicked_cell(lngLat) {
-  			map.getSource('clicked_loc').setData({
+        const xy = get_xy(lngLat, maxZoom);
+        console.log(xy);
+
+        map.getSource('clicked_loc').setData({
   				'type': 'Feature',
   				'geometry': {
   					'type': 'Polygon',
