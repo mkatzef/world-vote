@@ -659,8 +659,8 @@
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
         New users:
         <button onclick="set_pane_mode('pane_new_user')"
-          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-          style="width:100%; max-width:200px">
+          class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          style="margin-left:7px; width:100%; max-width:200px">
           Register!
         </button>
 
