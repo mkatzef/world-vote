@@ -19,6 +19,8 @@ web_uploads/*
 *profiler.php
 src/loc_data/*
 src/countries/*
+src/out_debug/*
+src/out_law/*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
