@@ -359,9 +359,11 @@
           @endauth
           <b>{{ $n_voters }}</b>+ votes so far!
 
-          <div style="background-color:white">
-            <input type="checkbox" id="law_checkbox" onchange="toggleLawData()" class="mb-2" checked> Show law data</input>
-          </div>
+          <a href="javascript:void(0)" onclick="toggleLawData()">
+            <div class="rounded hover:bg-gray-200">
+              <input type="checkbox" id="law_checkbox" class="mb-2"> Show law data</input>
+            </div>
+          </a>
           Last updated: {{ $last_updated->diffForHumans() }}
         </div>
 
@@ -831,9 +833,10 @@
         return document.getElementById(v);
       }
 
-      var lawDataIsVisible = true;
+      var lawDataIsVisible = false;
       function toggleLawData() {
         lawDataIsVisible = !lawDataIsVisible;
+        dElem("law_checkbox").checked = lawDataIsVisible;
         paint_filtered_prompt();
       }
 
