@@ -286,7 +286,9 @@
         <div
           class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-          Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u>
+          Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u><br>
+          Law data sourced from <u><a href="https://worldpopulationreview.com/">World Population Review</a></u><br>
+          To keep the stats server running:
         </div>
 
         <div class="mt-4">
@@ -659,11 +661,10 @@
     <div id="pane_user_type" class="paneElement">
       <div style="display:flex; flex-direction:column; height:100%; width:100%;
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
-        New users:
         <button onclick="set_pane_mode('pane_new_user')"
           class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
           style="margin-left:7px; width:100%; max-width:200px">
-          Register!
+          New user
         </button>
 
         <hr style="width:100%; max-width:200px; margin:20px 0px 20px 0px">
