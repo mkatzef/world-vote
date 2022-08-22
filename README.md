@@ -28,8 +28,8 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 ## Next steps
 Required:  
-* Increase tolerance
-* Add server-side response validation
+Redistribute a35+
+Add shareable compatibility chart
 
 Optional:
 * Add a favicon
@@ -37,7 +37,6 @@ Optional:
 * Add user-submitted prompts
 * Add prompt categories  
 * Add prompt search  
-* Add initial data
 * Add reminder to copy login code
 * Schedule EC2 instance only when updating
 * Obfuscate/minify code
