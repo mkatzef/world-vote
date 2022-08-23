@@ -293,6 +293,7 @@
 
         <div class="mt-4">
           <form action="https://www.paypal.com/donate" method="post" target="_top">
+            @csrf
             <input type="hidden" name="business" value="YMK37RQB69REG" />
             <input type="hidden" name="no_recurring" value="1" />
             <input type="hidden" name="item_name" value="To keep myworld.vote active" />
@@ -361,11 +362,13 @@
           @endauth
           <b>{{ $n_voters }}</b>+ votes so far!
 
-          <a href="javascript:void(0)" onclick="toggleLawData()">
-            <div class="rounded hover:bg-gray-200">
-              <input type="checkbox" id="law_checkbox" class="mb-2"> Show law data</input>
-            </div>
-          </a>
+          <form>
+            <a href="javascript:void(0)" onclick="toggleLawData()">
+              <div class="rounded hover:bg-gray-200">
+                <input type="checkbox" id="law_checkbox" class="mb-2"> Show law data</input>
+              </div>
+            </a>
+          </form>
           Last updated: {{ $last_updated->diffForHumans() }}
         </div>
 
@@ -992,6 +995,7 @@
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags_vote', 'visibility', 'visible');
+        map.setLayoutProperty('laws_transparent', 'visibility', 'visible');
         map.setLayoutProperty('tags_law', 'visibility', 'visible');
         voters_indicator.style.visibility = 'visible';
         paint_tag();
@@ -1004,6 +1008,7 @@
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
         map.setLayoutProperty('tags_vote', 'visibility', 'none');
+        map.setLayoutProperty('laws_transparent', 'visibility', 'none');
         map.setLayoutProperty('tags_law', 'visibility', 'none');
         stagedVoterId = null;
       }
@@ -1242,6 +1247,20 @@
         });
 
         map.addLayer({
+          'id': 'laws_transparent',
+          'type': 'fill',
+          'source': 'law-data',
+          'source-layer': 'laws',
+          'paint': {
+            'fill-outline-color': 'rgba(0,0,0,0)',
+            'fill-color': 'rgba(0,0,0,0)'
+          },
+          'layout': {
+            'visibility': 'none'
+          }
+        });
+
+        map.addLayer({
           'id': 'tags_vote',
           'type': 'fill',
           'source': 'vote-data',
@@ -1400,6 +1419,7 @@
       const MIN_VOTES_FOR_COMPAT = 2;
       function paint_tag() {
         if (stagedVoterId == "comp_vote") {
+          map.setLayoutProperty('laws_transparent', 'visibility', 'none');
           map.setLayoutProperty('tags_law', 'visibility', 'none');
           if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
             unstageVoter("comp_vote");
@@ -1424,6 +1444,7 @@
             getCompatFillExpression(myResponses, srcLookup=(pId) => {return lawPromptIds.includes(pId-0)})
           );
         } else {
+          map.setLayoutProperty('laws_transparent', 'visibility', 'none');
           map.setLayoutProperty('tags_law', 'visibility', 'none');
           const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
           map.setPaintProperty(
@@ -1442,7 +1463,7 @@
 
   		const maxZoom = 3;
   		const maxStepDeg = 15;
-  		const zSteps = [0, 1, 2, 3, 3].map((i) => { return maxStepDeg / Math.pow(2, i) });
+  		const zSteps = [0, 1, 2, 3].map((i) => { return maxStepDeg / Math.pow(2, i) });
   		const oLng = -180;
   		const oLat = 90;
   		function get_xy(lngLat, zoom) {
@@ -1461,13 +1482,13 @@
         const zStep = zSteps[zoom];
         const col = xy[0];
         const row = xy[1];
-        const anc_lat = oLat + zStep * row;
+        const anc_lat = oLat - zStep * row;
         const anc_lng = oLng + zStep * col;
         return [
           [anc_lng, anc_lat],
           [anc_lng + zStep, anc_lat],
-          [anc_lng + zStep, anc_lat + zStep],
-          [anc_lng, anc_lat + zStep],
+          [anc_lng + zStep, anc_lat - zStep],
+          [anc_lng, anc_lat - zStep],
           [anc_lng, anc_lat],
         ];
       }
@@ -1885,6 +1906,45 @@
         folderIcon.innerText = ">";
         folderContainer.style['max-height'] = "0px";
       }
+
+
+      map.on('click', 'laws_transparent', (e) => {
+        // Clicked location
+        const cll = e.features[0].geometry.coordinates[0][0];
+
+        // visible law data
+        const lawSubset = map.querySourceFeatures('law-data', {'sourceLayer': 'laws'});
+        const zoomLevel = maxZoom;
+        const stepSize = zSteps[zoomLevel];
+
+        // Find matching geometry (only one cell will have the same top left)
+        var matchingFeatureIndex = null;
+        var matchingFeatureCount = 0;
+        for (let i = 0; i < lawSubset.length; i++) {
+          var candidate = lawSubset[i].geometry.coordinates[0][0];
+
+          // compare distance
+          const matchThresholdDeg = stepSize / 2;
+          if (
+            (Math.abs(candidate[0] - cll[0]) < matchThresholdDeg) &&
+            (Math.abs(candidate[1] - cll[1]) < matchThresholdDeg))
+          {
+            matchingFeatureIndex = i;
+            matchingFeatureCount++;
+            //break;
+          }
+        }
+
+        if (matchingFeatureIndex) {
+          new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML("Matched!" + e.features[0].properties)
+            .addTo(map);
+        }
+
+
+
+      });
 
   	</script>
   </body>
