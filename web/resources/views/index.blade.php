@@ -1907,44 +1907,62 @@
         folderContainer.style['max-height'] = "0px";
       }
 
+      function dot(vecA, vecB) {
+        var s = 0;
+        for (i = 0; i < vecA.length; i++) {
+          s += vecA[i] * vecB[i];
+        }
+        return s;
+      }
 
-      map.on('click', 'laws_transparent', (e) => {
-        // Clicked location
-        const cll = e.features[0].geometry.coordinates[0][0];
+      function norm(vecA) {
+        var s = 0;
+        for (i = 0; i < vecA.length; i++) {
+          s += vecA[i] * vecA[i];
+        }
+        return Math.sqrt(s);
+      }
 
-        // visible law data
-        const lawSubset = map.querySourceFeatures('law-data', {'sourceLayer': 'laws'});
-        const zoomLevel = maxZoom;
-        const stepSize = zSteps[zoomLevel];
+      function get_cosine_similarity(vecA, vecB) {
+        return dot(vecA, vecB) / (norm(vecA) * norm(vecB));
+      }
 
-        // Find matching geometry (only one cell will have the same top left)
-        var matchingFeatureIndex = null;
-        var matchingFeatureCount = 0;
-        for (let i = 0; i < lawSubset.length; i++) {
-          var candidate = lawSubset[i].geometry.coordinates[0][0];
+      function displayLawCompatPopup(e) {
+        if (e.features.length == 0) {
+          return;
+        }
 
-          // compare distance
-          const matchThresholdDeg = stepSize / 2;
-          if (
-            (Math.abs(candidate[0] - cll[0]) < matchThresholdDeg) &&
-            (Math.abs(candidate[1] - cll[1]) < matchThresholdDeg))
-          {
-            matchingFeatureIndex = i;
-            matchingFeatureCount++;
-            //break;
+        const lawProperties = e.features[0].properties;
+        var myVec = [];
+        var lawVec = [];
+        for (let i = 0; i < lawPromptIds.length; i++) {
+          var pId = lawPromptIds[i];
+          if (pId in myResponses) {
+            var lawVal = lawProperties['prompt-' + pId + '-all'];
+            if (lawVal == -1) {
+              continue;
+            }
+            var myVal = myResponses[pId];
+            myVec.push(myVal - 5);
+            lawVec.push(lawVal - 0.5);
           }
         }
+        var cosSim = get_cosine_similarity(myVec, lawVec);
+        const compatScore = 100 * (cosSim + 1) / 2;
 
-        if (matchingFeatureIndex) {
-          new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML("Matched!" + e.features[0].properties)
-            .addTo(map);
-        }
+        new mapboxgl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(
+            "<h1>" + Math.round(compatScore) + "% compatible</h1>" +
+            "With the laws in " + "loc" + "<br>" +
+            "Considering:<br>" +
+            "<ul><li>" + ['cats', 'dogs'].join("</li><li>") +
+            "</li></ul>"
 
+          ).addTo(map);
 
-
-      });
+      }
+      map.on('click', 'laws_transparent', displayLawCompatPopup);
 
   	</script>
   </body>
