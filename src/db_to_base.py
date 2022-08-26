@@ -17,8 +17,7 @@ from common import *
 
 
 class BaseData:
-    def __init__(self, p_id, n_rows=MAX_ROWS, n_cols=MAX_COLS, tag_key=[]):
-        self.p_id = p_id
+    def __init__(self, n_rows=MAX_ROWS, n_cols=MAX_COLS, tag_key=[]):
         self.tag_key = tag_key
         n_layers = len(tag_key)
         self.sums = np.empty((n_rows, n_cols, n_layers), dtype=float)
@@ -33,7 +32,7 @@ def get_base_data(tags, mapped_prompts, counted_prompts, users):
     tag_dict = dict([(k, i) for i, k in enumerate(tags)])
     n_layers = len(tag_key)
 
-    map_data_dict = dict([(p_id, BaseData(p_id, tag_key=tag_key)) for p_id in mapped_prompts])
+    map_data_dict = dict([(p_id, BaseData(tag_key=tag_key)) for p_id in mapped_prompts])
     counts_dict = dict([(p_id, np.zeros((VOTE_MAX_STEP+1, n_layers))) for p_id in counted_prompts])
 
     for grid_row, grid_col, tags, responses in users:

@@ -153,7 +153,7 @@ def write_law_base(out_dir, p_id, country_votes, country_cells):
     """
     Writes base data to the given directory
     """
-    bd = BaseData(p_id, tag_key=['all'])
+    bd = BaseData(tag_key=['all'])
     tag_inds = 0
     bd.sums[:, :, :] = 0
     bd.counts[:, :, :] = 0
@@ -164,6 +164,17 @@ def write_law_base(out_dir, p_id, country_votes, country_cells):
             bd.counts[grid_row, grid_col, tag_inds] = THRESHOLD_COUNT
 
     bd.save_as(os.path.join(out_dir, "prompt-%d.npy" % p_id))  # divides by 10 so file on disk has vote1, count=1
+
+
+def write_country_layer(out_dir, country_cells):
+    bd_labels = np.empty((MAX_ROWS, MAX_COLS, 1), dtype=object)
+    tag_inds = 0
+
+    for country_name, country_data in country_cells.items():
+        for grid_row, grid_col in country_data:
+            bd_labels[grid_row, grid_col, tag_inds] = country_name
+
+    np.save(os.path.join(out_dir, "_country_labels.npy"), bd_labels)
 
 
 if __name__ == "__main__":
@@ -226,3 +237,5 @@ if __name__ == "__main__":
     for k, v in data_map.items():
         country_votes = v["data_source"](v, country_names)
         write_law_base(LAW_OUT_DIR, v["promptId"], country_votes, country_cells)
+
+    write_country_layer(LAW_OUT_DIR, country_cells)

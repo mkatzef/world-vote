@@ -1935,6 +1935,7 @@
         const lawProperties = e.features[0].properties;
         var myVec = [];
         var lawVec = [];
+        var categorySummaries = [];
         for (let i = 0; i < lawPromptIds.length; i++) {
           var pId = lawPromptIds[i];
           if (pId in myResponses) {
@@ -1945,22 +1946,38 @@
             var myVal = myResponses[pId];
             myVec.push(myVal - 5);
             lawVec.push(lawVal - 0.5);
+            categorySummaries.push(allPrompts[pId].summary);
           }
         }
+        if (myVec.length == 0) {
+          return;
+        }
+
         var cosSim = get_cosine_similarity(myVec, lawVec);
         const compatScore = 100 * (cosSim + 1) / 2;
 
+        locationName = ('country' in lawProperties) ? lawProperties.country : '-';
+        createNewCompatPopup(e.lngLat, compatScore, locationName, categorySummaries);
+      }
+
+      function createNewCompatPopup(lngLat, compatScore, locationName, listedData, compatType='laws') {
         new mapboxgl.Popup()
-          .setLngLat(e.lngLat)
+          .setLngLat(lngLat)
           .setHTML(
-            "<h1>" + Math.round(compatScore) + "% compatible</h1>" +
-            "With the laws in " + "loc" + "<br>" +
-            "Considering:<br>" +
-            "<ul><li>" + ['cats', 'dogs'].join("</li><li>") +
-            "</li></ul>"
+            '<h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">' + Math.round(compatScore) + "%</h3>" +
+            '<h3 style="width:100%; text-align:center">compatible with ' + compatType + ' in</h3>' +
+            '<h3 style="width:100%; text-align:center; margin-bottom:10px; text-transform: capitalize">' + locationName + "</h3>" +
+            (
+              (listedData.length == 0) ? '' : ('<div style="margin-bottom:10px">' +
+              '<b style="text-transform: capitalize">' + compatType + "</b> considered:" +
+              "<ul><li> - " + listedData.join("</li><li> - ") +
+              "</li></ul>" +
+            "</div>")
+            ) +
+            '<button style="width:100%" class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded">' +
+            'Share</button>'
 
           ).addTo(map);
-
       }
       map.on('click', 'laws_transparent', displayLawCompatPopup);
 

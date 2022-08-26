@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import random
 
 from common import *
 import sys
@@ -124,18 +125,48 @@ def get_all_country_cells(row_range, col_range, z_step):
     country_cells = {}  # name: list of cell indices
     n_rows = len(row_range)
     init_row = None
+    margin = 0.25
+    all_steps = [
+        (0, 0), (0, 1), (1, 0), (1, 1),
+        (margin, margin), (margin, 1-margin), (1-margin, margin), (1-margin, 1-margin)
+    ]
     for row in row_range:
         if init_row is None:
             init_row = row
-        cell_center_lat = o_lat - (row + 0.5) * z_step
+        cell_tl_lat = o_lat - row * z_step
+        cell_center_lat = cell_tl_lat - 0.5 * z_step
         print("%3d%%" % (100*(row - init_row) / n_rows))
         for col in col_range:
             cell = (row, col)
-            cell_center_lng = o_lng + (col + 0.5) * z_step
+            cell_tl_lng = o_lng + col * z_step
+
+            cell_center_lng = cell_tl_lng + 0.5 * z_step
             lnglat = (cell_center_lng, cell_center_lat)
             country = get_country_from_lnglat(lnglat)
+
+            # Try corners, select country that occupies the most corners or a
+            # random contender if tied first
             if country is None:
-                continue
+                options = {}
+                for lng_offset, lat_offset in all_steps:
+                    cell_lng = cell_tl_lng + lng_offset * z_step
+                    cell_lat = cell_tl_lat - lat_offset * z_step
+                    lnglat = (cell_lng, cell_lat)
+                    country = get_country_from_lnglat(lnglat)
+                    if country is not None:
+                        options[country] = options.get(country, 0) + 1
+                if len(options):
+                    max_v = 0
+                    max_k = []
+                    for k, v in options.items():
+                        if v > max_v:
+                            max_v = v
+                            max_k = [k]
+                        elif v == max_v:
+                            max_k.append(k)
+                    country = random.choice(max_k)
+                else:
+                    continue
 
             if country in country_cells:
                 country_cells[country].append(cell)
@@ -150,7 +181,6 @@ def collect_in_parallel(out_dir="./loc_parts", n_workers=None, worker_index=None
 
     z_step = get_step_size_deg(zoom)
     n_cols, n_rows = n_cells_xy(zoom)
-    print(n_cols, n_rows)
 
     rpw = int(np.ceil(n_rows / n_workers))  # rows per worker
     start_row = worker_index*rpw
@@ -190,6 +220,6 @@ if __name__ == "__main__":
         os.path.join(LOC_DATA_DIR, 'TM_WORLD_BORDERS-0.3', 'TM_WORLD_BORDERS-0.3.shp')
     )
 
-    #collect_in_parallel()
-    d = load_from_disk()
-    print(sorted(list(d.keys())))
+    collect_in_parallel()
+    #d = load_from_disk()
+    #print(sorted(list(d.keys())))

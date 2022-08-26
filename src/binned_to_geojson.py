@@ -7,6 +7,7 @@ import argparse
 import json
 import numpy as np
 import os
+import random
 
 from common import *
 
@@ -43,10 +44,60 @@ def get_bbox_for_cell(zoom, x, y, step_size=None):
     return get_bbox_from_anchor((lon, lat), step_size)
 
 
+def block_reduce_text(src_arr):
+    height, width = src_arr.shape
+    dst_height = height // 2
+    dst_width = width // 2
+    dst_arr = np.empty((dst_height, dst_width), dtype=object)
+
+    for row in range(dst_height):
+        src_row_start = 2 * row
+        src_row_end = 2 * (row + 1)
+        for col in range(dst_width):
+            src_col_start = 2 * col
+            src_col_end = 2 * (col + 1)
+            candidates = src_arr[src_row_start : src_row_end, src_col_start : src_col_end].flatten()
+            sub_arr = [elem for elem in candidates if elem is not None]
+
+            max_k = [None]
+            max_v = 0
+            k_i = 0
+            sub_arr.sort()
+            sub_arr.append(None)
+            while k_i < len(sub_arr) - 1:
+                current_k = sub_arr[k_i]
+                start_k_i = k_i
+                k_i += 1
+                while sub_arr[k_i] == current_k:
+                    k_i += 1
+                v = k_i - start_k_i
+                if current_k is not None:
+                    if v > max_v:
+                        max_k = [current_k]
+                        max_v = v
+                    elif v == max_v:
+                        max_k.append(current_k)
+            # Now, kax_k is an array of tied-first frequency countries
+            dst_arr[row][col] = random.choice(max_k)
+
+    return dst_arr
+
 def write_cells(in_dir, out_dir, compress_json_floats=False):
+    has_country = False
+    country_filename = os.path.join(in_dir, '_country_labels.npy')
+    country_data = None
+    if os.path.exists(country_filename):
+        has_country = True
+        country_data_max_zoom = np.load(country_filename, allow_pickle=True)[:, :, 0]
+
+        country_data = [None] * MAX_ZOOM + [country_data_max_zoom]
+        for i in range(MAX_ZOOM-1, -1, -1):
+            country_data[i] = block_reduce_text(country_data[i+1])
+
     for zoom_dir in next(os.walk(in_dir))[1]:  # "z%02d"
         print("Entering:", zoom_dir)
         zoom = int(zoom_dir[1:])
+        print(zoom, '/', MAX_ZOOM)
         # Load all data at this zoom into memory
         zoom_path = os.path.join(in_dir, zoom_dir)
         tag_data = np.load(os.path.join(zoom_path, '_tag_counts.npy'))
@@ -75,6 +126,11 @@ def write_cells(in_dir, out_dir, compress_json_floats=False):
                         cell_poly['properties']["%s-%s" % (stats_label, tag)] = float(stats_arr[row][col][tag_i])
                 for tag_i, tag in enumerate(tag_key):
                     cell_poly['properties']["tag-%s" % tag] = float(tag_data[row][col][tag_i])
+
+                if has_country:
+                    v = country_data[zoom][row][col]
+                    if v is not None:
+                        cell_poly['properties']['country'] = v
 
                 features.append(cell_poly)
         output['features'] = features
