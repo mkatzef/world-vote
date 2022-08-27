@@ -450,20 +450,22 @@
           </div>
         @endforeach
 
-        <button
-          type="button"
-          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-          onclick="jumpToCompat('vote')"
-        >
-          Opinion compat
-        </button>
-        <button
-          type="button"
-          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-          onclick="jumpToCompat('law')"
-        >
-          Law compat
-        </button>
+        @auth
+          <button
+            type="button"
+            class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            onclick="jumpToCompat('vote')"
+          >
+            Vote compatibility
+          </button>
+          <button
+            type="button"
+            class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            onclick="jumpToCompat('law')"
+          >
+            Law compatibility
+          </button>
+        @endauth
       </div>
 
       <div
@@ -1415,15 +1417,9 @@
         return ret;
       }
 
-      const MIN_VOTES_FOR_COMPAT = 2;
       function paint_tag() {
         if (stagedVoterId == "comp_vote") {
           map.setLayoutProperty('tags_law', 'visibility', 'none');
-          if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
-            unstageVoter("comp_vote");
-            alert("Please vote on at least " + MIN_VOTES_FOR_COMPAT + " topics first");
-            return;
-          }
           map.setPaintProperty(
             'tags_vote',
             'fill-color',
@@ -1431,11 +1427,6 @@
           );
         } else if (stagedVoterId == "comp_law") {
           map.setLayoutProperty('tags_vote', 'visibility', 'none');
-          if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
-            unstageVoter("comp_law");
-            alert("Please vote on at least " + MIN_VOTES_FOR_COMPAT + " topics first");
-            return;
-          }
           map.setPaintProperty(
             'tags_law',
             'fill-color',
@@ -1933,6 +1924,8 @@
         var myVec = [];
         var lawVec = [];
         var categorySummaries = [];
+        var agreeList = [];
+        var disagreeList = [];
         const consideredPrompts = compatType == 'law' ? lawPromptIds : Object.keys(allPrompts);
         for (let i = 0; i < consideredPrompts.length; i++) {
           var pId = consideredPrompts[i];
@@ -1942,9 +1935,17 @@
               continue;
             }
             var myVal = myResponses[pId];
-            myVec.push(myVal - 5);
-            lawVec.push(lawVal - 0.5);
-            categorySummaries.push(allPrompts[pId].summary);
+            const myValHat = myVal - 5;
+            const lawValHat = lawVal - 0.5;
+
+            myVec.push(myValHat);
+            lawVec.push(lawValHat);
+            var summary = allPrompts[pId].summary;
+            if (myValHat * lawValHat >= 0) {
+              agreeList.push(summary);
+            } else {
+              disagreeList.push(summary);
+            }
           }
         }
         if (myVec.length == 0) {
@@ -1954,28 +1955,70 @@
         var cosSim = get_cosine_similarity(myVec, lawVec);
         const compatScore = 100 * (cosSim + 1) / 2;
 
-        locationName = ('country' in lawProperties) ? lawProperties.country : '-';
-        createNewCompatPopup(e.lngLat, compatScore, locationName, categorySummaries, compatType);
+        var locationName = ('country' in lawProperties) ? capitalize(lawProperties.country) : '-';
+        createNewCompatPopup(e.lngLat, compatScore, locationName, agreeList, disagreeList, compatType);
       }
 
-      function createNewCompatPopup(lngLat, compatScore, locationName, listedData, compatType='law') {
+      var currentShareString = '';
+      function doShareCompat() {
+        if (navigator.share) {
+          navigator.share({'text': currentShareString})
+        } else {
+          navigator.clipboard.writeText(currentShareString);
+          popupShareButton.innerText = "Copied!";
+        }
+      }
+
+      function capitalize(text) {
+        return text.split(' ').map(element => {
+          return element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
+        }).join(' ');
+      }
+
+      function createNewCompatPopup(lngLat, compatScore, locationName, agreeList, disagreeList, compatType='law') {
+        currentShareString = "I'm " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "! " +
+          (!agreeList.length ? "" : ("We agree on " + agreeList.join(", ") + ". ")) +
+          (!disagreeList.length ? "" : ("We disagree on " + disagreeList.join(", ") + ". ")) +
+          "\nFind yours at https://myworld.vote";
+
+        var buttonName = 'Copy';
+        if (navigator.share) {
+          buttonName = 'Share';
+        }
+
         compatType += 's';
         new mapboxgl.Popup()
           .setLngLat(lngLat)
           .setHTML(
             '<h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">' + Math.round(compatScore) + "%</h3>" +
             '<h3 style="width:100%; text-align:center">compatible with ' + compatType + ' in</h3>' +
-            '<h3 style="width:100%; text-align:center; margin-bottom:10px; text-transform: capitalize">' + locationName + "</h3>" +
+            '<h3 style="width:100%; text-align:center; margin-bottom:10px">' + locationName + "</h3>" +
+            '<button ' +
+              'id="popupShareButton"' +
+              'style="width:100%" ' +
+              'class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded" ' +
+              'onclick=doShareCompat()' +
+            '>' +
+              buttonName +
+            '</button>' +
             (
-              (listedData.length == 0) ? '' : ('<div style="margin-bottom:10px">' +
-              '<b style="text-transform: capitalize">' + compatType + "</b> considered:" +
-              "<ul><li> - " + listedData.join("</li><li> - ") +
-              "</li></ul>" +
-            "</div>")
+              (agreeList.length == 0) ? '' :(
+                '<div style="margin-top:10px">' +
+                  'I agree with <b style="text-transform: capitalize">' + compatType + "</b> on:" +
+                  "<ul><li> - " + agreeList.join("</li><li> - ") +
+                  "</li></ul>" +
+                "</div>"
+              )
             ) +
-            '<button style="width:100%" class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded">' +
-            'Share</button>'
-
+            (
+              (disagreeList.length == 0) ? '' :(
+                '<div style="margin-top:10px">' +
+                  'I disagree with <b style="text-transform: capitalize">' + compatType + "</b> on:" +
+                  "<ul><li> - " + disagreeList.join("</li><li> - ") +
+                  "</li></ul>" +
+                "</div>"
+              )
+            )
           ).addTo(map);
       }
       map.on('click', 'tags_law', displayCompatPopup);
