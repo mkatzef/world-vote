@@ -449,6 +449,21 @@
             </div>
           </div>
         @endforeach
+
+        <button
+          type="button"
+          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          onclick="jumpToCompat('vote')"
+        >
+          Opinion compat
+        </button>
+        <button
+          type="button"
+          class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          onclick="jumpToCompat('law')"
+        >
+          Law compat
+        </button>
       </div>
 
       <div
@@ -995,7 +1010,6 @@
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags_vote', 'visibility', 'visible');
-        map.setLayoutProperty('laws_transparent', 'visibility', 'visible');
         map.setLayoutProperty('tags_law', 'visibility', 'visible');
         voters_indicator.style.visibility = 'visible';
         paint_tag();
@@ -1008,7 +1022,6 @@
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
         map.setLayoutProperty('tags_vote', 'visibility', 'none');
-        map.setLayoutProperty('laws_transparent', 'visibility', 'none');
         map.setLayoutProperty('tags_law', 'visibility', 'none');
         stagedVoterId = null;
       }
@@ -1247,20 +1260,6 @@
         });
 
         map.addLayer({
-          'id': 'laws_transparent',
-          'type': 'fill',
-          'source': 'law-data',
-          'source-layer': 'laws',
-          'paint': {
-            'fill-outline-color': 'rgba(0,0,0,0)',
-            'fill-color': 'rgba(0,0,0,0)'
-          },
-          'layout': {
-            'visibility': 'none'
-          }
-        });
-
-        map.addLayer({
           'id': 'tags_vote',
           'type': 'fill',
           'source': 'vote-data',
@@ -1419,7 +1418,6 @@
       const MIN_VOTES_FOR_COMPAT = 2;
       function paint_tag() {
         if (stagedVoterId == "comp_vote") {
-          map.setLayoutProperty('laws_transparent', 'visibility', 'none');
           map.setLayoutProperty('tags_law', 'visibility', 'none');
           if (Object.keys(myResponses).length < MIN_VOTES_FOR_COMPAT) {
             unstageVoter("comp_vote");
@@ -1444,7 +1442,6 @@
             getCompatFillExpression(myResponses, srcLookup=(pId) => {return lawPromptIds.includes(pId-0)})
           );
         } else {
-          map.setLayoutProperty('laws_transparent', 'visibility', 'none');
           map.setLayoutProperty('tags_law', 'visibility', 'none');
           const dataId = (stagedVoterId == 'all') ? 'tag-all' : 'tag-' + allTags[stagedVoterId].slug;
           map.setPaintProperty(
@@ -1927,7 +1924,7 @@
         return dot(vecA, vecB) / (norm(vecA) * norm(vecB));
       }
 
-      function displayLawCompatPopup(e) {
+      function displayCompatPopup(e, compatType='law') {
         if (e.features.length == 0) {
           return;
         }
@@ -1936,8 +1933,9 @@
         var myVec = [];
         var lawVec = [];
         var categorySummaries = [];
-        for (let i = 0; i < lawPromptIds.length; i++) {
-          var pId = lawPromptIds[i];
+        const consideredPrompts = compatType == 'law' ? lawPromptIds : Object.keys(allPrompts);
+        for (let i = 0; i < consideredPrompts.length; i++) {
+          var pId = consideredPrompts[i];
           if (pId in myResponses) {
             var lawVal = lawProperties['prompt-' + pId + '-all'];
             if (lawVal == -1) {
@@ -1957,10 +1955,11 @@
         const compatScore = 100 * (cosSim + 1) / 2;
 
         locationName = ('country' in lawProperties) ? lawProperties.country : '-';
-        createNewCompatPopup(e.lngLat, compatScore, locationName, categorySummaries);
+        createNewCompatPopup(e.lngLat, compatScore, locationName, categorySummaries, compatType);
       }
 
-      function createNewCompatPopup(lngLat, compatScore, locationName, listedData, compatType='laws') {
+      function createNewCompatPopup(lngLat, compatScore, locationName, listedData, compatType='law') {
+        compatType += 's';
         new mapboxgl.Popup()
           .setLngLat(lngLat)
           .setHTML(
@@ -1979,7 +1978,16 @@
 
           ).addTo(map);
       }
-      map.on('click', 'laws_transparent', displayLawCompatPopup);
+      map.on('click', 'tags_law', displayCompatPopup);
+      map.on('click', 'tags_vote', (e) => displayCompatPopup(e, 'vote'));
+
+      function jumpToCompat(compatType='law') {
+        display_prompt(null);
+        set_pane_poll_mode('voter');
+        openVoterFolder('general');
+        stageVoter('comp_' + compatType);
+        // TODO displayCompatPopup
+      }
 
   	</script>
   </body>
