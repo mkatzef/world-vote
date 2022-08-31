@@ -943,6 +943,9 @@
           tear_down_select_ui();
           display_prompt(null);
           hamburgerClose();
+          if (stagedVoterId != null) {
+            unstageVoter(stagedVoterId);
+          }
         } else if (pane_mode != "pane_polls") {
           return;
         }
@@ -1059,6 +1062,7 @@
         replaceClasses(voterContainer, stagedClasses, unstagedClasses);
         map.setLayoutProperty('tags_vote', 'visibility', 'none');
         map.setLayoutProperty('tags_law', 'visibility', 'none');
+        removeCompatPopup();
         stagedVoterId = null;
       }
 
@@ -2014,10 +2018,14 @@
       }
 
       var currentCompatPopup = null;
-      function createNewCompatPopup(lngLat, compatScore, locationName, agreeList, disagreeList, compatType='law') {
+      function removeCompatPopup() {
         if (currentCompatPopup != null) {
           currentCompatPopup.remove();
         }
+      }
+
+      function createNewCompatPopup(lngLat, compatScore, locationName, agreeList, disagreeList, compatType='law') {
+        removeCompatPopup();
 
         currentShareString = "I'm " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "! " +
           (!agreeList.length ? "" : ("We agree on " + agreeList.map(lowerOrAcronym).join(", ") + ". ")) +
@@ -2045,7 +2053,7 @@
               buttonName +
             '</button>' +
             (
-              (agreeList.length == 0) ? '' :(
+              (agreeList.length == 0) ? '' : (
                 '<div style="margin-top:10px">' +
                   'I agree with <b>' + compatType + "</b> on:" +
                   "<ul><li> - " + agreeList.join("</li><li> - ") +
