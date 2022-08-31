@@ -451,20 +451,26 @@
         @endforeach
 
         @auth
-          <button
-            type="button"
-            class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-            onclick="jumpToCompat('vote')"
-          >
-            Vote compatibility
-          </button>
-          <button
-            type="button"
-            class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-            onclick="jumpToCompat('law')"
-          >
-            Law compatibility
-          </button>
+          <div style="width:100%">
+            <button
+              type="button"
+              style="width:100%; max-width:200px"
+              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              onclick="jumpToCompat('vote')"
+            >
+              Vote compatibility
+            </button>
+          </div>
+          <div style="width:100%">
+            <button
+              type="button"
+              style="width:100%; max-width:200px"
+              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              onclick="jumpToCompat('law')"
+            >
+              Law compatibility
+            </button>
+          </div>
         @endauth
       </div>
 
@@ -992,6 +998,28 @@
         }
       }
 
+      function canDisplayVoteCompatOrAlert() {
+        if (Object.keys(myResponses).length < 1) {
+          alert("Please vote on at least 1 topic");
+          return false;
+        }
+        return true;
+      }
+
+      function canDisplayLawCompatOrAlert() {
+        var lawResponseCount = 0;
+        for (let i = 0; i < lawPromptIds.length; i++) {
+          if (lawPromptIds[i] in myResponses) {
+            lawResponseCount++;
+          }
+        }
+        if (lawResponseCount < 1) {
+          alert("Please vote on one of the following to see law info: " + lawPromptIds.map(pId => {return lowerOrAcronym(allPrompts[pId].summary);}).join(", "));
+          return false;
+        }
+        return true;
+      }
+
       var stagedVoterId = null;
       function stageVoter(tagId) {
         if (tagId == stagedVoterId) {
@@ -1002,9 +1030,15 @@
         }
         stagedVoterId = tagId;
 
-        if (tagId == "comp_vote") {  // auth?
+        if (tagId == "comp_vote") {
+          if (!canDisplayVoteCompatOrAlert()) {
+            return;
+          }
           color_scale_comp_vote.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
-        } else if (tagId == "comp_law") {  // auth?
+        } else if (tagId == "comp_law") {
+          if (!canDisplayLawCompatOrAlert()) {
+            return;
+          }
           color_scale_comp_law.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
         }
         var filterContainer = dElem("tag_key_container_" + tagId);
@@ -1941,9 +1975,9 @@
             myVec.push(myValHat);
             lawVec.push(lawValHat);
             var summary = allPrompts[pId].summary;
-            if (myValHat * lawValHat >= 0) {
+            if (myValHat * lawValHat > 0) {  // ignore 0
               agreeList.push(summary);
-            } else {
+            } else if (myValHat * lawValHat < 0) {
               disagreeList.push(summary);
             }
           }
@@ -1975,19 +2009,28 @@
         }).join(' ');
       }
 
+      function lowerOrAcronym(elem) {
+        return (elem[1] == elem[1].toLowerCase()) ? elem.toLowerCase() : elem.toUpperCase();
+      }
+
+      var currentCompatPopup = null;
       function createNewCompatPopup(lngLat, compatScore, locationName, agreeList, disagreeList, compatType='law') {
+        if (currentCompatPopup != null) {
+          currentCompatPopup.remove();
+        }
+
         currentShareString = "I'm " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "! " +
-          (!agreeList.length ? "" : ("We agree on " + agreeList.join(", ") + ". ")) +
-          (!disagreeList.length ? "" : ("We disagree on " + disagreeList.join(", ") + ". ")) +
+          (!agreeList.length ? "" : ("We agree on " + agreeList.map(lowerOrAcronym).join(", ") + ". ")) +
+          (!disagreeList.length ? "" : ("We disagree on " + disagreeList.map(lowerOrAcronym).join(", ") + ". ")) +
           "\nFind yours at https://myworld.vote";
 
-        var buttonName = 'Copy';
+        var buttonName = 'Copy results';
         if (navigator.share) {
           buttonName = 'Share';
         }
 
         compatType += 's';
-        new mapboxgl.Popup()
+        var newPopup = new mapboxgl.Popup()
           .setLngLat(lngLat)
           .setHTML(
             '<h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">' + Math.round(compatScore) + "%</h3>" +
@@ -2004,7 +2047,7 @@
             (
               (agreeList.length == 0) ? '' :(
                 '<div style="margin-top:10px">' +
-                  'I agree with <b style="text-transform: capitalize">' + compatType + "</b> on:" +
+                  'I agree with <b>' + compatType + "</b> on:" +
                   "<ul><li> - " + agreeList.join("</li><li> - ") +
                   "</li></ul>" +
                 "</div>"
@@ -2013,23 +2056,54 @@
             (
               (disagreeList.length == 0) ? '' :(
                 '<div style="margin-top:10px">' +
-                  'I disagree with <b style="text-transform: capitalize">' + compatType + "</b> on:" +
+                  'I disagree with <b>' + compatType + "</b> on:" +
                   "<ul><li> - " + disagreeList.join("</li><li> - ") +
                   "</li></ul>" +
                 "</div>"
               )
             )
-          ).addTo(map);
+          );
+          currentCompatPopup = newPopup;
+          newPopup.addTo(map);
       }
       map.on('click', 'tags_law', displayCompatPopup);
       map.on('click', 'tags_vote', (e) => displayCompatPopup(e, 'vote'));
 
+      var isFlying = false;
+      var popupLngLat = null;
+      map.on('moveend', function(e){
+        if (isFlying) {
+          isFlying = false;
+          map.fire('click', {
+            lngLat: popupLngLat,
+            point: map.project(popupLngLat),
+            originalEvent: {}
+          });
+          popupLngLat = null;
+        }
+      });
+
       function jumpToCompat(compatType='law') {
+        if (compatType == 'vote') {
+          if (!canDisplayVoteCompatOrAlert()) {
+            return;
+          }
+        } else {
+          if (!canDisplayLawCompatOrAlert()) {
+            return;
+          }
+        }
         display_prompt(null);
         set_pane_poll_mode('voter');
         openVoterFolder('general');
+        if (stagedVoterId != null) {
+          unstageVoter(stagedVoterId);
+        }
         stageVoter('comp_' + compatType);
-        // TODO displayCompatPopup
+        var maxZoomStep = zSteps[maxZoom];
+        popupLngLat = [oLng + (myCol + 0.5) * maxZoomStep, oLat - (myRow + 0.5) * maxZoomStep];  // lngLat
+        isFlying = true;
+        map.flyTo({center: popupLngLat});
       }
 
   	</script>
