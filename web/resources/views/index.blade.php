@@ -2056,17 +2056,25 @@
               (agreeList.length == 0) ? '' : (
                 '<div style="margin-top:10px">' +
                   'I agree with <b>' + compatType + "</b> on:" +
-                  "<ul><li> - " + agreeList.join("</li><li> - ") +
-                  "</li></ul>" +
+                  '<div style="max-height:40px;' +
+                    (agreeList.length > 2 ? "overflow-y:scroll" : "") +
+                  '">' +
+                    "<ul><li> - " + agreeList.join("</li><li> - ") +
+                    "</li></ul>" +
+                  "</div>" +
                 "</div>"
               )
             ) +
             (
               (disagreeList.length == 0) ? '' :(
-                '<div style="margin-top:10px">' +
+                '<div style="margin-top:5px">' +
                   'I disagree with <b>' + compatType + "</b> on:" +
-                  "<ul><li> - " + disagreeList.join("</li><li> - ") +
-                  "</li></ul>" +
+                  '<div style="max-height:40px;' +
+                    (disagreeList.length > 2 ? "overflow-y:scroll" : "") +
+                  '">' +
+                    "<ul><li> - " + disagreeList.join("</li><li> - ") +
+                    "</li></ul>" +
+                  "</div>" +
                 "</div>"
               )
             )
