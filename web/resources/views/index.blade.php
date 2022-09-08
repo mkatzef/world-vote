@@ -471,6 +471,27 @@
               Law compatibility
             </button>
           </div>
+        @else
+          <div style="width:100%">
+            <button
+              type="button"
+              style="width:100%; max-width:200px"
+              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              onclick="set_pane_mode('pane_user_type')"
+            >
+              Vote compatibility
+            </button>
+          </div>
+          <div style="width:100%">
+            <button
+              type="button"
+              style="width:100%; max-width:200px"
+              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              onclick="set_pane_mode('pane_user_type')"
+            >
+              Law compatibility
+            </button>
+          </div>
         @endauth
       </div>
 
@@ -564,7 +585,7 @@
                   @endauth
                 >
                   <div class="h-full w-full p-3">
-                    {{ $comp_type == 'comp_vote' ? 'Vote' : 'Law' }} Compatibility
+                    {{ $comp_type == 'comp_vote' ? 'Vote' : 'Law' }} compatibility
                     <p class="text-sm font-medium">How well your votes match up with {{ $comp_type == 'comp_vote' ? 'votes' : 'laws' }} across the world</p>
                   </div>
                 </a>
@@ -588,7 +609,6 @@
               </div>
             </div>
           @endforeach
-
 
           </div>
         </div>
@@ -846,9 +866,9 @@
       </div>
     </div>
 
-
     <!-- End of pane divs -->
     </div>
+
 
     <!--
       MAP
@@ -1179,7 +1199,6 @@
         },
         delayMs);
       }
-
 
       addEventListener('resize', optimizeLayout);
       optimizeLayout();
@@ -1849,17 +1868,19 @@
       const stagedClasses = ["border-orange-300"];
       const unstagedClasses = ["border-gray-200"];
       function stage_vote(promptId) {
-        var prompt = allPrompts[promptId];
-        if (prompt.id == stagedVoteId) {
+        if (promptId == stagedVoteId || promptId == null) {
+          if (stagedVoteId != null) {
+            hidePromptContent(stagedVoteId);
+          }
           stagedVoteId = null;
-          hidePromptContent(prompt.id);
           display_prompt(null);
           votes_indicator.style.visibility = 'hidden';
           return;
-        } else if (stagedVoteId) {
+        }
+        if (stagedVoteId != null) {
           hidePromptContent(stagedVoteId);
         }
-        stagedVoteId = prompt.id;
+        stagedVoteId = promptId;
         votes_indicator.style.visibility = 'visible';
         showPromptContent();
       }
@@ -2085,17 +2106,43 @@
       map.on('click', 'tags_law', displayCompatPopup);
       map.on('click', 'tags_vote', (e) => displayCompatPopup(e, 'vote'));
 
+      // Display a popup after: the last moveend PLUS some offset (e.g. 50ms)
+      function triggerPopup() {
+        map.fire('click', {
+          lngLat: popupLngLat,
+          point: map.project(popupLngLat),
+          originalEvent: {}
+        });
+      }
+
+      var popupWatchdogFood = -1;
+      var currentPopupInterval = null;
+      var popupIntervalMs = 150;  // will wait at MOST 2 x this interval
+      function eatPopupWatchdog() {
+        if (popupWatchdogFood == 1) {
+          popupWatchdogFood = 0;
+        } else if (popupWatchdogFood == -1) {
+          console.log("Invalid state encountered");
+        } else { // == 0 (eaten previously, and now eaten into the negatives)
+          popupWatchdogFood = -1;
+          clearInterval(currentPopupInterval);
+          isFlying = false;
+          triggerPopup();
+        }
+      }
+
+      function feedPopupWatchdog() {
+        if (popupWatchdogFood < 0) {  // start watchdog
+          currentPopupInterval = setInterval(eatPopupWatchdog, popupIntervalMs);
+        }
+        popupWatchdogFood = 1;
+      }
+
       var isFlying = false;
       var popupLngLat = null;
       map.on('moveend', function(e){
         if (isFlying) {
-          isFlying = false;
-          map.fire('click', {
-            lngLat: popupLngLat,
-            point: map.project(popupLngLat),
-            originalEvent: {}
-          });
-          popupLngLat = null;
+          feedPopupWatchdog();
         }
       });
 
@@ -2109,7 +2156,7 @@
             return;
           }
         }
-        display_prompt(null);
+        stage_vote(null);
         set_pane_poll_mode('voter');
         openVoterFolder('general');
         if (stagedVoterId != null) {
