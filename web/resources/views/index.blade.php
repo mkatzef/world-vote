@@ -2018,12 +2018,34 @@
         createNewCompatPopup(e.lngLat, compatScore, locationName, agreeList, disagreeList, compatType);
       }
 
-      var currentShareString = '';
+      function listToFormattedString(l) {
+        var lCopy = [];
+        for (let i = 0; i < l.length; i++) {
+          if (l.length > 1 && i == l.length - 1) {
+            lCopy.push('and ' + lowerOrAcronym(l[i]));
+          } else {
+            lCopy.push(lowerOrAcronym(l[i]));
+          }
+        }
+        return lCopy.join(", ");
+      }
+
       function doShareCompat() {
+        const compatScore = currentPopupData.compatScore;
+        const locationName = currentPopupData.locationName;
+        const agreeList = currentPopupData.agreeList;
+        const disagreeList = currentPopupData.disagreeList;
+        const compatType = currentPopupData.compatType;
+
+        var shareString = "I'm " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "! " +
+          ((!agreeList.length || !shareAgree.checked) ? "" : ("We agree on " + listToFormattedString(agreeList) + ". ")) +
+          ((!disagreeList.length || !shareDisagree.checked)? "" : ("We disagree on " + listToFormattedString(disagreeList) + ". ")) +
+          "\nFind yours at https://myworld.vote";
+
         if (navigator.share) {
-          navigator.share({'text': currentShareString})
+          navigator.share({'text': shareString})
         } else {
-          navigator.clipboard.writeText(currentShareString);
+          navigator.clipboard.writeText(shareString);
           popupShareButton.innerText = "Copied!";
         }
       }
@@ -2045,19 +2067,19 @@
         }
       }
 
+      var currentPopupData = null;
       function createNewCompatPopup(lngLat, compatScore, locationName, agreeList, disagreeList, compatType='law') {
         removeCompatPopup();
 
-        currentShareString = "I'm " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "! " +
-          (!agreeList.length ? "" : ("We agree on " + agreeList.map(lowerOrAcronym).join(", ") + ". ")) +
-          (!disagreeList.length ? "" : ("We disagree on " + disagreeList.map(lowerOrAcronym).join(", ") + ". ")) +
-          "\nFind yours at https://myworld.vote";
-
-        var buttonName = 'Copy results';
-        if (navigator.share) {
-          buttonName = 'Share';
+        currentPopupData = {
+          "compatScore": compatScore,
+          "locationName": locationName,
+          "agreeList": agreeList,
+          "disagreeList": disagreeList,
+          "compatType": compatType
         }
 
+        var buttonName = 'Share selected';
         compatType += 's';
         var newPopup = new mapboxgl.Popup()
           .setLngLat(lngLat)
@@ -2076,7 +2098,7 @@
             (
               (agreeList.length == 0) ? '' : (
                 '<div style="margin-top:10px">' +
-                  'I agree with <b>' + compatType + "</b> on:" +
+                  '<input id="shareAgree" type="checkbox" checked> I agree with:' +
                   '<div style="max-height:40px;' +
                     (agreeList.length > 2 ? "overflow-y:scroll" : "") +
                   '">' +
@@ -2089,7 +2111,7 @@
             (
               (disagreeList.length == 0) ? '' :(
                 '<div style="margin-top:5px">' +
-                  'I disagree with <b>' + compatType + "</b> on:" +
+                  '<input id="shareDisagree" type="checkbox" checked> I disagree with:' + "</input>" +
                   '<div style="max-height:40px;' +
                     (disagreeList.length > 2 ? "overflow-y:scroll" : "") +
                   '">' +
