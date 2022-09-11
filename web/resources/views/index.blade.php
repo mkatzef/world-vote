@@ -365,7 +365,7 @@
           <form>
             <a href="javascript:void(0)" onclick="toggleLawData()">
               <div class="rounded hover:bg-gray-200">
-                <input type="checkbox" id="law_checkbox" class="mb-2"> Show law data</input>
+                <input style="vertical-align:-1px;" type="checkbox" id="law_checkbox" class="mb-2"> Show law data</input>
               </div>
             </a>
           </form>
@@ -2068,7 +2068,7 @@
         dElem('agreeCountSpan').innerText = agreeList.length;
       }
 
-      function doShareCompat() {
+      function doShareCompat(withDetails=true) {
         const compatScore = currentPopupData.compatScore;
         const locationName = currentPopupData.locationName;
         const compatType = currentPopupData.compatType;
@@ -2076,16 +2076,23 @@
         var agreeList = getClickedAgree();
         var disagreeList = getClickedDisagree();
 
-        var shareString = "I'm " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "! " +
-          (!agreeList.length ? "" : ("We agree on " + listToFormattedString(agreeList) + ". ")) +
-          (!disagreeList.length ? "" : ("We disagree on " + listToFormattedString(disagreeList) + ". ")) +
-          "\nFind yours at https://myworld.vote";
+        var shareString = "My world views are " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "!";
+        if (withDetails) {
+          shareString +=
+            (!agreeList.length ? "" : (" We agree on " + listToFormattedString(agreeList) + ".")) +
+            (!disagreeList.length ? "" : (" We disagree on " + listToFormattedString(disagreeList) + "."))
+        }
+        shareString += " \nFind yours at https://myworld.vote";
 
         if (navigator.share) {
           navigator.share({'text': shareString})
         } else {
           navigator.clipboard.writeText(shareString);
-          popupShareButton.innerText = "Copied!";
+          if (withDetails) {
+            popupShareButtonWithDetails.innerText = "Copied!";
+          } else {
+            popupShareButtonSansDetails.innerText = "Copied!";
+          }
         }
       }
 
@@ -2103,6 +2110,16 @@
       function removeCompatPopup() {
         if (currentCompatPopup != null) {
           currentCompatPopup.remove();
+        }
+      }
+
+      function setPopupView(viewName) {
+        if (viewName == 'details') {
+          dElem('popupViewDetails').style.display = 'inline';
+          dElem('popupViewSummary').style.display = 'none';
+        } else {
+          dElem('popupViewDetails').style.display = 'none';
+          dElem('popupViewSummary').style.display = 'inline';
         }
       }
 
@@ -2139,70 +2156,104 @@
           "compatType": compatType
         }
 
-        var buttonName = 'Share selected';
         compatType += 's';
+
+        const popupHtml = `
+<div id="popupViewSummary" style="display:inline">
+  <h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">${Math.round(compatScore)}%</h3>
+  <h3 style="width:100%; text-align:center">compatible with ${compatType} in</h3>
+  <h3 style="width:100%; text-align:center; margin-bottom:10px">${locationName}</h3>
+  <button
+    id="popupShareButtonSansDetails"
+    style="width:150px; margin-bottom:5px"
+    class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
+    onclick="doShareCompat(false)"
+  >
+    Share
+  </button>
+  <br>
+  <button
+    style="width:150px"
+    class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
+    onclick="setPopupView('details')"
+  >
+    Details
+  </button>
+</div>
+
+<div id="popupViewDetails" style="display:none">
+  <h3 style="width:100%; text-align:center; margin-bottom:10px">Compatibility details</h3>
+
+  <div style="height:100px; margin-bottom:10px">
+    <button
+      id="popupAgreeButton"
+      onclick="setPopupAgreeTabVisible(true)"
+      class="mb-0 bg-white text-orange-300 tracking-tight rounded-t-lg"
+      style="height:20px; width:50%; float:left; border-width:2px 2px 0 2px"
+    >
+      Agree (<span id="agreeCountSpan">${agreeList.length}</span>)
+    </button>
+
+    <button
+      id="popupDisagreeButton"
+      onclick="setPopupAgreeTabVisible(false)"
+      class="mb-0 bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded-t-lg"
+      style="height:20px; width:50%; float:right; border-width:2px 2px 0 2px"
+    >
+      Disagree (<span id="disagreeCountSpan">${disagreeList.length}</span>)
+    </button>
+
+    <br>
+    ${(
+      (agreeList.length == 0) ? '' : (
+        `<div id="popupAgreeTabContent"
+        style="margin-top:30px; display:inline">
+          <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">` +
+            agreeList.map((elem) => {
+              var idStr = 'shareAgree' + elem;
+              return '<input style="vertical-align:-2px;" onclick="updateAgreeCount()" id="' + idStr + '" type="checkbox" checked><label for="' + idStr + '"> ' + elem + '</label>'
+            }).join('<br>') +
+          "</div>" +
+        "</div>"
+      )
+    )}
+    ${(
+      (disagreeList.length == 0) ? '' : (
+        `<div id="popupDisagreeTabContent"
+        style="margin-top:30px; display:none">
+          <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">` +
+            disagreeList.map((elem) => {
+              var idStr = 'shareDisagree' + elem;
+              return '<input style="vertical-align:-2px;" onclick="updateDisagreeCount()" id="' + idStr + '" type="checkbox" checked><label for="' + idStr + '"> ' + elem + '</label>'
+            }).join('<br>') +
+          "</div>" +
+        "</div>"
+      )
+    )}
+  </div>
+
+  <button
+    id="popupShareButtonWithDetails"
+    style="width:150px; margin-bottom:5px"
+    class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
+    onclick="doShareCompat(true)"
+  >
+    Share selected
+  </button>
+  <br>
+  <button
+    style="width:150px"
+    class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
+    onclick="setPopupView('summary')"
+  >
+    Back
+  </button>
+</div>
+`;
+
         var newPopup = new mapboxgl.Popup()
           .setLngLat(lngLat)
-          .setHTML(
-            `<h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">` + Math.round(compatScore) + "%</h3>" +
-            `<h3 style="width:100%; text-align:center">compatible with ` + compatType + ' in</h3>' +
-            `<h3 style="width:100%; text-align:center; margin-bottom:10px">` + locationName + "</h3>" +
-            `<button
-              id="popupShareButton"
-              style="width:150px; margin-bottom:10px"
-              class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
-              onclick=doShareCompat()
-            >` +
-              buttonName +
-            `</button>
-
-            <div style="height:80px">
-
-              <button
-                id="popupAgreeButton"
-                onclick="setPopupAgreeTabVisible(true)"
-                class="mb-0 bg-white text-orange-300 tracking-tight rounded-t-lg"
-                style="height:20px; width:50%; float:left; border-top-width:2px; border-right-width:2px;"
-              >
-                Agree (<span id="agreeCountSpan">` + agreeList.length + '</span>)' +
-              `</button>
-
-              <button
-                id="popupDisagreeButton"
-                onclick="setPopupAgreeTabVisible(false)"
-                class="mb-0 bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded-t-lg"
-                style="height:20px; width:50%; float:right; border-top-width:2px; border-left-width:2px"
-              >
-                Disagree (<span id="disagreeCountSpan">` + disagreeList.length + `</span>)
-              </button>
-
-              <br>` +
-              (
-                (agreeList.length == 0) ? '' : (
-                  `<div id="popupAgreeTabContent"
-                  style="margin-top:30px; display:inline">
-                    <div style="margin:5px 0 0 5px; height:60px; overflow-y:scroll">` +
-                      agreeList.map((elem) => {
-                        return '<input onclick="updateAgreeCount()" id="shareAgree' + elem + '" ' + 'type="checkbox" checked> ' + elem + '</input>'
-                      }).join('<br>') +
-                    "</div>" +
-                  "</div>"
-                )
-              ) +
-              (
-                (disagreeList.length == 0) ? '' : (
-                  `<div id="popupDisagreeTabContent"
-                  style="margin-top:30px; display:none">
-                    <div style="margin:5px 0 0 5px; height:60px; overflow-y:scroll">` +
-                      disagreeList.map((elem) => {
-                        return '<input onclick="updateDisagreeCount()" id="shareDisagree' + elem + '" ' + 'type="checkbox" checked> ' + elem + '</input>'
-                      }).join('<br>') +
-                    "</div>" +
-                  "</div>"
-                )
-              ) +
-            '</div>'
-          );
+          .setHTML(popupHtml);
           currentCompatPopup = newPopup;
           newPopup.addTo(map);
       }
