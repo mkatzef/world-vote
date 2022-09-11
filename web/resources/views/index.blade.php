@@ -454,7 +454,7 @@
           <div style="width:100%">
             <button
               type="button"
-              style="width:100%; max-width:200px"
+              style="width:100%; max-width:200px; margin-top:10px"
               class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
               onclick="jumpToCompat('vote')"
             >
@@ -464,7 +464,7 @@
           <div style="width:100%">
             <button
               type="button"
-              style="width:100%; max-width:200px"
+              style="width:100%; max-width:200px; margin-bottom:10px"
               class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
               onclick="jumpToCompat('law')"
             >

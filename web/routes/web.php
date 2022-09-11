@@ -44,7 +44,11 @@ Route::get('/', function () {
 });
 
 Route::get('unsuccessful', function () {
-  return 'Something went wrong! Please try again later';
+  return 'Something went wrong! Please try again later<br><a href="/"><button>Home</button></a>';
+});
+
+Route::get('login_failed', function () {
+  return 'No votes were found with that access token!<br><a href="/"><button>Home</button></a>';
 });
 
 Route::get('logout', function () {

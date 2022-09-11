@@ -101,8 +101,11 @@ class RegisterController extends Controller
       return redirect('/unsuccessful');
     }
 
-    $user = User::where('access_token', '=', request()->get('access_token'))->first();
-    auth()->login($user);
+    $matching_users = User::where('access_token', '=', request()->get('access_token'));
+    if ($matching_users->count() == 0) {
+      return redirect('/unsuccessful');
+    }
+    auth()->login($matching_users->first());
     return redirect("/");
   }
 
