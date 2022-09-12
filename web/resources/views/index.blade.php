@@ -5,7 +5,7 @@
   $ad_width_perc = 0;
   $ad_height_px = 0;
   $chart_height_px = 60;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-1 px-4 border border-orange-500 hover:border-transparent rounded";
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-1 px-4 border border-orange-500 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
 
@@ -151,21 +151,37 @@
           @else
             <button onclick="set_pane_mode('pane_user_type')"
               style="margin:2px 10px 2px 2px"
-              class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
+              class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
               Vote!
             </button>
           @endauth
         </div>
       </div>
 
-      <div id="vert_options" style="display:none; margin-top:10px; height:{{ $title_height_px }}px; float:right">
-        <a id="map_toggle_link" href="javascript:void(0)" onclick="toggleMap()">
-          <div id="map_toggle_bg" class="space-y-2"
-            style="width:52px; height:24px; background-color:white; border-width:2px; border-color:#FF9D47; border-radius:12px; margin-right:10px">
-            <img id="map_toggle_orb" src="/earth.png"
-              style="margin-left:0px; width:20px; height:20px"
-              class="map_toggle_transition"></img>
-          </div>
+      <div id="vert_options" style="display:none; margin:9px 10px 0 0; height:{{ $title_height_px }}px; float:right">
+        <a href="javascript:void(0)" onclick="changeMapSize(-1)">
+          <button
+            class="bg-orange-300 hover:bg-orange-500 text-white"
+            style="width:24px; margin-right:-6px; border-radius:14px 0 0 14px"
+          >
+            -
+          </button>
+        </a>
+        <a href="javascript:void(0)" onclick="changeMapSize(0)">
+          <button
+            class="bg-orange-300 hover:bg-orange-500 text-white"
+            style="width: 45px"
+          >
+            Map
+          </button>
+        </a>
+        <a href="javascript:void(0)" onclick="changeMapSize(1)">
+          <button
+            class="bg-orange-300 hover:bg-orange-500 text-white"
+            style="width:24px; margin-left:-6px; border-radius:0 14px 14px 0"
+          >
+            +
+          </button>
         </a>
       </div>
     </div>
@@ -433,7 +449,7 @@
                   <br>{{ $prompt->option0 }}
                 </div>
                 <button onclick="set_pane_mode('pane_user_type')"
-                  class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-500 rounded"
+                  class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-500 rounded"
                   style="width:25%; margin-top:10px"
                 >
                   Vote!
@@ -455,7 +471,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px; margin-top:10px"
-              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
               onclick="jumpToCompat('vote')"
             >
               Vote compatibility
@@ -465,7 +481,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px; margin-bottom:10px"
-              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
               onclick="jumpToCompat('law')"
             >
               Law compatibility
@@ -476,7 +492,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px"
-              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
               onclick="set_pane_mode('pane_user_type')"
             >
               Vote compatibility
@@ -486,7 +502,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px"
-              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
               onclick="set_pane_mode('pane_user_type')"
             >
               Law compatibility
@@ -708,7 +724,7 @@
       <div style="display:flex; flex-direction:column; height:100%; width:100%;
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
         <button onclick="set_pane_mode('pane_new_user')"
-          class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
           style="margin-left:7px; width:100%; max-width:200px">
           New user
         </button>
@@ -730,7 +746,7 @@
               type="button"
               style="width:100%; max-width:200px"
               onclick="primeForCaptcha('login')"
-              class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
             >
               Submit
             </button>
@@ -738,7 +754,7 @@
               type="button"
               onclick="set_pane_mode('pane_polls')"
               style="width:100%; max-width:200px"
-              class="m-1 bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
+              class="m-1 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
             >
               Back
             </button>
@@ -788,7 +804,7 @@
           <button
             type="button"
             style="width:100%; max-width:200px"
-            class="m-1 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
             onclick="newVoteSubmit()"
           >
             Submit
@@ -808,7 +824,7 @@
       <div class="scrolling-y" style="height:100%">
         <button id="update_location_button" onclick="set_up_select_ui('update')"
           style="width:100%; max-width:200px"
-          class="mt-2 bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          class="mt-2 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
         >
           Update location
         </button><br>
@@ -839,7 +855,7 @@
           @endforeach
 
           <button
-            class="mt-1 mb-1 bg-white hover:bg-orange-500 text-orange-400 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
+            class="mt-1 mb-1 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
             type="button"
             style="width:100%; max-width:200px"
             onclick="set_pane_mode('pane_polls')"
@@ -849,7 +865,7 @@
           <br>
           <button
             style="width:100%; max-width:200px"
-            class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
           >
             Submit
           </button><br>
@@ -954,8 +970,8 @@
         'pane_my_details': {},
       };
 
-      const titleStagedClasses = ['bg-orange-400', 'text-white'];
-      const titleUnstagedClasses = ['bg-white', 'text-orange-400', 'hover:text-white'];
+      const titleStagedClasses = ['bg-orange-300', 'text-white'];
+      const titleUnstagedClasses = ['bg-white', 'text-orange-300', 'hover:text-white'];
       function set_pane_mode(pane_mode) {
         captcha_container.style.display = "none";
         // Remove all map elements
@@ -1138,28 +1154,27 @@
         hammy.onclick = hamburgerOpen;
       }
 
-      var showMap = true;
-      function toggleMap() {
-        showMap = !showMap;
-        if (showMap) {
-          map_toggle_bg.style['background-color'] = 'white';
-          map_toggle_orb.style['margin-left'] = '0px';
-        } else {
-          map_toggle_bg.style['background-color'] = 'darkorange';
-          map_toggle_orb.style['margin-left'] = '28px';
+      const mapSizes = {
+        1: "0%",
+        2: "calc(50% - {{ $title_height_px }}px)",
+        3: "calc(100% - {{ $title_height_px }}px)"
+      };
+      const defaultMapSize = 2;
+      var mapSize = defaultMapSize;
+      function changeMapSize(delta) {
+        if (delta == 0) {
+          mapSize = defaultMapSize;
+        } else if ((mapSize + delta) in mapSizes) {
+          mapSize += delta;
         }
         optimizeLayout();
       }
 
       function optimizeLayout() {
         if (window.innerWidth < 800) {
-          if (showMap) {
-            dElem('pane_container').style.top = "40%";
-            dElem('map').style.height = "40%";
-          } else {
-            dElem('pane_container').style.top = "0%";
-            dElem('map').style.height = "0%";
-          }
+          const mapHeightPerc = mapSizes[mapSize];
+          dElem('pane_container').style.top = mapHeightPerc;
+          dElem('map').style.height = mapHeightPerc;
           logo_img.src = "/logo-w-stacked.png";
 
           dElem('pane_container').style['margin-top'] = "{{ $title_height_px }}px";
