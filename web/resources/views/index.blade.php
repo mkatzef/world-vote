@@ -2058,14 +2058,21 @@
         return disagreeList;
       }
 
+      function resetShareButtonText() {
+        popupShareButtonSansDetails.innerText = "Share";
+        popupShareButtonWithDetails.innerText = "Share selected";
+      }
+
       function updateDisagreeCount() {
         var disagreeList = getClickedDisagree();
         dElem('disagreeCountSpan').innerText = disagreeList.length;
+        resetShareButtonText();
       }
 
       function updateAgreeCount() {
         var agreeList = getClickedAgree();
         dElem('agreeCountSpan').innerText = agreeList.length;
+        resetShareButtonText();
       }
 
       function doShareCompat(withDetails=true) {
@@ -2082,7 +2089,7 @@
             (!agreeList.length ? "" : (" We agree on " + listToFormattedString(agreeList) + ".")) +
             (!disagreeList.length ? "" : (" We disagree on " + listToFormattedString(disagreeList) + "."))
         }
-        shareString += " \nFind yours at https://myworld.vote";
+        shareString += "\nFind yours at https://myworld.vote";
 
         if (navigator.share) {
           navigator.share({'text': shareString})
@@ -2121,6 +2128,7 @@
           dElem('popupViewDetails').style.display = 'none';
           dElem('popupViewSummary').style.display = 'inline';
         }
+        resetShareButtonText();
       }
 
       function setPopupAgreeTabVisible(makeAgreeVisible) {
@@ -2204,32 +2212,35 @@
     </button>
 
     <br>
-    ${(
-      (agreeList.length == 0) ? '' : (
-        `<div id="popupAgreeTabContent"
-        style="margin-top:30px; display:inline">
-          <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">` +
+    <div id="popupAgreeTabContent" style="margin-top:30px; display:inline">
+      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">
+        ${(
+          (agreeList.length == 0) ?
+          '' :
+          (
             agreeList.map((elem) => {
               var idStr = 'shareAgree' + elem;
               return '<input style="vertical-align:-2px;" onclick="updateAgreeCount()" id="' + idStr + '" type="checkbox" checked><label for="' + idStr + '"> ' + elem + '</label>'
-            }).join('<br>') +
-          "</div>" +
-        "</div>"
-      )
-    )}
-    ${(
-      (disagreeList.length == 0) ? '' : (
-        `<div id="popupDisagreeTabContent"
-        style="margin-top:30px; display:none">
-          <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">` +
+            }).join('<br>')
+          )
+        )}
+      </div>
+    </div>
+
+    <div id="popupDisagreeTabContent" style="margin-top:30px; display:none">
+      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">
+        ${(
+          (disagreeList.length == 0) ?
+          '' :
+          (
             disagreeList.map((elem) => {
               var idStr = 'shareDisagree' + elem;
               return '<input style="vertical-align:-2px;" onclick="updateDisagreeCount()" id="' + idStr + '" type="checkbox" checked><label for="' + idStr + '"> ' + elem + '</label>'
-            }).join('<br>') +
-          "</div>" +
-        "</div>"
-      )
-    )}
+            }).join('<br>')
+          )
+        )}
+      </div>
+    </div>
   </div>
 
   <button
