@@ -1057,12 +1057,16 @@
           if (!canDisplayVoteCompatOrAlert()) {
             return;
           }
+          initCompatHandler();
           color_scale_comp_vote.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
         } else if (tagId == "comp_law") {
           if (!canDisplayLawCompatOrAlert()) {
             return;
           }
+          initCompatHandler();
           color_scale_comp_law.style.background = "linear-gradient(to right," + compColorSteps.map((v) => {return v[1];}).join(',') + ")";
+        } else {
+          removeCompatHandler();
         }
         var filterContainer = dElem("tag_key_container_" + tagId);
         filterContainer.style.display = 'inline';
@@ -1476,14 +1480,14 @@
 
       function paint_tag() {
         if (stagedVoterId == "comp_vote") {
-          map.setLayoutProperty('tags_law', 'visibility', 'none');
+          map.setPaintProperty('tags_law', 'fill-color', 'rgba(255, 255, 255, 0)');
           map.setPaintProperty(
             'tags_vote',
             'fill-color',
             getCompatFillExpression(myResponses, srcLookup=(pId) => {return allPrompts[pId].is_mapped})
           );
         } else if (stagedVoterId == "comp_law") {
-          map.setLayoutProperty('tags_vote', 'visibility', 'none');
+          map.setPaintProperty('tags_vote', 'fill-color', 'rgba(255, 255, 255, 0)');
           map.setPaintProperty(
             'tags_law',
             'fill-color',
@@ -1974,22 +1978,22 @@
         return dot(vecA, vecB) / (norm(vecA) * norm(vecB));
       }
 
-      function displayCompatPopup(e, compatType='law') {
-        if (e.features.length == 0) {
-          return;
+      function getCompatScore(properties, compatType='law') {
+        var ret = {
+          compatScore: null,
+          agreeList: [],
+          disagreeList: []
         }
 
-        const lawProperties = e.features[0].properties;
         var myVec = [];
         var lawVec = [];
-        var categorySummaries = [];
         var agreeList = [];
         var disagreeList = [];
         const consideredPrompts = compatType == 'law' ? lawPromptIds : Object.keys(allPrompts);
         for (let i = 0; i < consideredPrompts.length; i++) {
           var pId = consideredPrompts[i];
           if (pId in myResponses) {
-            var lawVal = lawProperties['prompt-' + pId + '-all'];
+            var lawVal = properties['prompt-' + pId + '-all'];
             if (lawVal == -1) {
               continue;
             }
@@ -2008,98 +2012,68 @@
           }
         }
         if (myVec.length == 0) {
-          return;
+          return ret;
         }
 
         var cosSim = get_cosine_similarity(myVec, lawVec);
-        const compatScore = 100 * (cosSim + 1) / 2;
+        ret.compatScore = 100 * (cosSim + 1) / 2;
+        ret.agreeList = agreeList;
+        ret.disagreeList = disagreeList;
+        return ret;
+      }
+
+      var cachedData = {'compatType': null, 'data': null};
+      function displayCompatPopup(e, compatType='law') {
+        if (e.features.length == 0) {
+          return;
+        }
+
+        const properties = e.features[0].properties;
+        if (cachedData.compatType == null) {
+          cachedData.compatType = compatType;
+          cachedData.data = properties;
+          return;
+        }
+
+        if (compatType == 'law') {
+          var lawProperties = properties;
+          var voteProperties = cachedData.data;
+        } else {
+          var lawProperties = cachedData.data;
+          var voteProperties = properties;
+        }
+        cachedData = {'compatType': null, 'data': null};
+
+        const lawCompatResults = getCompatScore(lawProperties, compatType='law');
+        const voteCompatResults = getCompatScore(voteProperties, compatType='vote');
 
         var locationName = ('country' in lawProperties) ? capitalize(lawProperties.country) : '-';
-        createNewCompatPopup(e.lngLat, compatScore, locationName, agreeList, disagreeList, compatType);
-      }
-
-      function listToFormattedString(l) {
-        var lCopy = [];
-        for (let i = 0; i < l.length; i++) {
-          if (l.length > 1 && i == l.length - 1) {
-            lCopy.push('and ' + lowerOrAcronym(l[i]));
-          } else {
-            lCopy.push(lowerOrAcronym(l[i]));
-          }
-        }
-        if (l.length <= 2) {
-          return lCopy.join(" ");
-        } else {
-          return lCopy.join(", ");
-        }
-      }
-
-      function getClickedAgree() {
-        const overallAgreeList = currentPopupData.agreeList;
-        var agreeList = [];
-        for (let i = 0; i < overallAgreeList.length; i++) {
-          var topic = overallAgreeList[i];
-          if (dElem('shareAgree' + topic).checked) {
-            agreeList.push(topic);
-          }
-        }
-        return agreeList;
-      }
-
-      function getClickedDisagree() {
-        const overallDisagreeList = currentPopupData.disagreeList;
-        var disagreeList = [];
-        for (let i = 0; i < overallDisagreeList.length; i++) {
-          var topic = overallDisagreeList[i];
-          if (dElem('shareDisagree' + topic).checked) {
-            disagreeList.push(topic);
-          }
-        }
-        return disagreeList;
+        createNewCompatPopup(e.lngLat, locationName, lawCompatResults, voteCompatResults);
       }
 
       function resetShareButtonText() {
         popupShareButtonSansDetails.innerText = "Share";
-        popupShareButtonWithDetails.innerText = "Share selected";
       }
 
-      function updateDisagreeCount() {
-        var disagreeList = getClickedDisagree();
-        dElem('disagreeCountSpan').innerText = disagreeList.length;
-        resetShareButtonText();
-      }
-
-      function updateAgreeCount() {
-        var agreeList = getClickedAgree();
-        dElem('agreeCountSpan').innerText = agreeList.length;
-        resetShareButtonText();
-      }
-
-      function doShareCompat(withDetails=true) {
-        const compatScore = currentPopupData.compatScore;
+      function doShareCompat() {
+        const lawCompatScore = currentPopupData.lawCompatResults.compatScore;
+        const voteCompatScore = currentPopupData.voteCompatResults.compatScore;
         const locationName = currentPopupData.locationName;
-        const compatType = currentPopupData.compatType;
 
-        var agreeList = getClickedAgree();
-        var disagreeList = getClickedDisagree();
+        var hasLaw = lawCompatScore != null;
+        var hasVote = voteCompatScore != null;
 
-        var shareString = "My world views are " + Math.round(compatScore) + "% compatible with " + compatType + "s in " + locationName + "!";
-        if (withDetails) {
-          shareString +=
-            (!agreeList.length ? "" : (" We agree on " + listToFormattedString(agreeList) + ".")) +
-            (!disagreeList.length ? "" : (" We disagree on " + listToFormattedString(disagreeList) + "."))
-        }
-        shareString += "\nFind yours at https://myworld.vote";
+        var shareString = `My world views agree ` +
+          (hasVote ? `${Math.round(voteCompatScore)}% with the people ` : '') +
+          ((hasVote && hasLaw) ? 'and ' : '') +
+          (hasLaw ? `${Math.round(lawCompatScore)}% with the laws ` : '') +
+          `in ${locationName}!\nFind yours at https://myworld.vote`;
 
         if (navigator.share) {
           navigator.share({'text': shareString})
         } else {
           navigator.clipboard.writeText(shareString);
-          if (withDetails) {
-            popupShareButtonWithDetails.innerText = "Copied!";
-          } else {
-            popupShareButtonSansDetails.innerText = "Copied!";
-          }
+          popupShareButtonSansDetails.innerText = "Copied!";
         }
       }
 
@@ -2153,24 +2127,32 @@
       }
 
       var currentPopupData = null;
-      function createNewCompatPopup(lngLat, compatScore, locationName, agreeList, disagreeList, compatType='law') {
+      function createNewCompatPopup(lngLat, locationName, lawCompatResults, voteCompatResults) {
+        if (lawCompatResults.compatScore == null && voteCompatResults.compatScore == null) {
+          return;
+        }
+
         removeCompatPopup();
 
         currentPopupData = {
-          "compatScore": compatScore,
           "locationName": locationName,
-          "agreeList": agreeList,
-          "disagreeList": disagreeList,
-          "compatType": compatType
+          "lawCompatResults": lawCompatResults,
+          "voteCompatResults": voteCompatResults
         }
 
-        compatType += 's';
+        var agreeList = voteCompatResults.agreeList;
+        var disagreeList = voteCompatResults.disagreeList;
+        var lawCompatScore = lawCompatResults.compatScore == null ? '-' : Math.round(lawCompatResults.compatScore);
+        var voteCompatScore = voteCompatResults.compatScore == null ? '-' : Math.round(voteCompatResults.compatScore);
 
         const popupHtml = `
 <div id="popupViewSummary" style="display:inline">
-  <h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">${Math.round(compatScore)}%</h3>
-  <h3 style="width:100%; text-align:center">compatible with ${compatType} in</h3>
-  <h3 style="width:100%; text-align:center; margin-bottom:10px">${locationName}</h3>
+  <h3 style="width:100%; text-align:center">You agree</h3>
+  <h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">${voteCompatScore}%</h3>
+  <h3 style="width:100%; text-align:center">with the people, and</h3>
+  <h3 style="width:100%; text-align:center" class="text-lg font-medium text-gray-900">${lawCompatScore}%</h3>
+  <h3 style="width:100%; text-align:center">with the laws in</h3>
+  <h3 style="width:100%; text-align:center; margin-bottom:10px" class="text-lg font-medium text-gray-900">${locationName}</h3>
   <button
     id="popupShareButtonSansDetails"
     style="width:150px; margin-bottom:5px"
@@ -2190,9 +2172,9 @@
 </div>
 
 <div id="popupViewDetails" style="display:none">
-  <h3 style="width:100%; text-align:center; margin-bottom:10px">Compatibility details</h3>
+  <h3 style="width:100%; text-align:center; margin-bottom:10px">Vote details</h3>
 
-  <div style="height:100px; margin-bottom:10px">
+  <div style="height:120px; margin-bottom:10px">
     <button
       id="popupAgreeButton"
       onclick="setPopupAgreeTabVisible(true)"
@@ -2213,45 +2195,22 @@
 
     <br>
     <div id="popupAgreeTabContent" style="margin-top:30px; display:inline">
-      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">
+      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:100px; overflow-y:scroll">
         ${(
-          (agreeList.length == 0) ?
-          '' :
-          (
-            agreeList.map((elem) => {
-              var idStr = 'shareAgree' + elem;
-              return '<input style="vertical-align:-2px;" onclick="updateAgreeCount()" id="' + idStr + '" type="checkbox" checked><label for="' + idStr + '"> ' + elem + '</label>'
-            }).join('<br>')
-          )
+          (agreeList.length == 0) ? '' : ("<ul><li> - " + agreeList.join("</li><li> - ") + "</li></ul>")
         )}
       </div>
     </div>
 
     <div id="popupDisagreeTabContent" style="margin-top:30px; display:none">
-      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:80px; overflow-y:scroll">
+      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:100px; overflow-y:scroll">
         ${(
-          (disagreeList.length == 0) ?
-          '' :
-          (
-            disagreeList.map((elem) => {
-              var idStr = 'shareDisagree' + elem;
-              return '<input style="vertical-align:-2px;" onclick="updateDisagreeCount()" id="' + idStr + '" type="checkbox" checked><label for="' + idStr + '"> ' + elem + '</label>'
-            }).join('<br>')
-          )
+          (disagreeList.length == 0) ? '' : ("<ul><li> - " + disagreeList.join("</li><li> - ") + "</li></ul>")
         )}
       </div>
     </div>
   </div>
 
-  <button
-    id="popupShareButtonWithDetails"
-    style="width:150px; margin-bottom:5px"
-    class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
-    onclick="doShareCompat(true)"
-  >
-    Share selected
-  </button>
-  <br>
   <button
     style="width:150px"
     class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
@@ -2265,11 +2224,27 @@
         var newPopup = new mapboxgl.Popup()
           .setLngLat(lngLat)
           .setHTML(popupHtml);
-          currentCompatPopup = newPopup;
-          newPopup.addTo(map);
+        currentCompatPopup = newPopup;
+        newPopup.addTo(map);
       }
-      map.on('click', 'tags_law', displayCompatPopup);
-      map.on('click', 'tags_vote', (e) => displayCompatPopup(e, 'vote'));
+
+      function displayCompatPopupLaw(e) {
+        displayCompatPopup(e, 'law');
+      }
+
+      function displayCompatPopupVote(e) {
+        displayCompatPopup(e, 'vote');
+      }
+
+      function initCompatHandler() {
+        map.on('click', 'tags_law', displayCompatPopupLaw);
+        map.on('click', 'tags_vote', displayCompatPopupVote);
+      }
+
+      function removeCompatHandler() {
+        map.off('click', 'tags_law', displayCompatPopupLaw);
+        map.off('click', 'tags_vote', displayCompatPopupVote);
+      }
 
       // Display a popup after: the last moveend PLUS some offset (e.g. 50ms)
       function triggerPopup() {
