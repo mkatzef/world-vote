@@ -158,19 +158,19 @@
         </div>
       </div>
 
-      <div id="vert_options" style="display:none; margin:9px 10px 0 0; height:{{ $title_height_px }}px; float:right">
+      <div id="vert_options" style="display:none; margin:9px 16px 0 0; height:{{ $title_height_px }}px; float:right">
         <a href="javascript:void(0)" onclick="changeMapSize(-1)">
           <button
             class="bg-orange-300 hover:bg-orange-500 text-white"
-            style="width:24px; margin-right:-6px; border-radius:14px 0 0 14px"
+            style="width:28px; margin-right:-6px; border-radius:14px 0 0 14px"
           >
             -
           </button>
         </a>
         <a href="javascript:void(0)" onclick="changeMapSize(0)">
           <button
-            class="bg-orange-300 hover:bg-orange-500 text-white"
-            style="width: 45px"
+            class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight"
+            style="width:40px"
           >
             Map
           </button>
@@ -178,7 +178,7 @@
         <a href="javascript:void(0)" onclick="changeMapSize(1)">
           <button
             class="bg-orange-300 hover:bg-orange-500 text-white"
-            style="width:24px; margin-left:-6px; border-radius:0 14px 14px 0"
+            style="width:28px; margin-left:-6px; border-radius:0 14px 14px 0"
           >
             +
           </button>
@@ -1996,8 +1996,7 @@
       function getCompatScore(properties, compatType='law') {
         var ret = {
           compatScore: null,
-          agreeList: [],
-          disagreeList: []
+          srcVals: {}
         }
 
         var myVec = [];
@@ -2019,6 +2018,7 @@
             myVec.push(myValHat);
             lawVec.push(lawValHat);
             var summary = allPrompts[pId].summary;
+            ret.srcVals[pId] = lawVal;
             if (myValHat * lawValHat > 0) {  // ignore 0
               agreeList.push(summary);
             } else if (myValHat * lawValHat < 0) {
@@ -2032,8 +2032,6 @@
 
         var cosSim = get_cosine_similarity(myVec, lawVec);
         ret.compatScore = 100 * (cosSim + 1) / 2;
-        ret.agreeList = agreeList;
-        ret.disagreeList = disagreeList;
         return ret;
       }
 
@@ -2141,6 +2139,58 @@
         replaceClasses(dElem(disabledButton), enabledClasses, disabledClasses);
       }
 
+      function insertIntoSorted(sortedArr, lval, label) {
+        for (var dst_i = 0; dst_i < sortedArr.length; dst_i++) {
+          if (lval < sortedArr[dst_i][0]) {
+            break;
+          }
+        }
+        return sortedArr.slice(0, dst_i)
+                        .concat([[lval, label]])
+                        .concat(
+                          sortedArr.slice(dst_i, sortedArr.length)
+                        );
+      }
+
+      function getCompatEntry(cd) {
+        var labelWidthPx = 10;
+        var labelHeightPx = 10;
+        var markerColors = {
+          'my': '#ff0000',
+          'laws': '#00ff00',
+          'votes': '#0000ff'
+        };
+        var markerLabels = {
+          'my': 'Me',
+          'laws': 'Laws',
+          'votes': 'Locals'
+        };
+        var markerAlpha = '80';
+
+        var ret = `
+          <h3>${capitalize(cd.summary)}</h3>
+          <div style="margin-left:5%; width:90%; height:${labelHeightPx}px; padding-top:${labelHeightPx/2 - 1}px"><div style="border-width:1px; height:1px"></div></div>
+          <div style="margin-left:5%; width:90%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; margin-left:calc(${cd.myResponse * 100}% - ${labelWidthPx/2}px); border-radius:${labelWidthPx/2}px; background-color:${markerColors.my}${markerAlpha}"></div></div>` +
+          ((cd.lawVal == null) ? '' : `<div style="margin-left:5%; width:90%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; border-radius:${labelWidthPx/2}px; margin-left:calc(${cd.lawVal * 100}% - ${labelWidthPx/2}px); background-color:${markerColors.laws}${markerAlpha}"></div></div>`) +
+          ((cd.voteVal == null) ? '' : `<div style="margin-left:5%; width:90%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; border-radius:${labelWidthPx/2}px; margin-left:calc(${cd.voteVal * 100}% - ${labelWidthPx/2}px); background-color:${markerColors.votes}${markerAlpha}"></div></div>`);
+
+        var labels = [[cd.myResponse, 'my']];
+        if (cd.lawVal != null) {
+          labels = insertIntoSorted(labels, cd.lawVal, 'laws');
+        }
+        if (cd.voteVal != null) {
+          labels = insertIntoSorted(labels, cd.voteVal, 'votes');
+        }
+
+        ret += '<div>' + labels.map(
+          v => {
+            return `<span style="color:${markerColors[v[1]]}">${markerLabels[v[1]]}</span>`
+          }
+        ).join(', ') + '</div><br>';
+
+        return ret;
+      }
+
       var currentPopupData = null;
       function createNewCompatPopup(lngLat, locationName, lawCompatResults, voteCompatResults) {
         if (lawCompatResults.compatScore == null && voteCompatResults.compatScore == null) {
@@ -2155,8 +2205,28 @@
           "voteCompatResults": voteCompatResults
         }
 
-        var agreeList = voteCompatResults.agreeList;
-        var disagreeList = voteCompatResults.disagreeList;
+        const allPromptIds = Object.keys(allPrompts);
+        var compatBarData = [];
+        for (let i = 0; i < allPromptIds.length; i++) {
+          var promptId = allPromptIds[i];
+          if (!(promptId in myResponses)) {
+            continue;
+          }
+
+          compatBarData.push({
+            'summary': lowerOrAcronym(allPrompts[promptId].summary),
+            'myResponse': myResponses[promptId] / 10.0,
+            'lawVal': lawCompatResults.srcVals[promptId],
+            'voteVal': voteCompatResults.srcVals[promptId]
+          });
+        }
+
+        var compatHtmlEntries = [];
+        for (let j = 0; j < compatBarData.length; j++) {
+          compatHtmlEntries.push(getCompatEntry(compatBarData[j]));
+        }
+        const compatHtml = compatHtmlEntries.join('\n');
+
         var lawCompatScore = lawCompatResults.compatScore == null ? '-' : Math.round(lawCompatResults.compatScore);
         var voteCompatScore = voteCompatResults.compatScore == null ? '-' : Math.round(voteCompatResults.compatScore);
 
@@ -2172,7 +2242,7 @@
     id="popupShareButtonSansDetails"
     style="width:150px; margin-bottom:5px"
     class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
-    onclick="doShareCompat(false)"
+    onclick="doShareCompat()"
   >
     Share
   </button>
@@ -2189,41 +2259,8 @@
 <div id="popupViewDetails" style="display:none">
   <h3 style="width:100%; text-align:center; margin-bottom:10px">Vote details</h3>
 
-  <div style="height:120px; margin-bottom:10px">
-    <button
-      id="popupAgreeButton"
-      onclick="setPopupAgreeTabVisible(true)"
-      class="mb-0 bg-white text-orange-300 tracking-tight rounded-t-lg"
-      style="height:20px; width:50%; float:left; border-width:2px 2px 0 2px"
-    >
-      Agree (<span id="agreeCountSpan">${agreeList.length}</span>)
-    </button>
-
-    <button
-      id="popupDisagreeButton"
-      onclick="setPopupAgreeTabVisible(false)"
-      class="mb-0 bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded-t-lg"
-      style="height:20px; width:50%; float:right; border-width:2px 2px 0 2px"
-    >
-      Disagree (<span id="disagreeCountSpan">${disagreeList.length}</span>)
-    </button>
-
-    <br>
-    <div id="popupAgreeTabContent" style="margin-top:30px; display:inline">
-      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:100px; overflow-y:scroll">
-        ${(
-          (agreeList.length == 0) ? '' : ("<ul><li> - " + agreeList.join("</li><li> - ") + "</li></ul>")
-        )}
-      </div>
-    </div>
-
-    <div id="popupDisagreeTabContent" style="margin-top:30px; display:none">
-      <div class="rounded-b" style="padding:5px 0 0 5px; border-width:0 2px 2px 2px; height:100px; overflow-y:scroll">
-        ${(
-          (disagreeList.length == 0) ? '' : ("<ul><li> - " + disagreeList.join("</li><li> - ") + "</li></ul>")
-        )}
-      </div>
-    </div>
+  <div style="height:140px; margin-bottom:10px; overflow-y:scroll">
+    ${compatHtml}
   </div>
 
   <button
