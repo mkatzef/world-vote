@@ -567,7 +567,7 @@
                       Min
                     </td>
                     <td style="width:70%">
-                      <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
+                      <div class="rounded" style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
                     </td>
                     <td style="width:15%" class="text-base">
                       Max
@@ -615,7 +615,7 @@
                       Min
                     </td>
                     <td style="width:70%">
-                      <div id="color_scale_{{ $comp_type }}" style="width:100%; height:30px"></div>
+                      <div class="rounded" id="color_scale_{{ $comp_type }}" style="width:100%; height:30px"></div>
                     </td>
                     <td style="width:15%" class="text-base">
                       Max
@@ -693,7 +693,7 @@
                     Min %
                   </td>
                   <td style="width:70%">
-                    <div style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
+                    <div class="rounded" style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
                   </td>
                   <td style="width:15%" class="text-base">
                     Max %
@@ -2100,6 +2100,10 @@
         return (elem[1] == elem[1].toLowerCase()) ? elem.toLowerCase() : elem.toUpperCase();
       }
 
+      function capitalizeOrAcronym(elem) {
+        return (elem[1] == elem[1].toLowerCase()) ? capitalize(elem) : elem.toUpperCase();
+      }
+
       var currentCompatPopup = null;
       function removeCompatPopup() {
         if (currentCompatPopup != null) {
@@ -2155,24 +2159,30 @@
       function getCompatEntry(cd) {
         var labelWidthPx = 10;
         var labelHeightPx = 10;
+        var lineWidthPerc = 70;
+        var lineMLPerc = (100 - lineWidthPerc) / 2;
         var markerColors = {
-          'my': '#ff0000',
-          'laws': '#00ff00',
+          'my': '#ff9d47',
+          'laws': '#aa00aa',
           'votes': '#0000ff'
         };
         var markerLabels = {
           'my': 'Me',
           'laws': 'Laws',
-          'votes': 'Locals'
+          'votes': 'Votes'
         };
         var markerAlpha = '80';
 
         var ret = `
-          <h3>${capitalize(cd.summary)}</h3>
-          <div style="margin-left:5%; width:90%; height:${labelHeightPx}px; padding-top:${labelHeightPx/2 - 1}px"><div style="border-width:1px; height:1px"></div></div>
-          <div style="margin-left:5%; width:90%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; margin-left:calc(${cd.myResponse * 100}% - ${labelWidthPx/2}px); border-radius:${labelWidthPx/2}px; background-color:${markerColors.my}${markerAlpha}"></div></div>` +
-          ((cd.lawVal == null) ? '' : `<div style="margin-left:5%; width:90%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; border-radius:${labelWidthPx/2}px; margin-left:calc(${cd.lawVal * 100}% - ${labelWidthPx/2}px); background-color:${markerColors.laws}${markerAlpha}"></div></div>`) +
-          ((cd.voteVal == null) ? '' : `<div style="margin-left:5%; width:90%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; border-radius:${labelWidthPx/2}px; margin-left:calc(${cd.voteVal * 100}% - ${labelWidthPx/2}px); background-color:${markerColors.votes}${markerAlpha}"></div></div>`);
+          <h3 class="font-semibold">${cd.summary}</h3>
+          <div style="width:100%; height:${labelHeightPx}px">
+            <span style="float:left; height:${labelHeightPx}px; margin-top:-2px; font-size:${labelHeightPx}px">${allPrompts[cd.pId].option0}</span>
+            <span style="float:right; height:${labelHeightPx}px; margin-top:-2px; font-size:${labelHeightPx}px">${allPrompts[cd.pId].option1}</span>
+          </div>
+          <div style="margin-left:${lineMLPerc}%; width:${lineWidthPerc}%; height:${labelHeightPx}px; margin-top:${-labelHeightPx/2 - 1}px; padding-top:${labelHeightPx/2 - 1}px"><div style="border-width:1px; height:1px"></div></div>
+          <div style="margin-left:${lineMLPerc}%; width:${lineWidthPerc}%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; margin-left:calc(${cd.myResponse * 100}% - ${labelWidthPx/2}px); border-radius:${labelWidthPx/2}px; background-color:${markerColors.my}${markerAlpha}"></div></div>` +
+          ((cd.lawVal == null) ? '' : `<div style="margin-left:${lineMLPerc}%; width:${lineWidthPerc}%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; border-radius:${labelWidthPx/2}px; margin-left:calc(${cd.lawVal * 100}% - ${labelWidthPx/2}px); background-color:${markerColors.laws}${markerAlpha}"></div></div>`) +
+          ((cd.voteVal == null) ? '' : `<div style="margin-left:${lineMLPerc}%; width:${lineWidthPerc}%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; border-radius:${labelWidthPx/2}px; margin-left:calc(${cd.voteVal * 100}% - ${labelWidthPx/2}px); background-color:${markerColors.votes}${markerAlpha}"></div></div>`);
 
         var labels = [[cd.myResponse, 'my']];
         if (cd.lawVal != null) {
@@ -2182,12 +2192,38 @@
           labels = insertIntoSorted(labels, cd.voteVal, 'votes');
         }
 
-        ret += '<div>' + labels.map(
-          v => {
-            return `<span style="color:${markerColors[v[1]]}">${markerLabels[v[1]]}</span>`
-          }
-        ).join(', ') + '</div><br>';
+        const nLabelCells = 9;
+        var cellContents = [];
+        for (let i = 0; i < nLabelCells; i++) {
+          cellContents.push(null);
+        }
+        const nLabels = labels.length;
+        var maxCellUsed = -1;
+        for (let i = 0; i < nLabels; i++) {
+          var idealCell = Math.floor(labels[i][0] * nLabelCells);
+          var maxDst = nLabelCells - (nLabels - i);
+          var setCell = Math.max(maxCellUsed + 1, Math.min(maxDst, idealCell));
+          cellContents[setCell] = i;
+          maxCellUsed = setCell;
+        }
 
+        const labelRowWidthPerc = Math.min(100, lineWidthPerc + 15);
+        const labelRowMarginPerc = (100 - labelRowWidthPerc) / 2;
+        const labelCellWidthPerc = labelRowWidthPerc / nLabelCells;
+
+        var labelRow = `<table style="margin-bottom:5px; width:${labelRowWidthPerc}%; margin-left:${labelRowMarginPerc}%"><tr>`;
+        for (let i = 0; i < nLabelCells; i++) {
+          var lbl = (cellContents[i] == null) ? null : labels[cellContents[i]][1];
+          labelRow += `
+            <td style="width:${labelCellWidthPerc}%; text-align:center">
+              ${(lbl == null) ? '' : `<span style="color:${markerColors[lbl]}" class="tracking-tight">${markerLabels[lbl]}</span>`}
+            </td>`;
+        }
+        labelRow += `</tr></table>`;
+
+        console.log(labelRow);
+
+        ret += labelRow;
         return ret;
       }
 
@@ -2214,7 +2250,8 @@
           }
 
           compatBarData.push({
-            'summary': lowerOrAcronym(allPrompts[promptId].summary),
+            'pId': promptId,
+            'summary': capitalizeOrAcronym(allPrompts[promptId].summary),
             'myResponse': myResponses[promptId] / 10.0,
             'lawVal': lawCompatResults.srcVals[promptId],
             'voteVal': voteCompatResults.srcVals[promptId]
@@ -2257,7 +2294,7 @@
 </div>
 
 <div id="popupViewDetails" style="display:none">
-  <h3 style="width:100%; text-align:center; margin-bottom:10px">Vote details</h3>
+  <h3 style="width:100%; text-align:center; margin-bottom:10px" class="font-semibold">Details</h3>
 
   <div style="height:140px; margin-bottom:10px; overflow-y:scroll">
     ${compatHtml}
