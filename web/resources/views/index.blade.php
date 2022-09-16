@@ -2159,25 +2159,25 @@
       function getCompatEntry(cd) {
         var labelWidthPx = 10;
         var labelHeightPx = 10;
-        var lineWidthPerc = 70;
+        var lineWidthPerc = 65;
         var lineMLPerc = (100 - lineWidthPerc) / 2;
         var markerColors = {
           'my': '#ff9d47',
-          'laws': '#aa00aa',
-          'votes': '#0000ff'
+          'laws': '#bbbbbb',
+          'votes': '#0000cc'
         };
         var markerLabels = {
           'my': 'Me',
           'laws': 'Laws',
-          'votes': 'Votes'
+          'votes': 'Voters'
         };
         var markerAlpha = '80';
 
         var ret = `
-          <h3 class="font-semibold">${cd.summary}</h3>
+          <h3>${cd.summary}</h3>
           <div style="width:100%; height:${labelHeightPx}px">
             <span style="float:left; height:${labelHeightPx}px; margin-top:-2px; font-size:${labelHeightPx}px">${allPrompts[cd.pId].option0}</span>
-            <span style="float:right; height:${labelHeightPx}px; margin-top:-2px; font-size:${labelHeightPx}px">${allPrompts[cd.pId].option1}</span>
+            <span style="float:right; height:${labelHeightPx}px; margin-top:-2px; margin-right:2px; font-size:${labelHeightPx}px">${allPrompts[cd.pId].option1}</span>
           </div>
           <div style="margin-left:${lineMLPerc}%; width:${lineWidthPerc}%; height:${labelHeightPx}px; margin-top:${-labelHeightPx/2 - 1}px; padding-top:${labelHeightPx/2 - 1}px"><div style="border-width:1px; height:1px"></div></div>
           <div style="margin-left:${lineMLPerc}%; width:${lineWidthPerc}%; height:${labelHeightPx}px; margin-top:${-labelHeightPx}px"><div style="width:${labelWidthPx}px; height:100%; margin-left:calc(${cd.myResponse * 100}% - ${labelWidthPx/2}px); border-radius:${labelWidthPx/2}px; background-color:${markerColors.my}${markerAlpha}"></div></div>` +
@@ -2216,12 +2216,10 @@
           var lbl = (cellContents[i] == null) ? null : labels[cellContents[i]][1];
           labelRow += `
             <td style="width:${labelCellWidthPerc}%; text-align:center">
-              ${(lbl == null) ? '' : `<span style="color:${markerColors[lbl]}" class="tracking-tight">${markerLabels[lbl]}</span>`}
+              ${(lbl == null) ? '' : `<span style="font-size:10px; color:${markerColors[lbl]}" class="tracking-tight">${markerLabels[lbl]}</span>`}
             </td>`;
         }
         labelRow += `</tr></table>`;
-
-        console.log(labelRow);
 
         ret += labelRow;
         return ret;
@@ -2294,9 +2292,9 @@
 </div>
 
 <div id="popupViewDetails" style="display:none">
-  <h3 style="width:100%; text-align:center; margin-bottom:10px" class="font-semibold">Details</h3>
+  <h3 style="width:100%; text-align:center; margin-bottom:5px" class="font-semibold">Details</h3>
 
-  <div style="height:140px; margin-bottom:10px; overflow-y:scroll">
+  <div style="height:144px; margin-bottom:10px; overflow-y:scroll">
     ${compatHtml}
   </div>
 
