@@ -5,7 +5,7 @@
   $ad_width_perc = 0;
   $ad_height_px = 0;
   $chart_height_px = 60;
-  $header_button_class = "bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-1 px-4 border border-orange-500 hover:border-transparent rounded";
+  $header_button_class = "bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-1 px-4 border border-orange-400 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
 @endphp
 
@@ -151,7 +151,7 @@
           @else
             <button onclick="set_pane_mode('pane_user_type')"
               style="margin:2px 10px 2px 2px"
-              class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-500 rounded">
+              class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 px-4 border border-orange-400 rounded">
               Vote!
             </button>
           @endauth
@@ -302,21 +302,26 @@
         <div
           class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-          Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u><br>
-          Law data sourced from <u><a href="https://worldpopulationreview.com/">World Population Review</a></u><br>
-          To keep the stats server running:
-        </div>
+          <h3 class="text-lg font-medium text-gray-900">
+            Author
+          </h3><hr>
+          <div class="py-2">
+            Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u><br>
+            Law data sourced from <u><a href="https://worldpopulationreview.com/">World Population Review</a></u><br>
+            To keep the stats server running:
+          </div>
 
-        <div class="mt-4">
-          <form action="https://www.paypal.com/donate" method="post" target="_top">
-            @csrf
-            <input type="hidden" name="business" value="YMK37RQB69REG" />
-            <input type="hidden" name="no_recurring" value="1" />
-            <input type="hidden" name="item_name" value="To keep myworld.vote active" />
-            <input type="hidden" name="currency_code" value="AUD" />
-            <input type="image" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-            <img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1" />
-          </form>
+          <div class="mt-2">
+            <form action="https://www.paypal.com/donate" method="post" target="_top">
+              @csrf
+              <input type="hidden" name="business" value="YMK37RQB69REG" />
+              <input type="hidden" name="no_recurring" value="1" />
+              <input type="hidden" name="item_name" value="To keep myworld.vote active" />
+              <input type="hidden" name="currency_code" value="AUD" />
+              <input type="image" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+              <img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1" />
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -449,7 +454,7 @@
                   <br>{{ $prompt->option0 }}
                 </div>
                 <button onclick="set_pane_mode('pane_user_type')"
-                  class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-500 rounded"
+                  class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-400 rounded"
                   style="width:25%; margin-top:10px"
                 >
                   Vote!
@@ -471,7 +476,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px; margin-top:10px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
               onclick="jumpToCompat('vote')"
             >
               Vote compatibility
@@ -481,7 +486,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px; margin-bottom:10px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
               onclick="jumpToCompat('law')"
             >
               Law compatibility
@@ -492,7 +497,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
               onclick="set_pane_mode('pane_user_type')"
             >
               Vote compatibility
@@ -502,7 +507,7 @@
             <button
               type="button"
               style="width:100%; max-width:200px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
               onclick="set_pane_mode('pane_user_type')"
             >
               Law compatibility
@@ -724,7 +729,7 @@
       <div style="display:flex; flex-direction:column; height:100%; width:100%;
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
         <button onclick="set_pane_mode('pane_new_user')"
-          class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+          class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
           style="margin-left:7px; width:100%; max-width:200px">
           New user
         </button>
@@ -746,7 +751,7 @@
               type="button"
               style="width:100%; max-width:200px"
               onclick="primeForCaptcha('login')"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
             >
               Submit
             </button>
@@ -754,7 +759,7 @@
               type="button"
               onclick="set_pane_mode('pane_polls')"
               style="width:100%; max-width:200px"
-              class="m-1 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
+              class="m-1 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-400 hover:border-transparent rounded"
             >
               Back
             </button>
@@ -804,7 +809,7 @@
           <button
             type="button"
             style="width:100%; max-width:200px"
-            class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
             onclick="newVoteSubmit()"
           >
             Submit
@@ -822,12 +827,6 @@
     -->
     <div id="pane_my_details" class="paneElement">
       <div class="scrolling-y" style="height:100%">
-        <button id="update_location_button" onclick="set_up_select_ui('update')"
-          style="width:100%; max-width:200px"
-          class="mt-2 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
-        >
-          Update location
-        </button><br>
         <form id="update_details_form" action="/update_details" method="POST"> <!--target="form_sink">-->
           @csrf
           <input type="number" id="update-row" name="grid_row" style="display:none">
@@ -854,18 +853,17 @@
             <option id="update-checkbox-{{ $tag->slug }}" value="{{ $tag->slug }}">{{ $tag->name }}</option>
           @endforeach
 
-          <button
-            class="mt-1 mb-1 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded"
+          <button id="update_location_button" onclick="set_up_select_ui('update')"
             type="button"
             style="width:100%; max-width:200px"
-            onclick="set_pane_mode('pane_polls')"
+            class="mb-2 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
           >
-            Cancel
+            Update location
           </button>
           <br>
           <button
             style="width:100%; max-width:200px"
-            class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-500 rounded"
+            class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
           >
             Submit
           </button><br>
@@ -879,6 +877,14 @@
             </input>
           </div>
         </form>
+        <button
+          class="mt-2 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-400 hover:border-transparent rounded"
+          type="button"
+          style="width:100%; max-width:200px"
+          onclick="set_pane_mode('pane_polls')"
+        >
+          Cancel
+        </button>
       </div>
     </div>
 
