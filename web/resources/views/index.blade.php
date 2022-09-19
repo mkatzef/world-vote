@@ -347,7 +347,7 @@
           style="height:100%; width:50%; float:right;
             border-top-width:2px; border-left-width:2px">
             <span id="voters_indicator" style="visibility:hidden">•</span>
-            Voters <img id="filters_msg" src="/filter.png" style="display:inline; visibility:hidden; width:20px; height:20px;"></img>
+            Voters<span style="padding-right:20px"></span>
         </button>
       </div>
 
@@ -529,7 +529,7 @@
           <h3 class="text-lg font-medium text-gray-900">
             Voter demographics
           </h3>
-          View and filter votes based on user info!
+          View info about voters around the world!
         </div>
 
         <div>
@@ -659,36 +659,15 @@
               block bg-white rounded-lg shadow-md hover:bg-gray-100
               border-2 border-gray-200 button_transition"
           >
-            <table style="width:100%; table-layout:fixed">
-              <tr style="height:60px">
-                <td style="width:80%">
-                  <a
-                    id="voter_button_{{ $tag->id }}"
-                    href="javascript:void(0)"
-                    onclick="stageVoter({{ $tag->id }})"
-                  >
-                    <div class="h-full w-full p-3">
-                      {{ $tag->name }}
-                    </div>
-                  </a>
-                </td>
-                <td style="width:20%">
-                    <a
-                    id="voter_filter_button_{{ $tag->id }}"
-                    href="javascript:void(0)"
-                    onclick="addFilter({{ $tag->id }})">
-                      <div style="width:32px; height:32px"
-                        class="hover:bg-gray-200 p-1 rounded-full">
-                        <img
-                          id="voter_filter_icon_{{ $tag->id }}"
-                          src="/filter_add.png"
-                          style="max-height:24px; max-width:24px; height:auto; width:auto">
-                        </img>
-                    </div>
-                  </a>
-                </td>
-              </tr>
-            </table>
+            <a
+              id="voter_button_{{ $tag->id }}"
+              href="javascript:void(0)"
+              onclick="stageVoter({{ $tag->id }})"
+            >
+              <div class="h-full w-full p-3">
+                {{ $tag->name }}
+              </div>
+            </a>
 
             <div id="tag_key_container_{{ $tag->id }}"
               style="width:100%; height:50px; display:none">
@@ -906,7 +885,7 @@
       function toggleLawData() {
         lawDataIsVisible = !lawDataIsVisible;
         dElem("law_checkbox").checked = lawDataIsVisible;
-        paint_filtered_prompt();
+        paint_prompt();
       }
 
       var activeCaptchaForm = null;  // 'new' or 'login'
@@ -1090,12 +1069,12 @@
         } else {
           removeCompatHandler();
         }
-        var filterContainer = dElem("tag_key_container_" + tagId);
-        filterContainer.style.display = 'inline';
         var voterContainer = dElem("voter_container_" + tagId);
         replaceClasses(voterContainer, unstagedClasses, stagedClasses);
         map.setLayoutProperty('tags_vote', 'visibility', 'visible');
         map.setLayoutProperty('tags_law', 'visibility', 'visible');
+        var filterContainer = dElem("tag_key_container_" + tagId);
+        filterContainer.style.display = 'inline';
         voters_indicator.style.visibility = 'visible';
         paint_tag();
       }
@@ -1110,44 +1089,6 @@
         map.setLayoutProperty('tags_law', 'visibility', 'none');
         removeCompatPopup();
         stagedVoterId = null;
-      }
-
-      var activeFilterId = null;
-      function refreshFilterMsg() {
-        if (activeFilterId == null) {
-          filters_msg.style.visibility = 'hidden';
-        } else {
-          filters_msg.style.visibility = 'visible';
-        }
-      }
-
-      function addFilter(tagId) {
-        if (tagId == activeFilterId) {
-          removeFilter(tagId);
-          return;
-        } else if (activeFilterId) {
-          removeFilter(activeFilterId);
-        }
-        dElem("voter_filter_button_" + tagId).onclick =
-          () => {removeFilter(tagId);};
-        var filterIcon = dElem("voter_filter_icon_" + tagId);
-        filterIcon.src = "/filter_rem.png";
-        filterIcon.parentNode.style['background-color'] = 'orange';
-
-        activeFilterId = tagId;
-        refreshFilterMsg();
-        paint_filtered_prompt();
-      }
-
-      function removeFilter(tagId) {
-        dElem("voter_filter_button_" + tagId).onclick =
-          () => {addFilter(tagId);};
-        var filterIcon = dElem("voter_filter_icon_" + tagId);
-        filterIcon.src = "/filter_add.png";
-        filterIcon.parentNode.style.removeProperty('background-color');
-        activeFilterId = null;
-        refreshFilterMsg();
-        paint_filtered_prompt();
       }
 
       function hamburgerOpen() {
@@ -1388,14 +1329,14 @@
         stagedVoteId = promptId;
         if (promptId) {
           map.setLayoutProperty('prompts', 'visibility', 'visible');
-          paint_filtered_prompt(promptId);
+          paint_prompt(promptId);
         } else {
           map.setLayoutProperty('prompts', 'visibility', 'none');
           map.setLayoutProperty('laws', 'visibility', 'none');
         }
   		}
 
-      function paint_filtered_prompt() {
+      function paint_prompt() {
         if (lawDataIsVisible && lawPromptIds.includes(stagedVoteId)) {
           map.setLayoutProperty('laws', 'visibility', 'visible');
         } else {
@@ -1406,10 +1347,9 @@
           return;
         }
         const C = activePromptColorSteps;
-        var filterKey = (activeFilterId ? allTags[activeFilterId].slug : 'all');
-        displayStats(JSON.parse(allPrompts[stagedVoteId]['count_ratios'])[filterKey], activePromptColorSteps);
+        displayStats(JSON.parse(allPrompts[stagedVoteId]['count_ratios'])['all'], activePromptColorSteps);
         if (allPrompts[stagedVoteId].is_mapped) {
-          const dataId = 'prompt-' + stagedVoteId + '-' + filterKey;
+          const dataId = 'prompt-' + stagedVoteId + '-all';
           map.setPaintProperty(
             'prompts',
             'fill-color',

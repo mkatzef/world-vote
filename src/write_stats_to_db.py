@@ -20,7 +20,7 @@ def format_counts(c):
     (n_tags+1, MAX_VOTE_STEP + 1)
     """
     ret = {}
-    for tag_i, tag_slug in enumerate(tag_key):
+    for tag_i, tag_slug in [(0, 'all')]:  # Limiting to aggregate data; else: enumerate(tag_key):
         prompt_tag_counts = c[:, tag_i]
         prompt_tag_counts[prompt_tag_counts < THRESHOLD_COUNT] = 0  # Filter entried with low numbers
         divisor = prompt_tag_counts.max()

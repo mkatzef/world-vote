@@ -18,6 +18,7 @@ def BASE_GEOJSON():
          "features": []
     }
 
+
 def BASE_POLY():
     return {
         "type": "Feature",
@@ -82,6 +83,7 @@ def block_reduce_text(src_arr):
 
     return dst_arr
 
+
 def write_cells(in_dir, out_dir, compress_json_floats=False):
     has_country = False
     country_filename = os.path.join(in_dir, '_country_labels.npy')
@@ -122,8 +124,9 @@ def write_cells(in_dir, out_dir, compress_json_floats=False):
                 cell_poly = BASE_POLY()
                 cell_poly['geometry']['coordinates'] = [bbox + [bbox[0]]]
                 for stats_label, stats_arr, tag_key in stat_list:
-                    for tag_i, tag in enumerate(tag_key):
-                        cell_poly['properties']["%s-%s" % (stats_label, tag)] = float(stats_arr[row][col][tag_i])
+                    #for tag_i, tag in enumerate(tag_key):
+                    tag_i, tag = 0, 'all'
+                    cell_poly['properties']["%s-%s" % (stats_label, tag)] = float(stats_arr[row][col][tag_i])
                 for tag_i, tag in enumerate(tag_key):
                     cell_poly['properties']["tag-%s" % tag] = float(tag_data[row][col][tag_i])
 
