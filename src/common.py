@@ -7,6 +7,7 @@ assert all([d % BASE_STEP_DEG == 0 for d in DISPLAY_SIZE_DEGS]), "BASE_STEP_DEG 
 ORIGIN_COORD = (-180, 90)
 COORD_ORDER = ((0, 0), (0, -1), (1, -1), (1, 0))
 THRESHOLD_COUNT = 3  # only include results for counts >= THRESHOLD_COUNT
+VOTE_COUNT_INCREMENT = 10
 VOTE_MAX_STEP = 10
 
 

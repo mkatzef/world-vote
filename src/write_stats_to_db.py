@@ -20,6 +20,7 @@ def format_counts(c):
     (n_tags+1, MAX_VOTE_STEP + 1)
     """
     ret = {}
+    n_votes = 0
     for tag_i, tag_slug in [(0, 'all')]:  # Limiting to aggregate data; else: enumerate(tag_key):
         prompt_tag_counts = c[:, tag_i]
         prompt_tag_counts[prompt_tag_counts < THRESHOLD_COUNT] = 0  # Filter entried with low numbers
@@ -27,11 +28,13 @@ def format_counts(c):
         if divisor == 0:
             divisor = 1
         ret[tag_slug] = list(prompt_tag_counts / divisor)
-    return json.dumps(compress_for_json(ret, 2))
+        if tag_slug == 'all':
+            n_votes = VOTE_COUNT_INCREMENT * np.floor(np.sum(prompt_tag_counts) / VOTE_COUNT_INCREMENT)
+    return n_votes, json.dumps(compress_for_json(ret, 2))
 
-sql = "UPDATE prompts SET count_ratios = '%s' WHERE id = %s"
+sql = "UPDATE prompts SET n_votes='%d', count_ratios='%s' WHERE id = %s"
 for p_id, counts in counts_raw.items():
-    vals = (format_counts(counts), str(p_id))
+    vals = (*format_counts(counts), str(p_id))
     cursor.execute(sql % vals)
 DB_CNX.commit()
 

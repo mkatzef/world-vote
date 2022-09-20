@@ -12,7 +12,7 @@
 <html>
   <head>
   	<meta charset="utf-8">
-  	<title>My World Vote</title>
+  	<title>myworld.vote</title>
     @guest
       <script src="https://www.google.com/recaptcha/enterprise.js"></script>
     @endguest
@@ -355,7 +355,7 @@
       <div
         id="poll_tab_votes"
         class="scrolling-y"
-        style="height:calc(100% - 50px - {{ $ad_height_px }}px); display:flex; flex-direction:column;
+        style="height:calc(100% - 100px - {{ $ad_height_px }}px); display:flex; flex-direction:column;
           background-color:white; border-top-right-radius:5px">
         <div
           class="block bg-white rounded-lg shadow-md p-2
@@ -381,7 +381,7 @@
               Click on a question below to see the responses!
             </h3>
           @endauth
-          <b>{{ $n_voters }}</b>+ votes so far!
+          <b>{{ $n_voters }}</b>+ users so far!
 
           <form>
             <a href="javascript:void(0)" onclick="toggleLawData()">
@@ -399,6 +399,16 @@
             class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
               mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
           >
+            <table style="width:100%; color:#a0a0a0; font-size:10px; margin:-5px 0 0 0; padding:0">
+              <tr>
+                <td style="text-align:left">
+                  ID: {{ $prompt->id }}
+                </td>
+                <td style="text-align:right">
+                  Votes: {{ $prompt->n_votes }}+
+                </td>
+              </tr>
+            </table>
             <h5
               onclick="stage_vote({{ $prompt->id }})"
               class="cursor-pointer mb-2 text-xl font-semibold tracking-tight text-gray-900">
@@ -470,50 +480,29 @@
             </div>
           </div>
         @endforeach
-
-        @auth
-          <div style="width:100%">
-            <button
-              type="button"
-              style="width:100%; max-width:200px; margin-top:10px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
-              onclick="jumpToCompat('vote')"
-            >
-              Vote compatibility
-            </button>
-          </div>
-          <div style="width:100%">
-            <button
-              type="button"
-              style="width:100%; max-width:200px; margin-bottom:10px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
-              onclick="jumpToCompat('law')"
-            >
-              Law compatibility
-            </button>
-          </div>
-        @else
-          <div style="width:100%">
-            <button
-              type="button"
-              style="width:100%; max-width:200px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
-              onclick="set_pane_mode('pane_user_type')"
-            >
-              Vote compatibility
-            </button>
-          </div>
-          <div style="width:100%">
-            <button
-              type="button"
-              style="width:100%; max-width:200px"
-              class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
-              onclick="set_pane_mode('pane_user_type')"
-            >
-              Law compatibility
-            </button>
-          </div>
-        @endauth
+      </div>
+      <div style="background-color:#eeeeee; height:50px">
+        Compatibility:
+        <button
+          type="button"
+          style="width:60px; margin-top:10px; margin-bottom:10px"
+          class="bg-orange-300 hover:bg-orange-500 text-white font-bold border border-orange-400 rounded"
+          @auth
+            onclick="jumpToCompat('vote')"
+          @else
+            onclick="set_pane_mode('pane_user_type')"
+          @endauth
+        >Votes</button>
+        <button
+          type="button"
+          style="width:60px; margin-top:10px; margin-bottom:10px"
+          class="bg-orange-300 hover:bg-orange-500 text-white font-bold border border-orange-400 rounded"
+          @auth
+            onclick="jumpToCompat('law')"
+          @else
+            onclick="set_pane_mode('pane_user_type')"
+          @endauth
+        >Laws</button>
       </div>
 
       <div
@@ -1131,7 +1120,7 @@
           title_buttons.style.display = "none";
           vert_options.style.display = "block";
           hammy.style.display = "block";
-          poll_tab_votes.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
+          poll_tab_votes.style.height = "calc(100% - 100px - {{ $ad_height_px }}px)";
           poll_tab_voters.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
           title_bar.style.width = "100%";
           delayedMapRefresh(550);
@@ -1147,7 +1136,7 @@
           title_buttons.style.display = "block";
           vert_options.style.display = "none";
           hammy.style.display = "none";
-          poll_tab_votes.style.height = "calc(100% - 50px)";
+          poll_tab_votes.style.height = "calc(100% - 100px)";
           poll_tab_voters.style.height = "calc(100% - 50px)";
           title_bar.style.width = "calc(100% - {{ $ad_width_perc }}%)";
           delayedMapRefresh(20);
