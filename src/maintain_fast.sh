@@ -6,8 +6,6 @@ min_zoom="0"
 max_zoom="3"
 out_file="tiles-comb.mbtiles"
 
-git pull
-
 if [ -f "access_token.txt" ]; then
   export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
 else
