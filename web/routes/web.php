@@ -45,7 +45,7 @@ function main($prompts, $is_query=false) {
 }
 
 function get_paginator($key='id', $order='asc') {
-  return Prompt::orderBy($key, $order)->cursorPaginate(8)->withPath('/pages/' . $key . '/' . $order);
+  return Prompt::where('reviewed', 1)->orderBy($key, $order)->cursorPaginate(10)->withPath('/pages/' . $key . '/' . $order);
 }
 
 Route::get('/', function () {

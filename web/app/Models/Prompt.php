@@ -15,5 +15,6 @@ class Prompt extends Model
       'option0',
       'option1',
       'count_ratios',
+      'creator_id',
     );
 }

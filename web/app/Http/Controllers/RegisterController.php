@@ -125,6 +125,7 @@ class RegisterController extends Controller
       'option0' => $option0,
       'option1' => $option1,
       'count_ratios' => '{"all":[0,0,0,0,0,0,0,0,0,0,0]}',
+      'creator_id' => request()->user()->id,
     ];
 
     $p = Prompt::create($attributes);

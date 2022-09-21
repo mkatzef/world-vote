@@ -178,6 +178,14 @@
             onclick="set_pane_mode('pane_polls')" class="{{ $header_button_class }}">
             Polls
           </button>
+          @auth
+            <button
+              id="title_bar_pane_create_poll"
+              style="margin:2px"
+              onclick="set_pane_mode('pane_create_poll')" class="{{ $header_button_class }}">
+              New Poll
+            </button>
+          @endauth
           <button
             id="title_bar_pane_about"
             style="margin:2px"
@@ -185,11 +193,6 @@
             About
           </button>
           @auth
-            <button
-              id="title_bar_pane_create_poll"
-              style="margin:2px"
-              onclick="set_pane_mode('pane_create_poll')" class="{{ $header_button_class }}">
-              New Poll
             </button>
             <button
               id="title_bar_pane_my_details"
@@ -250,6 +253,16 @@
           Polls
         </a>
       </p>
+      @auth
+      <hr>
+      <p>
+        <a id="hammy_pane_create_poll" href="javascript:void(0)" onclick="set_pane_mode('pane_create_poll')"
+        class="text-2xl m-2"
+        style="color:black">
+          New Poll
+        </a>
+      </p>
+      @endauth
       <hr>
       <p>
         <a id="hammy_pane_about" href="javascript:void(0)" onclick="set_pane_mode('pane_about')"
@@ -260,14 +273,6 @@
       </p>
       <hr>
       @auth
-      <p>
-        <a id="hammy_pane_create_poll" href="javascript:void(0)" onclick="set_pane_mode('pane_create_poll')"
-        class="text-2xl m-2"
-        style="color:black">
-          New Poll
-        </a>
-      </p>
-      <hr>
       <p>
         <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
         class="text-2xl m-2"
@@ -473,7 +478,7 @@
           </div>
 
           <button id="prompt_next_button" onclick="nextPage()"
-            style="margin:10px; {{ $is_query ? "display:none" : "" }}">
+            style="margin:10px; {{ $is_query ? "display:none" : "" }}"
           >Next</button>
         </div>
 
@@ -499,7 +504,7 @@
               onclick="set_pane_mode('pane_user_type')"
             @endauth
           >Laws</button>
-          <button style="float:right" onclick="closeCompatButtons()">×</button>
+          <button style="float:right" onclick="closeCompatButtons()">×&nbsp;</button>
         </div>
       </div>
 
@@ -926,6 +931,7 @@
       const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const lawPromptIds = {{ $law_prompt_ids }};
       @auth
+        const userId = {{ auth()->user()->id }};
         var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
         const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
         const myRow = {{ auth()->user()->grid_row }};
@@ -936,6 +942,8 @@
           [0, "rgba(200,200,200,0.5)"],
           [1, "rgba(0,255,0,0.9)"]
         ];
+      @else
+        const userId = -1;
       @endauth
 
       function dElem (v) {
@@ -954,6 +962,10 @@
             <tr>
               <td style="text-align:left">
                 <a href="javascript:void(0)" onclick="navigator.clipboard.writeText('${window.location.origin}/poll/${promptObj.id}');this.innerHTML='Copied'">Copy link</a>
+              </td>
+              <td style="text-align:center">
+                ${(promptObj.creator_id == userId) ? 'Mine! ' : ''}
+                ${promptObj.reviewed ? '' : 'Under review'}
               </td>
               <td style="text-align:right">
                 Votes: ${promptObj.n_votes}+
@@ -1328,6 +1340,7 @@
         }
         stagedVoterId = tagId;
 
+        // TODO fetch all prompts answered by user
         if (tagId == "comp_vote") {
           if (!canDisplayVoteCompatOrAlert()) {
             return;
