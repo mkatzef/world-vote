@@ -4,6 +4,7 @@
   $pane_width_perc = 30;
   $ad_width_perc = 0;
   $ad_height_px = 0;
+  $compat_buttons_height_px = 35;
   $chart_height_px = 60;
   $header_button_class = "bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-1 px-4 border border-orange-400 hover:border-transparent rounded";
   $chart_n_elems = 12; // false but go with it to appease the html gods
@@ -403,13 +404,13 @@
     <div style="background-color:#FF9D47; height:100%; width:100%"><!-- Cosmetic -->
       <div
         id="poll_tab_votes"
-        style="height:calc(100% - 35px - {{ $ad_height_px }}px)"
+        style="height:calc(100% - {{ $ad_height_px }}px)"
       >
         <div
           id="prompt_scolling_div"
           onscroll="autoNextPage()"
           class="scrolling-y"
-          style="height:calc(100% - 35px); display:flex; flex-direction:column;
+          style="height:calc(100% - 50px - {{ $compat_buttons_height_px }}px); display:flex; flex-direction:column;
             background-color:white; border-top-right-radius:5px">
           <div
             class="block bg-white rounded-lg shadow-md p-2 m-2 border-2 border-gray-200 grid place-items-center"
@@ -460,7 +461,7 @@
           <button id="prompt_next_button" onclick="nextPage()">Next</button>
         </div>
 
-        <div style="background-color:#f0f0f0; height:35px">
+        <div id="compat_button_bar" style="background-color:#f0f0f0; height:{{ $compat_buttons_height_px }}px">
           Compatibility:
           <button
             type="button"
@@ -482,6 +483,7 @@
               onclick="set_pane_mode('pane_user_type')"
             @endauth
           >Laws</button>
+          <button style="float:right" onclick="closeCompatButtons()">×</button>
         </div>
       </div>
 
@@ -1038,7 +1040,6 @@
 
       function setPromptOrder() {
         deleteAllChildren('prompt_content');
-        allPrompts = {};
         var order = null;
         if (prompt_sort_order.getAttribute('data-val') == 'asc') {
           order = "asc";
@@ -1311,6 +1312,13 @@
         optimizeLayout();
       }
 
+      var compatButtonsAreVisible = true;
+      function closeCompatButtons() {
+        compatButtonsAreVisible = false;
+        compat_button_bar.style.display = 'none';
+        prompt_scolling_div.style.height = 'calc(100% - 50px)';
+      }
+
       function optimizeLayout() {
         if (window.innerWidth < 800) {
           const mapHeightPerc = mapSizes[mapSize];
@@ -1325,7 +1333,8 @@
           title_buttons.style.display = "none";
           vert_options.style.display = "block";
           hammy.style.display = "block";
-          poll_tab_votes.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
+
+          poll_tab_votes.style.height = `calc(100% - {{ $ad_height_px }}px)`;
           poll_tab_voters.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
           title_bar.style.width = "100%";
           delayedMapRefresh(550);
@@ -1341,8 +1350,8 @@
           title_buttons.style.display = "block";
           vert_options.style.display = "none";
           hammy.style.display = "none";
-          poll_tab_votes.style.height = "calc(100% - 50px)";
-          poll_tab_voters.style.height = "calc(100% - 50px)";
+          poll_tab_votes.style.height = '100%';
+          poll_tab_voters.style.height = 'calc(100% - 50px)';
           title_bar.style.width = "calc(100% - {{ $ad_width_perc }}%)";
           delayedMapRefresh(20);
         }
