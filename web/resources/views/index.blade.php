@@ -471,14 +471,14 @@
           </div>
 
           <div id="prompt_content">
-            @if($is_query)
+            @if($query_id)
               <span style="margin-top:10px">Showing individual prompt</span>
               <button onclick="setPromptOrder()" style="padding:0 5px 0 5px; border-width:1px; border-radius:5px">Show all<button>
             @endif
           </div>
 
           <button id="prompt_next_button" onclick="nextPage()"
-            style="margin:10px; {{ $is_query ? "display:none" : "" }}"
+            style="margin:10px; {{ $query_id ? "display:none" : "" }}"
           >Next</button>
         </div>
 
@@ -1606,6 +1606,9 @@
         @auth
           displayLoc();
         @endauth
+        @if($query_id)
+          stage_vote({{ $query_id }});
+        @endif
   		});
       /* END OF MAP ON LOAD */
 

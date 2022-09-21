@@ -29,7 +29,7 @@ function get_compat_prompts() {
   return Prompt::whereIn('id', array_keys($responses))->where('is_mapped', 1)->get();
 }
 
-function main($prompts, $is_query=false) {
+function main($prompts, $query_id=false) {
   $value = request()->cookie('access_token');
   if ($value) {
     auth()->login(User::where('access_token', '=', $value)->first());
@@ -49,7 +49,7 @@ function main($prompts, $is_query=false) {
         General::where('property', '=', 'active_tileset_id')->first()->value('last_written')
       ),
     'n_voters' => $user_count_increment * intdiv(User::count(), $user_count_increment),
-    'is_query' => $is_query,
+    'query_id' => $query_id,
     'compat_prompts' => get_compat_prompts(),
   ]);
 }
@@ -67,7 +67,7 @@ Route::get('/pages/{key}/{order}', function ($k, $o) {
 });
 
 Route::get('/poll/{pId}', function ($pId) {
-  return main(Prompt::where('id', $pId)->get(), $is_query=true);
+  return main(Prompt::where('id', $pId)->get(), $query_id=$pId);
 });
 
 Route::get('unsuccessful', function () {
