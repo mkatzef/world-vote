@@ -20,6 +20,15 @@ use App\Http\Controllers\RegisterController;
 |
 */
 
+function get_compat_prompts() {
+  if (!auth()->check()) {
+    return [];
+  }
+
+  $responses = json_decode(auth()->user()->responses, true);
+  return Prompt::whereIn('id', array_keys($responses))->where('is_mapped', 1)->get();
+}
+
 function main($prompts, $is_query=false) {
   $value = request()->cookie('access_token');
   if ($value) {
@@ -41,6 +50,7 @@ function main($prompts, $is_query=false) {
       ),
     'n_voters' => $user_count_increment * intdiv(User::count(), $user_count_increment),
     'is_query' => $is_query,
+    'compat_prompts' => get_compat_prompts(),
   ]);
 }
 

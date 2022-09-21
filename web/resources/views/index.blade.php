@@ -923,8 +923,7 @@
     <div id="map" class="main_transition"></div>
 
   	<script>
-      const allPromptsRaw = {{ Js::from($prompts->all()) }};
-      var allPrompts = allPromptsRaw.reduce((a, v) => ({ ...a, [v.id]: v}), {});
+      const allPrompts = {{ Js::from($compat_prompts) }};
       const tagTypesArr = {{ Js::from($tag_types) }};
       const allTagTypes = tagTypesArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const tagsArr = {{ Js::from($tags) }};
@@ -1107,7 +1106,7 @@
       }
 
       function autoNextPage() {
-        var atScrollBottom = prompt_scolling_div.scrollTop == (prompt_scolling_div.scrollHeight - prompt_scolling_div.offsetHeight);
+        var atScrollBottom = prompt_scolling_div.scrollTop > -100 + (prompt_scolling_div.scrollHeight - prompt_scolling_div.offsetHeight);
         var isLoading = prompt_next_button.innerHTML == "Loading";
         if (atScrollBottom && !isLoading) {
           nextPage();
@@ -1746,7 +1745,7 @@
           map.setPaintProperty(
             'tags_vote',
             'fill-color',
-            getCompatFillExpression(myResponses, srcLookup=(pId) => {return allPrompts[pId].is_mapped})
+            getCompatFillExpression(myResponses, srcLookup=(pId) => {return allPrompts.hasOwnProperty(pId) && allPrompts[pId].is_mapped})
           );
         } else if (stagedVoterId == "comp_law") {
           map.setPaintProperty('tags_vote', 'fill-color', 'rgba(255, 255, 255, 0)');
@@ -2291,6 +2290,9 @@
         const consideredPrompts = compatType == 'law' ? lawPromptIds : Object.keys(allPrompts);
         for (let i = 0; i < consideredPrompts.length; i++) {
           var pId = consideredPrompts[i];
+          if ((compatType == 'vote') && !allPrompts[pId].is_mapped) {
+            continue;
+          }
           if (pId in myResponses) {
             var lawVal = properties['prompt-' + pId + '-all'];
             if (lawVal == -1) {
