@@ -93,6 +93,55 @@
         border: none;
         border-radius: 10px;
       }
+
+      .slidecontainer {
+        width: 100%; /* Width of the outside container */
+      }
+
+      /* The slider itself */
+      .slider {
+        -webkit-appearance: none;  /* Override default CSS styles */
+        appearance: none;
+        width: 100%; /* Full-width */
+        height: 25px; /* Specified height */
+        left: 25px;
+        background: #d3d3d3; /* Grey background */
+        border-bottom-left-radius:12px;
+        border-bottom-right-radius:12px;
+        outline: none; /* Remove outline */
+        opacity: .6; /* Set transparency (for mouse-over effects on hover) */
+        -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+        transition: opacity .2s;
+        margin: 0;
+      }
+
+      /* Mouse-over effects */
+      .slider:hover {
+        opacity: .4; /* Fully shown on mouse-over */
+      }
+
+      /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        appearance: none;
+        width: 25px; /* Set a specific slider handle width */
+        height: 25px; /* Slider handle height */
+        background: url('/arrows.png');
+        cursor: pointer; /* Cursor on hover */
+      }
+
+      .slider::-moz-range-thumb {
+        width: 25px; /* Set a specific slider handle width */
+        height: 25px; /* Slider handle height */
+        background: #000000; /* Green background */
+        cursor: pointer; /* Cursor on hover */
+      }
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
   	</style>
   </head>
 
@@ -354,155 +403,86 @@
     <div style="background-color:#FF9D47; height:100%; width:100%"><!-- Cosmetic -->
       <div
         id="poll_tab_votes"
-        class="scrolling-y"
-        style="height:calc(100% - 100px - {{ $ad_height_px }}px); display:flex; flex-direction:column;
-          background-color:white; border-top-right-radius:5px">
+        style="height:calc(100% - 35px - {{ $ad_height_px }}px)"
+      >
         <div
-          class="block bg-white rounded-lg shadow-md p-2
-            m-2 border-2 border-gray-200"
-        >
-          @auth
-            <div style="width:100%; text-align:center">
-              <h3 class="text-lg font-medium text-gray-900">
-                Your login code is:
-              </h3>
-              <button
-                onclick="code_copy_msg.innerText='Copied!';navigator.clipboard.writeText('{{ auth()->user()->access_token }}')"
-                class="hover:bg-white rounded-lg shadow-m hover:bg-gray-100">
-                <div>
-                  <img src="/copy.png" style="float:left; height:16px; width:16px; margin:4px"></img>
-                  <b style="float:right">{{ auth()->user()->access_token }}</b>
-                </div>
-              </button>
-              <p id="code_copy_msg"></p>
-            </div>
-          @else
-            <h3 class="text-lg font-medium text-gray-900">
-              Click on a question below to see the responses!
-            </h3>
-          @endauth
-          <b>{{ $n_voters }}</b>+ users so far!
-
-          <form>
-            <a href="javascript:void(0)" onclick="toggleLawData()">
-              <div class="rounded hover:bg-gray-200">
-                <input style="vertical-align:-1px;" type="checkbox" id="law_checkbox" class="mb-2"> Show law data</input>
+          id="prompt_scolling_div"
+          onscroll="autoNextPage()"
+          class="scrolling-y"
+          style="height:calc(100% - 35px); display:flex; flex-direction:column;
+            background-color:white; border-top-right-radius:5px">
+          <div
+            class="block bg-white rounded-lg shadow-md p-2 m-2 border-2 border-gray-200 grid place-items-center"
+          >
+            @auth
+              <div style="width:100%; text-align:center">
+                <h3 class="text-lg font-medium text-gray-900">
+                  Your login code is:
+                </h3>
+                <button
+                  onclick="code_copy_msg.innerText='✅&nbsp;';navigator.clipboard.writeText('{{ auth()->user()->access_token }}')"
+                  class="rounded-lg shadow-m hover:bg-gray-100 px-1">
+                  <div>
+                    <img src="/copy.png" style="float:left; height:16px; width:16px; margin:4px"></img>
+                    <b style="float:right">{{ auth()->user()->access_token }} <span id="code_copy_msg"></span></b>
+                  </div>
+                </button>
               </div>
-            </a>
-          </form>
-          Last updated: {{ $last_updated->diffForHumans() }}
+            @else
+              <h3 class="text-lg font-medium text-gray-900 px-1">
+                Click on a question below to see the responses from <b>over {{ $n_voters }} users</b>!
+              </h3>
+            @endauth
+
+            Last updated: {{ $last_updated->diffForHumans() }}
+          </div>
+
+          <div>
+            Sort by:
+            <select style="width:150px" id='prompt_sort_key' onchange="setPromptOrder()">
+              <option value="id">Date added</option>
+              <option value="n_votes">Number of votes</option>
+            </select>
+            <button id="prompt_sort_order" data-val="asc" onclick="togglePromptOrder()"
+              style="border-width:1px; width:110px; border-radius:5px; margin-left:10px"
+            >
+              <span id="prompt_sort_order_label">Ascending</span>
+            </button>
+          </div>
+
+          <div id="prompt_content">
+            @if($is_query)
+              <span>Showing individual prompt</span>
+              <button onclick="setPromptOrder()">Show all<button>
+            @endif
+          </div>
+
+          <button id="prompt_next_button" onclick="nextPage()">Next</button>
         </div>
 
-        @foreach ($prompts as $prompt)
-          <div
-            id="vote_button_{{ $prompt->id }}"
-            class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-              mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
-          >
-            <table style="width:100%; color:#a0a0a0; font-size:10px; margin:-5px 0 0 0; padding:0">
-              <tr>
-                <td style="text-align:left">
-                  ID: {{ $prompt->id }}
-                </td>
-                <td style="text-align:right">
-                  Votes: {{ $prompt->n_votes }}+
-                </td>
-              </tr>
-            </table>
-            <h5
-              onclick="stage_vote({{ $prompt->id }})"
-              class="cursor-pointer mb-2 text-xl font-semibold tracking-tight text-gray-900">
-              {{ $prompt->caption }}
-            </h5>
-
-            <div id="prompt_content_{{ $prompt->id }}" style="width:100%; padding:5px; display:none;">
-              <table id="stats_chart_{{ $prompt->id }}"
-                style="table-layout:fixed; width:100%; height:{{ $chart_height_px }}px; border-bottom: 1px solid gray"
-              >
-                <tr valign=bottom>
-                  @for($i = 0; $i < $chart_n_elems; ++$i)
-                    <td style="height:{{ $chart_height_px }}px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
-                      <div id="stats_{{ $prompt->id }}_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:100%">
-                      </div>
-                    </td>
-                  @endfor
-                </tr>
-              </table>
-              <a href="javascript:void(0)" onclick="revealStats()">
-                <div id="stats_mask_{{ $prompt->id }}" style="margin-top:-{{ $chart_height_px }}px; width:100%; height:{{ $chart_height_px }}px;
-                  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-                  border-top-left-radius:5px; border-top-right-radius:5px; padding:20px"
-                >
-                  Show stats
-                </div>
-              </a>
-              @auth
-                <form id="vote_form_{{ $prompt->id }}" action="/update_responses" method="POST" target="form_sink">
-                  @csrf
-                  <x-vote-slider :prompt=$prompt />
-                </form>
-                <div id="vote_status_msg_{{ $prompt->id }}" style="width:100%">
-                  Slide to vote
-                </div>
-                <div style="float:left; width:45%; text-align:left">
-                  <input id="color_input_{{ $prompt->id }}_option0" type="color"
-                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
-                  />
-                  {{ $prompt->option0 }}
-                </div>
-                <div style="float:right; width:45%; text-align:right">
-                  {{ $prompt->option1 }}
-                  <input id="color_input_{{ $prompt->id }}_option1" type="color"
-                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
-                  />
-                </div>
-              @else
-                <div style="float:left; width:35%; text-align:left">
-                  <input id="color_input_{{ $prompt->id }}_option0" type="color"
-                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
-                  />
-                  <br>{{ $prompt->option0 }}
-                </div>
-                <button onclick="set_pane_mode('pane_user_type')"
-                  class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-400 rounded"
-                  style="width:25%; margin-top:10px"
-                >
-                  Vote!
-                </button>
-                <div style="float:right; width:35%; text-align:right">
-                  <input id="color_input_{{ $prompt->id }}_option1" type="color"
-                    style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
-                  />
-                  <br>{{ $prompt->option1 }}
-                </div>
-              @endauth
-
-            </div>
-          </div>
-        @endforeach
-      </div>
-      <div style="background-color:#eeeeee; height:50px">
-        Compatibility:
-        <button
-          type="button"
-          style="width:60px; margin-top:10px; margin-bottom:10px"
-          class="bg-orange-300 hover:bg-orange-500 text-white font-bold border border-orange-400 rounded"
-          @auth
-            onclick="jumpToCompat('vote')"
-          @else
-            onclick="set_pane_mode('pane_user_type')"
-          @endauth
-        >Votes</button>
-        <button
-          type="button"
-          style="width:60px; margin-top:10px; margin-bottom:10px"
-          class="bg-orange-300 hover:bg-orange-500 text-white font-bold border border-orange-400 rounded"
-          @auth
-            onclick="jumpToCompat('law')"
-          @else
-            onclick="set_pane_mode('pane_user_type')"
-          @endauth
-        >Laws</button>
+        <div style="background-color:#f0f0f0; height:35px">
+          Compatibility:
+          <button
+            type="button"
+            style="width:60px; margin-top:5px; margin-bottom:5px"
+            class="bg-orange-300 hover:bg-orange-500 text-white font-bold border border-orange-400 rounded"
+            @auth
+              onclick="jumpToCompat('vote')"
+            @else
+              onclick="set_pane_mode('pane_user_type')"
+            @endauth
+          >Votes</button>
+          <button
+            type="button"
+            style="width:60px; margin-top:5px; margin-bottom:5px"
+            class="bg-orange-300 hover:bg-orange-500 text-white font-bold border border-orange-400 rounded"
+            @auth
+              onclick="jumpToCompat('law')"
+            @else
+              onclick="set_pane_mode('pane_user_type')"
+            @endauth
+          >Laws</button>
+        </div>
       </div>
 
       <div
@@ -557,13 +537,13 @@
                 style="width:100%; height:50px; display:none">
                 <table style="width:100%; text-align:center; margin-bottom:5px">
                   <tr>
-                    <td style="width:15%" class="text-base">
+                    <td style="width:25%" class="text-base">
                       Min
                     </td>
-                    <td style="width:70%">
+                    <td style="width:50%">
                       <div class="rounded" style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
                     </td>
-                    <td style="width:15%" class="text-base">
+                    <td style="width:25%" class="text-base">
                       Max
                     </td>
                   </tr>
@@ -605,13 +585,13 @@
                 style="width:100%; height:50px; display:none">
                 <table style="width:100%; text-align:center; margin-bottom:5px">
                   <tr>
-                    <td style="width:15%" class="text-base">
+                    <td style="width:25%" class="text-base">
                       Min
                     </td>
-                    <td style="width:70%">
+                    <td style="width:50%">
                       <div class="rounded" id="color_scale_{{ $comp_type }}" style="width:100%; height:30px"></div>
                     </td>
-                    <td style="width:15%" class="text-base">
+                    <td style="width:25%" class="text-base">
                       Max
                     </td>
                   </tr>
@@ -662,13 +642,13 @@
               style="width:100%; height:50px; display:none">
               <table style="width:100%; text-align:center; margin-bottom:5px">
                 <tr>
-                  <td style="width:15%" class="text-base">
+                  <td style="width:25%" class="text-base">
                     Min %
                   </td>
-                  <td style="width:70%">
+                  <td style="width:50%">
                     <div class="rounded" style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
                   </td>
-                  <td style="width:15%" class="text-base">
+                  <td style="width:25%" class="text-base">
                     Max %
                   </td>
                 </tr>
@@ -866,14 +846,239 @@
     <div id="map" class="main_transition"></div>
 
   	<script>
+      const allPromptsRaw = {{ Js::from($prompts->all()) }};
+      var allPrompts = allPromptsRaw.reduce((a, v) => ({ ...a, [v.id]: v}), {});
+      const tagTypesArr = {{ Js::from($tag_types) }};
+      const allTagTypes = tagTypesArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
+      const tagsArr = {{ Js::from($tags) }};
+      const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
+      const lawPromptIds = {{ $law_prompt_ids }};
+      @auth
+        var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
+        const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
+        const myRow = {{ auth()->user()->grid_row }};
+        const myCol = {{ auth()->user()->grid_col }};
+
+        const compColorSteps = [
+          [-1, "rgba(255,0,0,0.9)"],
+          [0, "rgba(200,200,200,0.5)"],
+          [1, "rgba(0,255,0,0.9)"]
+        ];
+      @endauth
+
       function dElem (v) {
         return document.getElementById(v);
       }
 
-      var lawDataIsVisible = false;
-      function toggleLawData() {
-        lawDataIsVisible = !lawDataIsVisible;
-        dElem("law_checkbox").checked = lawDataIsVisible;
+      function getPromptHtml(promptObj) {
+        return `
+        <div
+          id="vote_button_${promptObj.id}"
+          class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
+            mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
+        >
+          <table style="width:100%; color:#a0a0a0; font-size:10px; margin:-5px 0 0 0; padding:0">
+            <tr>
+              <td style="text-align:left">
+                ID: ${promptObj.id}
+              </td>
+              <td style="text-align:right">
+                Votes: ${promptObj.n_votes}+
+              </td>
+            </tr>
+          </table>
+          <h5
+            onclick="stage_vote(${promptObj.id})"
+            class="cursor-pointer mb-2 text-xl font-semibold tracking-tight text-gray-900">
+            ${promptObj.caption}
+          </h5>
+
+          <div id="prompt_content_${promptObj.id}" style="width:100%; padding:5px; display:none;">
+            <table id="stats_chart_${promptObj.id}"
+              style="table-layout:fixed; width:100%; height:{{ $chart_height_px }}px; border-bottom: 1px solid gray"
+            >
+              <tr valign=bottom>
+                @for($i = 0; $i < $chart_n_elems; ++$i)
+                  <td style="height:{{ $chart_height_px }}px; width:{{ $i == ($chart_n_elems-1) ? 0 : 100 / ($chart_n_elems - 1) }}%">
+                    <div id="stats_${promptObj.id}_cell_{{ $i }}" style="border-top-left-radius:5px; border-top-right-radius:5px; width:100%; height:100%">
+                    </div>
+                  </td>
+                @endfor
+              </tr>
+            </table>
+            <a href="javascript:void(0)" onclick="revealStats()">
+              <div id="stats_mask_${promptObj.id}" style="margin-top:-{{ $chart_height_px }}px; width:100%; height:{{ $chart_height_px }}px;
+                -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+                border-top-left-radius:5px; border-top-right-radius:5px; padding:20px"
+              >
+                Show stats
+              </div>
+            </a>
+            @auth
+              <form id="vote_form_${promptObj.id}" action="/update_responses" method="POST" target="form_sink">
+                @csrf
+                <div class="slidecontainer" style="position:relative">
+                    <div id="vote_slider_bg_${promptObj.id}"
+                      style="position:absolute;height:25px;width:100%;
+                      border-bottom-left-radius:12px; border-bottom-right-radius:12px">
+                    </div>
+                    <input
+                      type="range"
+                      class="slider"
+                      id="vote_slider_${promptObj.id}"
+                      min="0"
+                      max="10"
+                      value="5"
+                    />
+                </div>
+              </form>
+              <div id="vote_status_msg_${promptObj.id}" style="width:100%">
+                Slide to vote
+              </div>
+              <div style="float:left; width:45%; font-size:12px; text-align:center">
+                <input id="color_input_${promptObj.id}_option0" type="color"
+                  style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                />
+                ${promptObj.option0}
+              </div>
+              <div style="float:right; width:45%; font-size:12px; text-align:center">
+                ${promptObj.option1}
+                <input id="color_input_${promptObj.id}_option1" type="color"
+                  style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                />
+              </div>
+            @else
+              <div style="float:left; width:35%; font-size:12px; text-align:center">
+                <input id="color_input_${promptObj.id}_option0" type="color"
+                  style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                />
+                <br>${promptObj.option0}
+              </div>
+              <button onclick="set_pane_mode('pane_user_type')"
+                class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-400 rounded"
+                style="width:25%; margin-top:5px"
+              >
+                Vote!
+              </button>
+              <div style="float:right; width:35%; font-size:12px; text-align:center">
+                <input id="color_input_${promptObj.id}_option1" type="color"
+                  style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
+                />
+                <br>${promptObj.option1}
+              </div>
+            @endauth
+
+            <div
+              id="vote_extras_msg_${promptObj.id}"
+              style="width:100%; font-size:12px; margin:-4px 0 -4px 0"
+              class="block grid place-items-center">
+            </div>
+          </div>
+        </div>
+        `
+      }
+
+      function addPromptObj(promptObj) {
+        prompt_content.insertAdjacentHTML('beforeend', getPromptHtml(promptObj));
+        allPrompts[promptObj.id] = promptObj;
+      }
+
+      @foreach ($prompts as $prompt)
+        addPromptObj({{ Js::from($prompt) }});
+      @endforeach
+
+      var currentPagination = {{ Js::from($prompts) }};
+      function acceptPageData(pageData) {
+        currentPagination = JSON.parse(pageData);
+        for (let i = 0; i < currentPagination['data'].length; i++) {
+          addPromptObj(currentPagination['data'][i]);
+        }
+        prompt_next_button.innerHTML = "Next";
+      }
+
+      function requestAndLoadPage(url) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+          acceptPageData(this.responseText);
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send();
+      }
+
+      function nextPage() {
+        const dst_url = currentPagination.next_page_url;
+        if (dst_url != null) {
+          prompt_next_button.innerHTML = "Loading";
+          requestAndLoadPage(dst_url);
+        } else {
+          prompt_next_button.innerHTML = "No more results";
+        }
+      }
+
+      function autoNextPage() {
+        var atScrollBottom = prompt_scolling_div.scrollTop == (prompt_scolling_div.scrollHeight - prompt_scolling_div.offsetHeight);
+        var isLoading = prompt_next_button.innerHTML == "Loading";
+        if (atScrollBottom && !isLoading) {
+          nextPage();
+        }
+      }
+
+      function newPagination(key, order) {
+        requestAndLoadPage(`/pages/${key}/${order}`);
+      }
+
+      function deleteAllChildren(elemName) {
+        const e = dElem(elemName);
+        var child = e.lastElementChild;
+        while (child) {
+          e.removeChild(child);
+          child = e.lastElementChild;
+        }
+      }
+
+      function setPromptOrder() {
+        deleteAllChildren('prompt_content');
+        allPrompts = {};
+        var order = null;
+        if (prompt_sort_order.getAttribute('data-val') == 'asc') {
+          order = "asc";
+        } else {
+          order = "desc";
+        }
+        newPagination(prompt_sort_key.value, order);
+      }
+
+      function togglePromptOrder() {
+        if (prompt_sort_order.getAttribute('data-val') == 'asc') {
+          order = "desc";
+          prompt_sort_order_label.innerHTML = "Descending";
+        } else {
+          order = "asc";
+          prompt_sort_order_label.innerHTML = "Ascending";
+        }
+        prompt_sort_order.setAttribute('data-val', order);
+        setPromptOrder();
+      }
+
+      var mapDataIsVisible = {};
+      function toggleMapData(pId) {
+        if (mapDataIsVisible.hasOwnProperty(pId)) {
+          mapDataIsVisible[pId] = !mapDataIsVisible[pId];
+        } else {
+          mapDataIsVisible[pId] = false;
+        }
+        dElem("map_checkbox_" + pId).checked = mapDataIsVisible[pId];
+        paint_prompt();
+      }
+
+      var lawDataIsVisible = {};
+      function toggleLawData(pId) {
+        if (lawDataIsVisible.hasOwnProperty(pId)) {
+          lawDataIsVisible[pId] = !lawDataIsVisible[pId];
+        } else {
+          lawDataIsVisible[pId] = true;
+        }
+        dElem("law_checkbox_" + pId).checked = lawDataIsVisible[pId];
         paint_prompt();
       }
 
@@ -951,7 +1156,7 @@
         // Remove all map elements
         if (mapHasLoaded) {
           tear_down_select_ui();
-          display_prompt(null);
+          stage_vote(null);
           hamburgerClose();
           if (stagedVoterId != null) {
             unstageVoter(stagedVoterId);
@@ -999,7 +1204,7 @@
           return;
         }
         if (pane_poll_mode == "votes") {
-          poll_tab_votes.style.display = 'flex';
+          poll_tab_votes.style.display = 'block';
           poll_tab_voters.style.display = 'none';
           replaceClasses(poll_tab_vote_button, voteVoterUnstagedClasses, voteVoterStagedClasses);
           replaceClasses(poll_tab_voter_button, voteVoterStagedClasses, voteVoterUnstagedClasses);
@@ -1120,7 +1325,7 @@
           title_buttons.style.display = "none";
           vert_options.style.display = "block";
           hammy.style.display = "block";
-          poll_tab_votes.style.height = "calc(100% - 100px - {{ $ad_height_px }}px)";
+          poll_tab_votes.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
           poll_tab_voters.style.height = "calc(100% - 50px - {{ $ad_height_px }}px)";
           title_bar.style.width = "100%";
           delayedMapRefresh(550);
@@ -1136,7 +1341,7 @@
           title_buttons.style.display = "block";
           vert_options.style.display = "none";
           hammy.style.display = "none";
-          poll_tab_votes.style.height = "calc(100% - 100px)";
+          poll_tab_votes.style.height = "calc(100% - 50px)";
           poll_tab_voters.style.height = "calc(100% - 50px)";
           title_bar.style.width = "calc(100% - {{ $ad_width_perc }}%)";
           delayedMapRefresh(20);
@@ -1317,7 +1522,6 @@
         activePromptColorSteps = colorSteps;
         stagedVoteId = promptId;
         if (promptId) {
-          map.setLayoutProperty('prompts', 'visibility', 'visible');
           paint_prompt(promptId);
         } else {
           map.setLayoutProperty('prompts', 'visibility', 'none');
@@ -1326,11 +1530,18 @@
   		}
 
       function paint_prompt() {
-        if (lawDataIsVisible && lawPromptIds.includes(stagedVoteId)) {
+        if (lawDataIsVisible.hasOwnProperty(stagedVoteId) && lawDataIsVisible[stagedVoteId]) {
           map.setLayoutProperty('laws', 'visibility', 'visible');
         } else {
           map.setLayoutProperty('laws', 'visibility', 'none');
         }
+
+        if (!mapDataIsVisible.hasOwnProperty(stagedVoteId) || mapDataIsVisible[stagedVoteId]) {
+          map.setLayoutProperty('prompts', 'visibility', 'visible');
+        } else {
+          map.setLayoutProperty('prompts', 'visibility', 'none');
+        }
+
         // Used as a workaround so that filters can affect map and charts
         if (!stagedVoteId) {
           return;
@@ -1664,14 +1875,19 @@
         ];
       }
 
-      function setVoteStatus(wasSubmitted=false) {
+      function setVoteStatus(wasSubmitted=false, previously=false) {
         var voteSliderStyle = document.querySelector('[data="test"]');
         var vsm = dElem("vote_status_msg_" + stagedVoteId);
         if (wasSubmitted) {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/tick.png');} .slider::-moz-range-thumb {background:url('/tick.png');}";
-          vsm.innerHTML = "Submitted!";
+          if (previously) {
+            vsm.style.display = 'none';
+          } else {
+            vsm.innerHTML = "Submitted!";
+          }
         } else {
           voteSliderStyle.innerHTML = ".slider::-webkit-slider-thumb {background:url('/arrows.png');} .slider::-moz-range-thumb {background:url('/arrows.png');}";
+          vsm.style.display = 'block';
           vsm.innerHTML = "Slide to vote";
         }
       }
@@ -1702,6 +1918,11 @@
           });
       @endforeach
 
+      function toggleExtrasVisibilty(pId) {
+        var elem = dElem('extras_' + stagedVoteId);
+        elem.style.display = (elem.style.display == 'block') ? 'none' : 'block';
+      }
+
       function showPromptContent() {
         var prompt = allPrompts[stagedVoteId];
         dElem('prompt_content_' + stagedVoteId).style.display = "block";
@@ -1721,6 +1942,53 @@
         dElem('color_input_' + stagedVoteId + '_option0').value = colorArrToHex(stagedColors[0]);
         dElem('color_input_' + stagedVoteId + '_option1').value = colorArrToHex(stagedColors[1]);
 
+        var extrasElem = dElem("vote_extras_msg_" + stagedVoteId);
+        var extrasContent = [];
+        if (prompt.is_mapped) {
+          extrasContent.push(`
+            <form>
+              <a href="javascript:void(0)" onclick="toggleMapData(${stagedVoteId})">
+                <div
+                  class="rounded-lg shadow-m hover:bg-gray-100">
+                  <input style="vertical-align:-2px;" type="checkbox" id="map_checkbox_${stagedVoteId}" class="mb-2"
+                  ${
+                    (!mapDataIsVisible.hasOwnProperty(stagedVoteId) || mapDataIsVisible[stagedVoteId]) ? 'checked' : ''
+                  }> Show map data</input>
+                </div>
+              </a>
+            </form>
+          `);
+        }
+        if (lawPromptIds.includes(stagedVoteId)) {
+          extrasContent.push(
+            `<form>
+              <a href="javascript:void(0)" onclick="toggleLawData(${stagedVoteId})">
+                <div
+                  class="rounded-lg shadow-m hover:bg-gray-100">
+                  <input style="vertical-align:-2px;" type="checkbox" id="law_checkbox_${stagedVoteId}" class="mb-2"
+                  ${
+                    (lawDataIsVisible.hasOwnProperty(stagedVoteId) && lawDataIsVisible[stagedVoteId]) ? 'checked' : ''
+                  }> Show law data</input>
+                </div>
+              </a>
+            </form>`
+          );
+        }
+
+        if (extrasContent.length == 0) {
+          extrasElem.style.display = 'none';
+        } else {
+          extrasElem.innerHTML =
+            `<hr class="m-2" style="border-width:1px; width:100%">
+            <button onclick="toggleExtrasVisibilty(${stagedVoteId})">
+              <b>Extras</b>
+            </button>
+            <div id="extras_${stagedVoteId}" style="width:100%; display:none" class="grid place-items-center">
+              ${extrasContent.join('')}
+            </div>
+          `
+        }
+
         var shouldRevealStats = false;
         @auth
           // Slider colors
@@ -1737,7 +2005,7 @@
           slider.name = prompt.id;
           if (prompt.id in myResponses) {
             slider.value = "" + myResponses[prompt.id];
-            setVoteStatus(true);
+            setVoteStatus(true, true);
             shouldRevealStats = true;
           } else {
             slider.value = prompt.n_steps / 2;
@@ -1855,26 +2123,6 @@
         dElem('stats_mask_' + stagedVoteId).style.display = 'none';
         allPrompts[stagedVoteId].has_been_opened = true;
       }
-
-      const allPromptsRaw = {{ Js::from($prompts) }};
-      const allPrompts = allPromptsRaw.reduce((a, v) => ({ ...a, [v.id]: v}), {});
-      const tagTypesArr = {{ Js::from($tag_types) }};
-      const allTagTypes = tagTypesArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
-      const tagsArr = {{ Js::from($tags) }};
-      const allTags = tagsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
-      const lawPromptIds = {{ $law_prompt_ids }};
-      @auth
-        var myResponses = JSON.parse({{ Js::from(auth()->user()->responses) }});
-        const myTags = JSON.parse({{ Js::from(auth()->user()->tags) }});
-        const myRow = {{ auth()->user()->grid_row }};
-        const myCol = {{ auth()->user()->grid_col }};
-
-        const compColorSteps = [
-          [-1, "rgba(255,0,0,0.9)"],
-          [0, "rgba(200,200,200,0.5)"],
-          [1, "rgba(0,255,0,0.9)"]
-        ];
-      @endauth
 
       const tag_poses = ['new', 'update', 'voter'];
       for (let tag_i = 0; tag_i < tag_poses.length; tag_i++) {
@@ -2330,7 +2578,6 @@
         isFlying = true;
         map.flyTo({center: popupLngLat});
       }
-
   	</script>
   </body>
 

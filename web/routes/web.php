@@ -20,27 +20,44 @@ use App\Http\Controllers\RegisterController;
 |
 */
 
+function main($prompts, $is_query=false) {
+  $value = request()->cookie('access_token');
+  if ($value) {
+    auth()->login(User::where('access_token', '=', $value)->first());
+  }
+  $user_count_increment = 10;
+  $law_data = General::where('property', '=', 'law_tileset_id')->first();
+  return view('index', [
+    'tags' => Tag::all(),
+    'tag_types' => TagType::all(),
+    'prompts' => $prompts,
+    'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue'),
+    'law_tileset_id' => $law_data['pvalue'],
+    'law_prompt_ids' => $law_data['extra'],
+    'last_updated' =>
+      Carbon::createFromFormat(
+        'Y-m-d H:i:s',
+        General::where('property', '=', 'active_tileset_id')->first()->value('last_written')
+      ),
+    'n_voters' => $user_count_increment * intdiv(User::count(), $user_count_increment),
+    'is_query' => $is_query,
+  ]);
+}
+
+function get_paginator($key='id', $order='asc') {
+  return Prompt::orderBy($key, $order)->cursorPaginate(8)->withPath('/pages/' . $key . '/' . $order);
+}
+
 Route::get('/', function () {
-    $value = request()->cookie('access_token');
-    if ($value) {
-      auth()->login(User::where('access_token', '=', $value)->first());
-    }
-    $user_count_increment = 10;
-    $law_data = General::where('property', '=', 'law_tileset_id')->first();
-    return view('index', [
-      'tags' => Tag::all(),
-      'tag_types' => TagType::all(),
-      'prompts' => Prompt::all(),
-      'tileset_id' => General::where('property', '=', 'active_tileset_id')->first()->value('pvalue'),
-      'law_tileset_id' => $law_data['pvalue'],
-      'law_prompt_ids' => $law_data['extra'],
-      'last_updated' =>
-        Carbon::createFromFormat(
-          'Y-m-d H:i:s',
-          General::where('property', '=', 'active_tileset_id')->first()->value('last_written')
-        ),
-      'n_voters' => $user_count_increment * intdiv(User::count(), $user_count_increment),
-    ]);
+  return main(get_paginator());
+});
+
+Route::get('/pages/{key}/{order}', function ($k, $o) {
+  return get_paginator($k, $o);
+});
+
+Route::get('/prompt/{pId}', function ($pId) {
+  return main(Prompt::where('id', $pId)->get(), $is_query=true);
 });
 
 Route::get('unsuccessful', function () {
@@ -54,7 +71,7 @@ Route::get('login_failed', function () {
 Route::get('logout', function () {
   Session::flush();
   Auth::logout();
-  return redirect('/');
+  return redirect('/')->withoutCookie('access_token');
 })->middleware('auth');
 
 Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');

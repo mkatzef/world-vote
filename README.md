@@ -27,18 +27,12 @@ The locally-hosted URL will appear in your terminal when running. Navigate to th
 
 
 ## Next steps
-Required:  
-Redistribute a35+
-Add shareable compatibility chart
-
-Optional:
-* Add a favicon
-* Animate hammy
 * Add user-submitted prompts
-* Add prompt categories  
 * Add prompt search  
+* Add prompt sorting
+* Add prompt sharing
+
 * Add reminder to copy login code
-* Schedule EC2 instance only when updating
 * Obfuscate/minify code
 
 
