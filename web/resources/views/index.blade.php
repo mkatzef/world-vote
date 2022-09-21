@@ -186,6 +186,12 @@
           </button>
           @auth
             <button
+              id="title_bar_pane_create_poll"
+              style="margin:2px"
+              onclick="set_pane_mode('pane_create_poll')" class="{{ $header_button_class }}">
+              New Poll
+            </button>
+            <button
               id="title_bar_pane_my_details"
               style="margin:2px"
               onclick="button_update_details()" class="{{ $header_button_class }}">
@@ -254,6 +260,14 @@
       </p>
       <hr>
       @auth
+      <p>
+        <a id="hammy_pane_create_poll" href="javascript:void(0)" onclick="set_pane_mode('pane_create_poll')"
+        class="text-2xl m-2"
+        style="color:black">
+          New Poll
+        </a>
+      </p>
+      <hr>
       <p>
         <a id="hammy_pane_my_details" href="javascript:void(0)" onclick="button_update_details()"
         class="text-2xl m-2"
@@ -377,7 +391,7 @@
     </div>
 
     <!--
-      DATA
+      Polls
     -->
   	<div id="pane_polls" class="paneElement">
       <div
@@ -438,7 +452,7 @@
             Last updated: {{ $last_updated->diffForHumans() }}
           </div>
 
-          <div>
+          <div style="margin:5px">
             Sort by:
             <select style="width:150px" id='prompt_sort_key' onchange="setPromptOrder()">
               <option value="id">Date added</option>
@@ -453,12 +467,14 @@
 
           <div id="prompt_content">
             @if($is_query)
-              <span>Showing individual prompt</span>
-              <button onclick="setPromptOrder()">Show all<button>
+              <span style="margin-top:10px">Showing individual prompt</span>
+              <button onclick="setPromptOrder()" style="padding:0 5px 0 5px; border-width:1px; border-radius:5px">Show all<button>
             @endif
           </div>
 
-          <button id="prompt_next_button" onclick="nextPage()">Next</button>
+          <button id="prompt_next_button" onclick="nextPage()"
+            style="margin:10px; {{ $is_query ? "display:none" : "" }}">
+          >Next</button>
         </div>
 
         <div id="compat_button_bar" style="background-color:#f0f0f0; height:{{ $compat_buttons_height_px }}px">
@@ -672,8 +688,62 @@
     </div>
 
 
+    <div id="pane_create_poll" class="paneElement scrolling">
+      <div class="scrolling-y" style="height:100%">
+        <h3 class="mt-2 text-lg font-medium text-gray-900">
+          Create new poll
+        </h3>
+        <form id="new_poll_form" action="/create_poll" method="POST"> <!--target="form_sink">-->
+          @csrf
+          <label for="new_poll_summary">Summary</label>
+          <input
+            id="new_poll_summary"
+            placeholder="e.g., global warming"
+            name="summary"
+            style="width:90%"
+            class="m-1 shadow appearance-none border rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+          <br>
+          <label for="new_poll_prompt">Poll question</label>
+          <textarea
+            id="new_poll_prompt"
+            placeholder="e.g., should we be doing more about global warming?"
+            name="prompt"
+            maxlength="140"
+            style="width:90%"
+            class="m-1 shadow appearance-none border rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          ></textarea>
+          <br>
+          <label for="create_poll_answer_type">Answers:</label>
+          <select style="width:150px" id="create_poll_answer_type" name='answer_type'>
+            <option value="yes_no">Yes / No</option>
+            <option value="zero_ten">0 to 10</option>
+            <option value="high_low">High / Low</option>
+            <option value="good_bad">Good / Bad</option>
+          </select>
+          <br>
+
+          <button
+            style="width:100%; max-width:200px; margin-top:20px"
+            class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
+          >
+            Submit
+          </button>
+          <br>
+          <button
+            type="button"
+            onclick="set_pane_mode('pane_polls')"
+            style="width:100%; max-width:200px"
+            class="m-1 bg-white hover:bg-orange-500 text-orange-300 font-semibold hover:text-white py-2 px-4 border border-orange-400 hover:border-transparent rounded"
+          >
+            Back
+          </button>
+        </form>
+      </div>
+    </div>
+
     <!--
-      NEW
+      NEW user
     -->
     <div id="pane_user_type" class="paneElement">
       <div style="display:flex; flex-direction:column; height:100%; width:100%;
@@ -876,13 +946,14 @@
         return `
         <div
           id="vote_button_${promptObj.id}"
+          style="margin-bottom:10px"
           class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
-            mb-1 mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
+            mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
         >
           <table style="width:100%; color:#a0a0a0; font-size:10px; margin:-5px 0 0 0; padding:0">
             <tr>
               <td style="text-align:left">
-                ID: ${promptObj.id}
+                <a href="javascript:void(0)" onclick="navigator.clipboard.writeText('${window.location.origin}/poll/${promptObj.id}');this.innerHTML='Copied'">Copy link</a>
               </td>
               <td style="text-align:right">
                 Votes: ${promptObj.n_votes}+
@@ -943,6 +1014,12 @@
                 />
                 ${promptObj.option0}
               </div>
+              <button
+                class="bg-orange-300 hover:bg-orange-500 text-white font-bold text-sm border border-orange-400 rounded"
+                style="width:2px; visibility:hidden; margin-top:5px"
+              >
+                -
+              </button>
               <div style="float:right; width:45%; font-size:12px; text-align:center">
                 ${promptObj.option1}
                 <input id="color_input_${promptObj.id}_option1" type="color"
@@ -1039,6 +1116,7 @@
       }
 
       function setPromptOrder() {
+        prompt_next_button.style.display = 'block';
         deleteAllChildren('prompt_content');
         var order = null;
         if (prompt_sort_order.getAttribute('data-val') == 'asc') {
@@ -1136,6 +1214,7 @@
         'pane_overlay': {},
         'pane_about': {},
         'pane_polls': {},
+        'pane_create_poll': {},
         'pane_new_user': {
           'on_entry': () => {
             set_up_select_ui('new');
@@ -1902,11 +1981,12 @@
       }
 
       function hidePromptContent(promptId) {
-        target_div = dElem("vote_button_" + promptId);
-        dElem("prompt_content_" + promptId).style.display = "none";
-        replaceClasses(target_div, stagedClasses, unstagedClasses);
+        var target_div = dElem("vote_button_" + promptId);
+        if (target_div) {
+          dElem("prompt_content_" + promptId).style.display = "none";
+          replaceClasses(target_div, stagedClasses, unstagedClasses);
+        }
       }
-
 
       function updateStagedColors(pId) {
         allPrompts[stagedVoteId].userPromptColors = [

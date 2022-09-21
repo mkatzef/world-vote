@@ -15,6 +15,7 @@ class User extends Authenticatable
       'grid_row',
       'grid_col',
       'tags',
-      'responses'
+      'responses',
+      'created_prompts'
     );
 }

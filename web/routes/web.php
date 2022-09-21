@@ -56,7 +56,7 @@ Route::get('/pages/{key}/{order}', function ($k, $o) {
   return get_paginator($k, $o);
 });
 
-Route::get('/prompt/{pId}', function ($pId) {
+Route::get('/poll/{pId}', function ($pId) {
   return main(Prompt::where('id', $pId)->get(), $is_query=true);
 });
 
@@ -77,4 +77,5 @@ Route::get('logout', function () {
 Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');
 Route::post('update_responses', [RegisterController::class, 'update_responses'])->middleware('auth');
 Route::post('update_details', [RegisterController::class, 'update_details'])->middleware('auth');
+Route::post('create_poll', [RegisterController::class, 'create_prompt'])->middleware('auth');
 Route::post('login', [RegisterController::class, 'login']);

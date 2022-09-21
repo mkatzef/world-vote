@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Prompt extends Model
 {
     use HasFactory;
+
+    protected $fillable = array(
+      'summary',
+      'caption',
+      'option0',
+      'option1',
+      'count_ratios',
+    );
 }

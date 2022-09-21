@@ -66,6 +66,74 @@ class RegisterController extends Controller
     }
   }
 
+  public function create_prompt()
+  {
+    $fail_ret = response("Something went wrong!");
+
+    if (!(request()->has('summary') && request()->has('prompt') && request()->has('answer_type'))) {
+      return $fail_ret;
+    }
+
+    $created_prompts = request()->user()->created_prompts;
+    if ($created_prompts == null) {
+      $created_prompts = [];
+    } else {
+      $created_prompts = json_decode($created_prompts, true);
+      $n_last_24h = 0;
+      $time_cutoff = time() - (24 * 60 * 60);
+      foreach ($created_prompts as $p_id => $t) {
+        if ($t > $time_cutoff) {
+          $n_last_24h++;
+        }
+      }
+      if ($n_last_24h >= 5) {
+        return $fail_ret;
+      }
+    }
+
+    $summary = request()['summary'];
+    $caption = request()['prompt'];
+
+    $option0 = '';
+    $option1 = '';
+    switch (request()['answer_type']) {
+      case 'yes_no':
+        $option0 = 'Yes';
+        $option1 = 'No';
+        break;
+      case 'zero_ten':
+        $option0 = '0';
+        $option1 = '10';
+        break;
+
+      case 'high_low':
+        $option0 = 'High';
+        $option1 = 'Low';
+        break;
+      case 'good_bad':
+        $option0 = 'Good';
+        $option1 = 'Bad';
+        break;
+    }
+    if ($option0 == '' || $option1 == '') {
+      return $fail_ret;
+    }
+
+    $attributes = [
+      'summary' => $summary,
+      'caption' => $caption,
+      'option0' => $option0,
+      'option1' => $option1,
+      'count_ratios' => '{"all":[0,0,0,0,0,0,0,0,0,0,0]}',
+    ];
+
+    $p = Prompt::create($attributes);
+    $created_prompts[$p->id] = time();
+    request()->user()->update(['created_prompts' => json_encode($created_prompts)]);
+
+    return redirect('/poll/' . $p->id);
+  }
+
   public function update_details()
   {
     $updates = [];
