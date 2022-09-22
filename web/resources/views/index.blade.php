@@ -708,24 +708,21 @@
             maxlength="140"
             style="width:90%"
             class="m-1 shadow appearance-none border rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          ></textarea>
-          <br>
+          ></textarea><br>
           <label for="create_poll_answer_type">Answers:</label>
           <select style="width:150px" id="create_poll_answer_type" name='answer_type'>
             <option value="yes_no">Yes / No</option>
             <option value="zero_ten">0 to 10</option>
             <option value="high_low">High / Low</option>
             <option value="good_bad">Good / Bad</option>
-          </select>
-          <br>
+          </select><br>
 
           <button
             style="width:100%; max-width:200px; margin-top:20px"
             class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
           >
             Submit
-          </button>
-          <br>
+          </button><br>
           <button
             type="button"
             onclick="set_pane_mode('pane_polls')"
@@ -875,8 +872,7 @@
             class="mb-2 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
           >
             Update location
-          </button>
-          <br>
+          </button><br>
           <button
             style="width:100%; max-width:200px"
             class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
@@ -1033,8 +1029,8 @@
               <div style="float:left; width:35%; font-size:12px; text-align:center">
                 <input id="color_input_${promptObj.id}_option0" type="color"
                   style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
-                />
-                <br>${promptObj.option0}
+                /><br>
+                ${promptObj.option0}
               </div>
               <button onclick="set_pane_mode('pane_user_type')"
                 class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-1 text-sm border border-orange-400 rounded"
@@ -1045,8 +1041,8 @@
               <div style="float:right; width:35%; font-size:12px; text-align:center">
                 <input id="color_input_${promptObj.id}_option1" type="color"
                   style="width:40px; height:20px; border-radius:10px; margin-top:2px; padding:0px 2px 0px 2px; background-color:#cccccc"
-                />
-                <br>${promptObj.option1}
+                /><br>
+                ${promptObj.option1}
               </div>
             @endauth
 
@@ -2568,8 +2564,7 @@
     onclick="doShareCompat()"
   >
     Share
-  </button>
-  <br>
+  </button><br>
   <button
     style="width:150px"
     class="bg-orange-300 hover:bg-orange-500 text-white tracking-tight rounded"
