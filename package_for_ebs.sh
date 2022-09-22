@@ -1,6 +1,6 @@
 #!/bin/bash
 base_name="app"
-num=1
+num=130
 srcdir="./web"
 outdir="./web_uploads/"
 

@@ -29,7 +29,7 @@ function get_compat_prompts() {
   return Prompt::whereIn('id', array_keys($responses))->where('is_mapped', 1)->get();
 }
 
-function main($prompts, $query_id=false) {
+function main($prompts, $query_id=0) {
   $value = request()->cookie('access_token');
   if ($value) {
     auth()->login(User::where('access_token', '=', $value)->first());
@@ -84,8 +84,8 @@ Route::get('logout', function () {
   return redirect('/')->withoutCookie('access_token');
 })->middleware('auth');
 
-Route::post('new_vote', [RegisterController::class, 'store'])->middleware('guest');
+Route::post('new_vote/{query_id?}', [RegisterController::class, 'store'])->middleware('guest');
 Route::post('update_responses', [RegisterController::class, 'update_responses'])->middleware('auth');
 Route::post('update_details', [RegisterController::class, 'update_details'])->middleware('auth');
 Route::post('create_poll', [RegisterController::class, 'create_prompt'])->middleware('auth');
-Route::post('login', [RegisterController::class, 'login']);
+Route::post('login/{query_id?}', [RegisterController::class, 'login']);

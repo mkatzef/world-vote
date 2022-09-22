@@ -10,7 +10,6 @@ class Prompt extends Model
     use HasFactory;
 
     protected $fillable = array(
-      'summary',
       'caption',
       'option0',
       'option1',

@@ -504,7 +504,7 @@
               onclick="set_pane_mode('pane_user_type')"
             @endauth
           >Laws</button>
-          <button style="float:right" onclick="closeCompatButtons()">×&nbsp;</button>
+          <button style="float:right; width:35px; height:100%; font-size:20px" onclick="closeCompatButtons()">×&nbsp;</button>
         </div>
       </div>
 
@@ -700,15 +700,6 @@
         </h3>
         <form id="new_poll_form" action="/create_poll" method="POST"> <!--target="form_sink">-->
           @csrf
-          <label for="new_poll_summary">Summary</label>
-          <input
-            id="new_poll_summary"
-            placeholder="e.g., global warming"
-            name="summary"
-            style="width:90%"
-            class="m-1 shadow appearance-none border rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-          <br>
           <label for="new_poll_prompt">Poll question</label>
           <textarea
             id="new_poll_prompt"
@@ -763,7 +754,7 @@
 
         <div style="width:100%; max-width:200px">
           Returning users:
-          <form id="login_details_form" action="/login" method="POST"> <!--target="form_sink">-->
+          <form id="login_details_form" action="/login{{ $query_id ? '/' . $query_id : ''}}" method="POST"> <!--target="form_sink">-->
             @csrf
             <input type="text" id="captcha_val_login" name="g-recaptcha-response" style="display:none">
             <input
@@ -804,7 +795,7 @@
           In progress...
         </span>
 
-        <form id="new_details_form" action="/new_vote" method="POST"> <!--target="form_sink">-->
+        <form id="new_details_form" action="/new_vote{{ $query_id ? '/' . $query_id : ''}}" method="POST"> <!--target="form_sink">-->
           @csrf
           <input type="text" id="captcha_val_new" name="g-recaptcha-response" style="display:none">
           <input type="number" id="new-row" name="grid_row" style="display:none">
@@ -923,7 +914,8 @@
     <div id="map" class="main_transition"></div>
 
   	<script>
-      const allPrompts = {{ Js::from($compat_prompts) }};
+      const allPromptsArr = {{ Js::from($compat_prompts) }};
+      const allPrompts = allPromptsArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const tagTypesArr = {{ Js::from($tag_types) }};
       const allTagTypes = tagTypesArr.reduce((a, v) => ({ ...a, [v.id]: v}), {});
       const tagsArr = {{ Js::from($tags) }};
@@ -963,8 +955,8 @@
                 <a href="javascript:void(0)" onclick="navigator.clipboard.writeText('${window.location.origin}/poll/${promptObj.id}');this.innerHTML='Copied'">Copy link</a>
               </td>
               <td style="text-align:center">
-                ${(promptObj.creator_id == userId) ? 'Mine! ' : ''}
-                ${promptObj.reviewed ? '' : 'Under review'}
+                ${(promptObj.creator_id == userId) ? 'Yours! ' : ''}
+                ${['Invite only (awaiting review)', '', 'Invite only'][promptObj.reviewed]}
               </td>
               <td style="text-align:right">
                 Votes: ${promptObj.n_votes}+
@@ -1308,7 +1300,13 @@
       }
 
       function canDisplayVoteCompatOrAlert() {
-        if (Object.keys(myResponses).length < 1) {
+        var n_mapped_and_answered = 0;
+        var resp_keys = Object.keys(myResponses);
+        for (let i = 0; i < resp_keys.length; i++) {
+          n_mapped_and_answered += allPrompts[resp_keys[i]].is_mapped;
+        }
+
+        if (n_mapped_and_answered < 1) {
           alert("Please vote on at least 1 topic");
           return false;
         }
@@ -2533,7 +2531,7 @@
         var compatBarData = [];
         for (let i = 0; i < allPromptIds.length; i++) {
           var promptId = allPromptIds[i];
-          if (!(promptId in myResponses)) {
+          if (!((promptId in myResponses) && allPrompts[promptId].is_mapped)) {
             continue;
           }
 

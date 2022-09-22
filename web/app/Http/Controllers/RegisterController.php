@@ -13,7 +13,7 @@ use Cookie;
 
 class RegisterController extends Controller
 {
-  public function store()
+  public function store($query_id=null)
   {
     if (!App::environment('local') && !$this->captchaIsValid()) {
       return redirect('/unsuccessful');
@@ -40,11 +40,13 @@ class RegisterController extends Controller
 
     auth()->login(User::create($attributes));
 
+    $dst_path = '/' . ($query_id == null ? '' : 'poll/' . $query_id);
+
     if (request()->has('remember_me')) {
       $cookie = cookie('access_token', $attributes['access_token'], time() + (5 * 365 * 24 * 60 * 60));  // Expires in 5 years
-      return redirect('/')->withCookie($cookie);
+      return redirect($dst_path)->withCookie($cookie);
     } else {
-      return redirect('/');
+      return redirect($dst_path);
     }
   }
 
@@ -70,7 +72,7 @@ class RegisterController extends Controller
   {
     $fail_ret = response("Something went wrong!");
 
-    if (!(request()->has('summary') && request()->has('prompt') && request()->has('answer_type'))) {
+    if (!(request()->has('prompt') && request()->has('answer_type'))) {
       return $fail_ret;
     }
 
@@ -91,7 +93,6 @@ class RegisterController extends Controller
       }
     }
 
-    $summary = request()['summary'];
     $caption = request()['prompt'];
 
     $option0 = '';
@@ -120,7 +121,6 @@ class RegisterController extends Controller
     }
 
     $attributes = [
-      'summary' => $summary,
       'caption' => $caption,
       'option0' => $option0,
       'option1' => $option1,
@@ -164,7 +164,7 @@ class RegisterController extends Controller
     }
   }
 
-  public function login()
+  public function login($query_id=null)
   {
     if (!App::environment('local') && !$this->captchaIsValid()) {
       return redirect('/unsuccessful');
@@ -175,7 +175,8 @@ class RegisterController extends Controller
       return redirect('/unsuccessful');
     }
     auth()->login($matching_users->first());
-    return redirect("/");
+    $dst_path = '/' . ($query_id == null ? '' : 'poll/' . $query_id);
+    return redirect($dst_path);
   }
 
   private function captchaIsValid() {
