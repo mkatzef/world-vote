@@ -130,7 +130,9 @@ class RegisterController extends Controller
     ];
 
     $p = Prompt::create($attributes);
-    \Mail::to('marckatzef+aws@gmail.com')->send(new NewPromptNotification($p));
+    if (!App::environment('local')) {
+      \Mail::to('marckatzef+aws@gmail.com')->send(new NewPromptNotification($p));
+    }
 
     $created_prompts[$p->id] = time();
     request()->user()->update(['created_prompts' => json_encode($created_prompts)]);
@@ -196,6 +198,7 @@ class RegisterController extends Controller
   private function idPart() {
     return strval(base_convert(random_int(0, 1e7), 10, 36));
   }
+
   private function anId() {
     return $this->idPart() . $this->idPart();
   }

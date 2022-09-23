@@ -78,6 +78,22 @@ Route::get('login_failed', function () {
   return 'No votes were found with that access token!<br><a href="/"><button>Home</button></a>';
 });
 
+Route::get('/review/{pId}/{auth_code}/{status}', function ($pId, $auth_code, $status) {
+  $p = Prompt::where('id', $pId)->first();
+  if ($p->auth_code != $auth_code) {
+    return "Invalid auth code";
+  }
+  if ($status == 'approve') {
+    $p->update(["reviewed" => 1]);
+    return "Approved!";
+  } else if ($status == 'deny') {
+    $p->update(["reviewed" => 2]);
+    return "Denied!";
+  } else {
+    return "Unrecognized status: " . strval($status);
+  }
+});
+
 Route::get('logout', function () {
   Session::flush();
   Auth::logout();

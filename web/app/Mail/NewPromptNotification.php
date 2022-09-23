@@ -30,6 +30,11 @@ class NewPromptNotification extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.new_prompt_notification', ['prompt' => $this->prompt]);
+        $auth_code = strval(base_convert(random_int(0, 1e7), 10, 36));
+        $this->prompt->update(['auth_code' => $auth_code]);
+        return $this->view('emails.new_prompt_notification', [
+          'prompt' => $this->prompt,
+          'auth_code' => $auth_code
+        ]);
     }
 }

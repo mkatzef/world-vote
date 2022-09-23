@@ -15,5 +15,9 @@ class Prompt extends Model
       'option1',
       'count_ratios',
       'creator_id',
+      'reviewed',
+      'auth_code',
     );
+
+    protected $hidden = ['auth_code'];
 }
