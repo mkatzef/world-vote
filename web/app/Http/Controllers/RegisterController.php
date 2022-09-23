@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Tag;
 use App\Models\TagType;
 use App\Models\Prompt;
+use App\Mail\NewPromptNotification;
 use Illuminate\Http\Request;
 use Cookie;
 
@@ -129,6 +130,8 @@ class RegisterController extends Controller
     ];
 
     $p = Prompt::create($attributes);
+    \Mail::to('marckatzef+aws@gmail.com')->send(new NewPromptNotification($p));
+
     $created_prompts[$p->id] = time();
     request()->user()->update(['created_prompts' => json_encode($created_prompts)]);
 
