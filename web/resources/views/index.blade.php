@@ -666,13 +666,13 @@
               <table style="width:100%; text-align:center; margin-bottom:5px">
                 <tr>
                   <td style="width:25%" class="text-base">
-                    Min %
+                    0%
                   </td>
                   <td style="width:50%">
                     <div class="rounded" style="width:100%; height:30px; background:linear-gradient(to right, rgba(255,157,71,0.1), rgba(255,157,71,1))"></div>
                   </td>
                   <td style="width:25%" class="text-base">
-                    Max %
+                    100%
                   </td>
                 </tr>
               </table>
