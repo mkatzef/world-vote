@@ -13,7 +13,7 @@ cursor = DB_CNX.cursor()
 response = ""
 if update_loop_speed == "slow":
     # "slow" for full and update most recent full
-    cursor.execute("SELECT MIN(id) FROM users")
+    cursor.execute("SELECT MAX(id) FROM users")
     last_daily_user_id = next(cursor)
 
     cursor.execute('UPDATE generals SET pvalue = "%d" WHERE property = "max_baseset_user_id"' % last_daily_user_id)
