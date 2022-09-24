@@ -29,7 +29,7 @@ class BaseData:
 
 def get_base_data(tags, mapped_prompts, counted_prompts, users):
     tag_key = ['all'] + tags  # Order of data: starts with all, followed by each tag
-    tag_dict = dict([(k, i) for i, k in enumerate(tags)])
+    tag_dict = dict([(k, i+1) for i, k in enumerate(tags)])
     n_layers = len(tag_key)
 
     map_data_dict = dict([(p_id, BaseData(tag_key=tag_key)) for p_id in mapped_prompts])

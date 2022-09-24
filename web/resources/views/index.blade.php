@@ -1333,7 +1333,6 @@
         }
         stagedVoterId = tagId;
 
-        // TODO fetch all prompts answered by user
         if (tagId == "comp_vote") {
           if (!canDisplayVoteCompatOrAlert()) {
             return;

@@ -93,8 +93,8 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
                 continue
             # Calculate the ratio of responses with each tag
             layer_data = filtered_counts[:, :, i][filled_indices[:, :, i]]
-            if i > 0:
-                layer_data /= filtered_counts[:, :, 0][filled_indices[:, :, i]]
+            #if i > 0:
+            #    layer_data /= filtered_counts[:, :, 0][filled_indices[:, :, i]]
 
             # Min/max scale each layer
             amin = np.amin(layer_data)
@@ -104,6 +104,7 @@ def bin_tags_to_zooms_single(base_dir, stat_filename, out_dir):
             else:
                 layer_data -= amin
                 layer_data /= amax - amin
+            print('i:', i, 'tag:', tag_key[i], 'min:', amin, 'max:', amax)
             filtered_counts[:, :, i][filled_indices[:, :, i]] = layer_data
 
         outname = os.path.join(pathname, '_tag_counts.npy')
