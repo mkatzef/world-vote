@@ -116,6 +116,10 @@ class RegisterController extends Controller
         $option0 = 'Good';
         $option1 = 'Bad';
         break;
+      case 'more_less':
+        $option0 = 'More';
+        $option1 = 'Less';
+        break;
     }
     if ($option0 == '' || $option1 == '') {
       return $fail_ret;

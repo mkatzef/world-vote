@@ -19,6 +19,13 @@
     @endguest
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:image" content="https://myworld.vote/logo_og_1200.png"/>
+    <meta property="og:title" content="myworld.vote - have your say"/>
+    <meta property="og:description" content="Anonymous voting platform for sensitive topics"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   	<link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
   	<script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
@@ -313,84 +320,82 @@
         <div
           class="block m-2 mt-5 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
         >
-          <h3 class="text-lg font-medium text-gray-900">
-            About
-          </h3><hr>
-          <div class="py-2">
-            Social media likes to put us into opposing political boxes;
-            <i>people are more complex than that.</i>
-          </div>
-        </div>
-        <div
-          class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
-        >
-          <h3 class="text-lg font-medium text-gray-900">
-            Purpose
-          </h3><hr>
-          <div class="py-2">
-            I created <span style="color:orange">myworld.vote</span> to:
-          </div>
-          <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
-            See how the world thinks
-          </div>
-          <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
-            Compare opinions on individual topics
-          </div>
-          <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
-            Make this information visible to everyone
-          </div>
-        </div>
-        <div
-          class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
-        >
-          <h3 class="text-lg font-medium text-gray-900">
-            Promise
-          </h3><hr>
-          <div class="py-2">
-            <span style="color:orange">myworld.vote</span> lets you express yourself:
-          </div>
-          <div class="hover:bg-gray-200" style="border-radius:10px">
-            <span class="font-bold">
-              Securely<br>
-            </span>
-            Using network security standard practices
-          </div>
-          <div class="hover:bg-gray-200" style="border-radius:10px">
-            <span class="font-bold">
-              Anonymously<br>
-            </span>
-            With only the bare minimum information recorded
-          </div>
-          <div class="hover:bg-gray-200" style="border-radius:10px">
-            <span class="font-bold">
-              Honestly<br>
-            </span>
-            Without being singled out - votes are always counted in batches
-          </div>
-        </div>
-        <div
-          class="block m-2 p-2 bg-white rounded-lg border border-gray-200 shadow-md"
-        >
-          <h3 class="text-lg font-medium text-gray-900">
-            Author
-          </h3><hr>
-          <div class="py-2">
-            Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u><br>
-            Law data sourced from <u><a href="https://worldpopulationreview.com/">World Population Review</a></u><br>
-            To keep the stats server running:
+          <div class="mb-2">
+            <h3 class="text-lg font-medium text-gray-900">
+              About
+            </h3><hr>
+            <div class="py-2">
+              Social media likes to put us into opposing political boxes;
+              <i>people are more complex than that.</i>
+            </div>
           </div>
 
-          <div class="mt-2">
-            <form action="https://www.paypal.com/donate" method="post" target="_top">
-              @csrf
-              <input type="hidden" name="business" value="YMK37RQB69REG" />
-              <input type="hidden" name="no_recurring" value="1" />
-              <input type="hidden" name="item_name" value="To keep myworld.vote active" />
-              <input type="hidden" name="currency_code" value="AUD" />
-              <input type="image" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-              <img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1" />
-            </form>
+          <div class="mb-2">
+            <hr><h3 class="text-lg font-medium text-gray-900">
+              Purpose
+            </h3><hr>
+            <div class="py-2">
+              I created <span style="color:orange">myworld.vote</span> to:
+            </div>
+            <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
+              See how the world thinks
+            </div>
+            <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
+              Compare opinions on individual topics
+            </div>
+            <div class="hover:bg-gray-200 m-1" style="border-radius:10px">
+              Make this information visible to everyone
+            </div>
           </div>
+
+          <div class="mb-2">
+            <hr><h3 class="text-lg font-medium text-gray-900">
+              Promise
+            </h3><hr>
+            <div class="py-2">
+              <span style="color:orange">myworld.vote</span> lets you express yourself:
+            </div>
+            <div class="hover:bg-gray-200" style="border-radius:10px">
+              <span class="font-bold">
+                Securely<br>
+              </span>
+              Using network security standard practices
+            </div>
+            <div class="hover:bg-gray-200" style="border-radius:10px">
+              <span class="font-bold">
+                Anonymously<br>
+              </span>
+              With only the bare minimum information recorded
+            </div>
+            <div class="hover:bg-gray-200" style="border-radius:10px">
+              <span class="font-bold">
+                Honestly<br>
+              </span>
+              Without being singled out - votes are always counted in batches
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <hr><h3 class="text-lg font-medium text-gray-900">
+              Author
+            </h3><hr>
+            <div class="py-2">
+              Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u><br>
+              Law data sourced from <u><a href="https://worldpopulationreview.com/">World Population Review</a></u><br>
+              To keep the stats server running:
+            </div>
+          </div>
+        </div>
+        <div class="mt-2 mb-2">
+          <form action="https://www.paypal.com/donate" method="post" target="_top">
+            @csrf
+            <input type="hidden" name="business" value="YMK37RQB69REG" />
+            <input type="hidden" name="no_recurring" value="1" />
+            <input type="hidden" name="item_name" value="To keep myworld.vote active" />
+            <input type="hidden" name="currency_code" value="AUD" />
+            <input type="image" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+            <img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1" />
+          </form>
         </div>
       </div>
     </div>
@@ -715,6 +720,7 @@
             <option value="zero_ten">0 to 10</option>
             <option value="high_low">High / Low</option>
             <option value="good_bad">Good / Bad</option>
+            <option value="more_less">More / Less</option>
           </select><br>
 
           <button
@@ -743,7 +749,7 @@
         padding-top:10%; padding-bottom: 10%; text-align:center; align-items:center">
         <button onclick="set_pane_mode('pane_new_user')"
           class="bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
-          style="margin-left:7px; width:100%; max-width:200px">
+          style="width:100%; max-width:200px">
           New user
         </button>
 
