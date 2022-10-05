@@ -1304,7 +1304,9 @@
         var n_mapped_and_answered = 0;
         var resp_keys = Object.keys(myResponses);
         for (let i = 0; i < resp_keys.length; i++) {
-          n_mapped_and_answered += allPrompts[resp_keys[i]].is_mapped;
+          if (allPrompts.hasOwnProperty(resp_keys[i]) && allPrompts[resp_keys[i]].is_mapped) {
+            n_mapped_and_answered++;
+          }
         }
 
         if (n_mapped_and_answered < 1) {
@@ -2531,7 +2533,13 @@
         var compatBarData = [];
         for (let i = 0; i < allPromptIds.length; i++) {
           var promptId = allPromptIds[i];
-          if (!((promptId in myResponses) && allPrompts[promptId].is_mapped)) {
+          if (!(promptId in myResponses)) {
+            continue;
+          }
+          if (!allPrompts[promptId].is_mapped) {
+            continue;
+          }
+          if (allPrompts[promptId].summary == null) {
             continue;
           }
 
