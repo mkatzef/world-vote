@@ -3,7 +3,7 @@
     <b>New prompt submitted</b><br>
 
     <b>Caption</b>: {{ $prompt->caption }}<br>
-    <b>Option</b>: {{ $prompt->option0 }} / {{ $prompt->option1 }}<br><br>
+    <b>Options</b>: {{ $prompt->option0 }} / {{ $prompt->option1 }}<br><br>
 
     <b>Actions</b><br>
     <a href="https://myworld.vote/review/{{ $prompt->id }}/{{ $auth_code }}/approve">

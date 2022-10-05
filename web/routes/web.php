@@ -84,7 +84,7 @@ Route::get('/review/{pId}/{auth_code}/{status}', function ($pId, $auth_code, $st
     return "Invalid auth code";
   }
   if ($status == 'approve') {
-    $p->update(["reviewed" => 1]);
+    $p->update(["is_mapped" => 1, "reviewed" => 1]);
     return "Approved!";
   } else if ($status == 'deny') {
     $p->update(["reviewed" => 2]);
