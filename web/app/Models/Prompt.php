@@ -11,6 +11,7 @@ class Prompt extends Model
 
     protected $fillable = array(
       'caption',
+      'is_mapped',
       'option0',
       'option1',
       'count_ratios',

@@ -84,7 +84,7 @@ Route::get('/review/{pId}/{auth_code}/{status}', function ($pId, $auth_code, $st
     return "Invalid auth code";
   }
   if ($status == 'approve') {
-    $p->update(["is_mapped" => 1, "reviewed" => 1]);
+    $p->update(["is_mapped" => true, "reviewed" => 1]);
     return "Approved!";
   } else if ($status == 'deny') {
     $p->update(["reviewed" => 2]);
@@ -100,7 +100,7 @@ Route::get('logout', function () {
   return redirect('/')->withoutCookie('access_token');
 })->middleware('auth');
 
-Route::post('new_vote/{query_id?}', [RegisterController::class, 'store'])->middleware('guest');
+Route::post('new_vote/{query_id?}', [RegisterController::class, 'store']);
 Route::post('update_responses', [RegisterController::class, 'update_responses'])->middleware('auth');
 Route::post('update_details', [RegisterController::class, 'update_details'])->middleware('auth');
 Route::post('create_poll', [RegisterController::class, 'create_prompt'])->middleware('auth');

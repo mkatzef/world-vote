@@ -380,7 +380,7 @@
               Author
             </h3><hr>
             <div class="py-2">
-              Written by <u><a href="http://www.katzef.com">Marc Katzef</a></u><br>
+              Written by <u><a href="https://www.katzef.com">Marc Katzef</a></u><br>
               Law data sourced from <u><a href="https://worldpopulationreview.com/">World Population Review</a></u><br>
               To keep the stats server running:
             </div>
@@ -453,11 +453,10 @@
                   </div>
                 </button>
               </div>
-            @else
-              <h3 class="text-lg font-medium text-gray-900 px-1">
-                Click on a question below to see the responses from <b>over {{ $n_voters }} users</b>!
-              </h3>
             @endauth
+            <h3 class="text-lg font-medium text-gray-900 px-1">
+              Click on a question below to see the responses from <b>over {{ $n_voters }} users</b>!
+            </h3>
 
             Last updated: {{ $last_updated->diffForHumans() }}
           </div>
@@ -700,22 +699,22 @@
 
     <div id="pane_create_poll" class="paneElement scrolling">
       <div class="scrolling-y" style="height:100%">
-        <h3 class="mt-2 text-lg font-medium text-gray-900">
-          Create new poll
+        <h3 style="margin-bottom:10px" class="mt-2 text-lg font-medium text-gray-900">
+          Create a new poll
         </h3>
         <form id="new_poll_form" action="/create_poll" method="POST"> <!--target="form_sink">-->
           @csrf
-          <label for="new_poll_prompt">Poll question</label>
+          <label for="new_poll_prompt">Poll question</label><br>
           <textarea
             id="new_poll_prompt"
             placeholder="e.g., should we be doing more about global warming?"
             name="prompt"
             maxlength="140"
-            style="width:90%"
+            style="width:100%; max-width:200px; min-height:100px; margin-bottom:10px"
             class="m-1 shadow appearance-none border rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           ></textarea><br>
-          <label for="create_poll_answer_type">Answers:</label>
-          <select style="width:150px" id="create_poll_answer_type" name='answer_type'>
+          <label for="create_poll_answer_type">Answers</label><br>
+          <select style="width:150px; margin-bottom:20px" id="create_poll_answer_type" name='answer_type'>
             <option value="yes_no">Yes / No</option>
             <option value="zero_ten">0 to 10</option>
             <option value="high_low">High / Low</option>
@@ -724,7 +723,7 @@
           </select><br>
 
           <button
-            style="width:100%; max-width:200px; margin-top:20px"
+            style="width:100%; max-width:200px; margin-top:10px"
             class="m-1 bg-orange-300 hover:bg-orange-500 text-white font-bold py-2 px-4 border border-orange-400 rounded"
           >
             Submit
