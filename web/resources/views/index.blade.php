@@ -1064,6 +1064,7 @@
       function addPromptObj(promptObj) {
         prompt_content.insertAdjacentHTML('beforeend', getPromptHtml(promptObj));
         allPrompts[promptObj.id] = promptObj;
+        addColorChangeHandler(promptObj.id);
       }
 
       @foreach ($prompts as $prompt)
@@ -2011,16 +2012,18 @@
         showPromptContent();
       }
 
-      @foreach ($prompts as $prompt)
-        color_input_{{ $prompt->id }}_option0.addEventListener(
+      function addColorChangeHandler(pId) {
+        dElem('color_input_' + pId + '_option0').addEventListener(
           'change', () => {
-            updateStagedColors({{ $prompt->id }});
-          });
-        color_input_{{ $prompt->id }}_option1.addEventListener(
+            updateStagedColors(pId);
+          }
+        );
+        dElem('color_input_' + pId + '_option1').addEventListener(
           'change', () => {
-            updateStagedColors({{ $prompt->id }});
-          });
-      @endforeach
+            updateStagedColors(pId);
+          }
+        );
+      }
 
       function toggleExtrasVisibilty(pId) {
         var elem = dElem('extras_' + stagedVoteId);
@@ -2211,7 +2214,12 @@
         showPromptContent();
       }
 
-      const colorOptions = [[255,0,0], [0, 255, 0], [0, 0, 255], [255, 255, 0], [255, 0, 255], [0, 255, 255]];
+      const colorOptions = [
+        [255, 0, 0],
+        [0, 127, 0],
+        [0, 0, 0],
+        [255, 0, 255],
+      ];
       function getRandomColorCombo(cOptions=colorOptions) {
         const nOptions = cOptions.length;
         var index1 = Math.floor(Math.random() * nOptions);
