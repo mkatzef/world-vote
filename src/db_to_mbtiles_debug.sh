@@ -6,13 +6,6 @@ min_zoom="0"
 max_zoom="3"
 out_file="tiles-comb.mbtiles"
 
-if [ -f "access_token.txt" ]; then
-  export MAPBOX_ACCESS_TOKEN=`cat access_token.txt`
-else
-  echo "No access token found for mapbox upload"
-  exit
-fi
-
 mkdir -p $out_dir
 
 echo "Collecting base data from database"
@@ -29,3 +22,6 @@ done
 
 echo "Combining tiles into single file"
 tile-join -o $out_dir/$out_file $out_dir/z0*/tiles.mbtiles --force
+
+echo "Writing stats to database"
+python3 write_stats_to_db.py $out_dir

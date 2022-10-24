@@ -1650,13 +1650,35 @@
         if (!stagedVoteId) {
           return;
         }
+        displayStats();
+
+        if (!allPrompts[stagedVoteId].is_mapped) {
+          map.setLayoutProperty('prompts', 'visibility', 'none');
+          return;
+        }
+
         const C = activePromptColorSteps;
-        displayStats(JSON.parse(allPrompts[stagedVoteId]['count_ratios'])['all'], activePromptColorSteps);
-        if (allPrompts[stagedVoteId].is_mapped) {
+        const dataId = 'prompt-' + stagedVoteId + '-all';
+        map.setPaintProperty(
+          'prompts',
+          'fill-color',
+          [
+            "case",
+            ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
+            ["rgba",
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
+              ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
+              0.5  // opacity
+            ]
+          ]
+        );
+
+        if (lawPromptIds.includes(stagedVoteId)) {
           const dataId = 'prompt-' + stagedVoteId + '-all';
           map.setPaintProperty(
-            'prompts',
-            'fill-color',
+            'laws',
+            'line-color',
             [
               "case",
               ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
@@ -1668,26 +1690,6 @@
               ]
             ]
           );
-
-          if (lawPromptIds.includes(stagedVoteId)) {
-            const dataId = 'prompt-' + stagedVoteId + '-all';
-            map.setPaintProperty(
-              'laws',
-              'line-color',
-              [
-                "case",
-                ["==", ["get", dataId], -1], 'rgba(0,0,0,0)', // transparent if -1
-                ["rgba",
-                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][0]), 0.5, SC(C[1][0]), 1, SC(C[2][0])],
-                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][1]), 0.5, SC(C[1][1]), 1, SC(C[2][1])],
-                  ["interpolate", ["linear"], ["get", dataId], 0, SC(C[0][2]), 0.5, SC(C[1][2]), 1, SC(C[2][2])],
-                  0.5  // opacity
-                ]
-              ]
-            );
-          }
-        } else {
-          map.setLayoutProperty('prompts', 'visibility', 'none');
         }
       }
 
@@ -1948,7 +1950,9 @@
       );
 
       // Note: barColors can be a different length than data - uses linear interpolation
-      function displayStats(data, barColors) {
+      function displayStats(voterSlug='all') {
+        const barColors = activePromptColorSteps;
+        const data = JSON.parse(allPrompts[stagedVoteId]['count_ratios'])[voterSlug];
         if (! ('has_been_opened' in allPrompts[stagedVoteId])) {
           dElem('stats_mask_' + stagedVoteId).style.display = 'block';  // Initially mask all stats
         } else {
@@ -2051,6 +2055,33 @@
 
         var extrasElem = dElem("vote_extras_msg_" + stagedVoteId);
         var extrasContent = [];
+
+        var tagOptionArrs = {};
+        for (let tagId in allTags) {
+          var t = allTags[tagId];
+          if (!tagOptionArrs.hasOwnProperty(t.tag_type)) {
+            tagOptionArrs[t.tag_type] = [];
+          }
+          tagOptionArrs[t.tag_type].push(`<option value="${t.slug}">${t.name}</option>`);
+        }
+        var tagOptions = [];
+        var tagTypeIds = Object.keys(allTagTypes).sort();
+        for (let ttIndex = 0; ttIndex < tagTypeIds.length; ttIndex++) {
+          const ttId = tagTypeIds[ttIndex];
+          tagOptions.push(`<option disabled>${allTagTypes[ttId].name}</option>`);
+          tagOptions.push(...tagOptionArrs[ttId].sort());
+        }
+
+        extrasContent.push(
+          `<form>
+            Bar graph data:<br>
+            <select onchange="displayStats(this.value)">
+              <option value="all" selected="selected">All (same as map)</option>
+              ${tagOptions.join('')}
+            </select>
+          </form>`
+        );
+
         if (prompt.is_mapped) {
           extrasContent.push(`
             <form>
@@ -2082,19 +2113,15 @@
           );
         }
 
-        if (extrasContent.length == 0) {
-          extrasElem.style.display = 'none';
-        } else {
-          extrasElem.innerHTML =
-            `<hr class="m-2" style="border-width:1px; width:100%">
-            <button onclick="toggleExtrasVisibilty(${stagedVoteId})">
-              <b>Extras</b>
-            </button>
-            <div id="extras_${stagedVoteId}" style="width:100%; display:none" class="grid place-items-center">
-              ${extrasContent.join('')}
-            </div>
-          `
-        }
+        extrasElem.innerHTML =
+          `<hr class="m-2" style="border-width:1px; width:100%">
+          <button onclick="toggleExtrasVisibilty(${stagedVoteId})">
+            <b>Extras</b>
+          </button>
+          <div id="extras_${stagedVoteId}" style="width:100%; display:none" class="grid place-items-center">
+            ${extrasContent.join('')}
+          </div>
+        `;
 
         var shouldRevealStats = false;
         @auth
