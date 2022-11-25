@@ -947,10 +947,10 @@
         <div
           id="vote_button_${promptObj.id}"
           style="margin-bottom:10px"
-          class="block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
+          class="group block bg-white rounded-lg shadow-md hover:bg-gray-100 p-2
             mt-1 ml-2 mr-2 border-2 border-gray-200 button_transition"
         >
-          <table style="width:100%; color:#a0a0a0; font-size:10px; margin:-5px 0 0 0; padding:0">
+          <table class="group-hover:visible invisible" style="width:100%; color:#a0a0a0; font-size:10px; margin:-5px 0 0 0; padding:0">
             <tr>
               <td style="text-align:left">
                 <a href="javascript:void(0)" onclick="navigator.clipboard.writeText('${window.location.origin}/poll/${promptObj.id}');this.innerHTML='Copied'">Copy link</a>
