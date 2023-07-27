@@ -1,9 +1,11 @@
 # World Vote
+The frontend and backend for a global heatmap-based poll website. Made publically available as [myworld.vote](https://myworld.vote), garnering thousands of responses in the first few weeks, colouring in parts of the world
+![Demo screenshot](src/demo.png)
+
 
 ## Structure
 * `web/` laravel web app  
-* `src/` bash and python utilities to process data for the web app  
-* `web_uploads/` packaged versions of the laravel web app (for elastic beanstalk)  
+* `src/` bash and python utilities to process data for the web app   
 
 
 ## Data formats
@@ -16,6 +18,7 @@
 
 The tasks of reading from database, writing the above formats, and uploading are all described in [src/README.md](src/README.md)
 
+
 ## Web
 Early versions had a simple `index.html` that could be loaded in a web browser directly.
 
@@ -23,20 +26,11 @@ We're not in Kansas anymore; navigate to `./web` **IMPORTANT** for both,
 1. run `npm run dev` or `prod` to generate the js and css in `/public`  
 2. run `php artisan serve` (OR `art serve` if you have the recommended `laravel` shell config)  
 
-The locally-hosted URL will appear in your terminal when running. Navigate to that link in a web browser and continue debugging.
-
-
-## Next steps
-* Add user-submitted prompts
-* Add prompt search  
-* Add prompt sorting
-* Add prompt sharing
-
-* Add reminder to copy login code
-* Obfuscate/minify code
+The locally-hosted URL will appear in your terminal when running. Navigate to that link in a web browser to see the user interface and explore averaged users' answers.
 
 
 ## Useful tools
+If you plan to generate map tiles on your own machine, you may find the following tools helpful:
 * `tippecanoe`: CLI convert geojson into mbtiles  
 * `mb-util`: CLI convert mbtiles into vector tile directory structure (optional preprocessing for speed)  
 * `mbtiles-serve`: CLI npm package to serve mbtiles locally (debugging)  
